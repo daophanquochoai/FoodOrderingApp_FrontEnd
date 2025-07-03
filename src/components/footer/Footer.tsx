@@ -59,7 +59,7 @@ const Footer: React.FC = () => {
               <span className="font-bold text-xl">Collections</span>
               <FaChevronDown 
                 className={`lg:hidden transition-transform duration-200 ${
-                  openSection === 'contact' ? 'rotate-180' : ''
+                  openSection === 'collections' ? 'rotate-180' : ''
                 }`}
               />
             </div>
@@ -107,7 +107,7 @@ const Footer: React.FC = () => {
                 <Link to={"/"} className="hover:text-orange-500">Contact</Link>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Order tracking</Link>
+                <Link to={"/"} className="hover:text-orange-500">Order Tracking</Link>
               </li>
             </ul>
           </div>
