@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ClientBreadcrumb from "../../../components/breadcrumb/ClientBreadcrumb";
 import FloatingInput from "../../../components/input/FloatingInput";
 import { Link } from "react-router-dom";
-import { validateEmail } from "../../../utils/helper";
+import { validateEmail, validateName } from "../../../utils/helper";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -20,12 +20,17 @@ const Register = () => {
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name) {
+    if (!formData.name.trim()) {
       setError("Please enter your name.");
       return;
     }
 
-    if (!formData.email) {
+    if (!validateName(formData.name)) {
+      setError("Please enter a valid name.");
+      return;
+    }
+
+    if (!formData.email.trim()) {
       setError("Please enter your email.");
       return;
     }
@@ -35,8 +40,13 @@ const Register = () => {
       return;
     }
 
-    if (!formData.password) {
-      setError("Please enter your password");
+    if (!formData.password.trim()) {
+      setError("Please enter your password.");
+      return;
+    }
+
+    if (formData.password.trim() && formData.password.length < 6) {
+      setError("Please enter a password of at least 6 characters.");
       return;
     }
 
@@ -93,7 +103,7 @@ const Register = () => {
 
           <div className="text-center">
             <Link to={"/"}>
-              <span className="relative text-base text-gray-900 cursor-pointer after:contents[''] after:absolute after:bottom-[-2px] after:left-0 after:h-[0.5px] after:w-full after:bg-gray-500 hover:after:bg-transparent">
+              <span className="underline-text text-base font-medium">
                 Return to store
               </span>
             </Link>
