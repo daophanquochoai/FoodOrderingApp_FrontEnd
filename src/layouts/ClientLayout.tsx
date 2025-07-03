@@ -7,7 +7,7 @@ const ClientLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-500">
       <Header />
-      <main className="relative z-10">
+      <main className="relative z-10" style={{ marginTop: "110px" }}>
         <Outlet />
       </main>
       <Footer />

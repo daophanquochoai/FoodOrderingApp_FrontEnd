@@ -69,7 +69,7 @@ const Login = () => {
           />
 
           <div className="ml-1">
-            <Link to={"/"}>
+            <Link to={"/account/forgot-password"}>
               <span className="underline-text">Forgot your password?</span>
             </Link>
           </div>

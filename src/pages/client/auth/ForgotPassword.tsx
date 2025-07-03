@@ -29,7 +29,7 @@ const ForgotPassword = () => {
     console.log(email);
     // send thanh cong: statusSendEmail = 1; send that bai: statusSendEmail = 2
     setTimeout(() => {
-      setStatusSendEmail(2);
+      setStatusSendEmail(1);
     }, 1000);
   };
 
