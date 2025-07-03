@@ -25,7 +25,7 @@ const DesktopNav: React.FC = () => {
                     <FaChevronDown className="ml-3 text-xs"/>
                 </div>
                 {isOpen('pizza') && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg border border-gray-200 z-50">
                         <div className="py-2">
                             <NavLink 
                                 to="/" 
@@ -67,7 +67,7 @@ const DesktopNav: React.FC = () => {
                     <FaChevronDown className="ml-3 text-xs"/>
                 </div>
                 {isOpen('burger') && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg border border-gray-200 z-50">
                         <div className="py-2">
                             <NavLink 
                                 to="/" 
@@ -105,7 +105,7 @@ const DesktopNav: React.FC = () => {
                     <FaChevronDown className="ml-3 text-xs"/>
                 </div>
                 {isOpen('more') && (
-                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200 z-50">
+                    <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg border border-gray-200 z-50">
                         <div className="py-2">
                             <NavLink 
                                 to="/" 

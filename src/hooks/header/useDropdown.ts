@@ -19,7 +19,7 @@ export const useDropdown = () => {
         return openDropdown === menu;
     };
 
-    // Xử lý sự kiện click bên ngoài để đó  ng dropdown
+    // Xử lý sự kiện click bên ngoài để đóng dropdown
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

@@ -1,15 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoLocationOutline, IoMailOutline } from "react-icons/io5";
+import { FaChevronDown } from 'react-icons/fa';
 import { BiSupport } from "react-icons/bi";
 
 const Footer: React.FC = () => {
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
+  const toggleSection = (section: string) => {
+    setOpenSection(openSection === section ? null : section);
+  };
+
   return (
     <footer className="bg-white">
         <div className="border-t border-gray-300 px-4 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-4 gap-4">
+
+          {/* Contact Us Section */}
           <div>
-            <span className="font-bold text-lg">Contact Us</span>
-            <ul className="hidden lg:block">
+            <div 
+              className="flex items-center justify-between cursor-pointer lg:cursor-default"
+              onClick={() => toggleSection('contact')}
+            >
+              <span className="font-bold text-xl">Contact Us</span>
+              <FaChevronDown 
+                className={`lg:hidden transition-transform duration-200 ${
+                  openSection === 'contact' ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+            <ul className={`mt-5 ${
+              openSection === 'contact' ? 'block' : 'hidden'
+            } lg:block`}>
               <li className="flex my-2">
                 <IoLocationOutline className="inline-block mr-2 mt-2 text-xl text-orange-500" />
                 <div>
@@ -28,9 +49,23 @@ const Footer: React.FC = () => {
               </li>
             </ul>
           </div>
+
+          {/* Collections Sections */}
           <div>
-            <span className="font-bold text-lg">Collections</span>
-            <ul className="hidden lg:block">
+            <div 
+              className="flex items-center justify-between cursor-pointer lg:cursor-default"
+              onClick={() => toggleSection('collections')}
+            >
+              <span className="font-bold text-xl">Collections</span>
+              <FaChevronDown 
+                className={`lg:hidden transition-transform duration-200 ${
+                  openSection === 'contact' ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+            <ul className={`mt-5 ${
+              openSection === 'collections' ? 'block' : 'hidden'
+            } lg:block`}>
               <li className="my-2">
                 <Link to={"/"} className="hover:text-orange-500">Burger</Link>
               </li>
@@ -48,9 +83,23 @@ const Footer: React.FC = () => {
               </li>
             </ul>
           </div>
+
+          {/* Services Sections */}
           <div>
-            <span className="font-bold text-lg">Services</span>
-            <ul className="hidden lg:block">
+            <div 
+              className="flex items-center justify-between cursor-pointer lg:cursor-default"
+              onClick={() => toggleSection('services')}
+            >
+              <span className="font-bold text-xl">Services</span>
+              <FaChevronDown 
+                className={`lg:hidden transition-transform duration-200 ${
+                  openSection === 'services' ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+            <ul className={`mt-5 ${
+              openSection === 'services' ? 'block' : 'hidden'
+            } lg:block`}>
               <li className="my-2">
                 <Link to={"/"} className="hover:text-orange-500">About Us</Link>
               </li>
@@ -62,9 +111,23 @@ const Footer: React.FC = () => {
               </li>
             </ul>
           </div>
+
+          {/* Quick Links Section */}
           <div>
-            <span className="font-bold text-lg">Quick Links</span>
-            <ul className="hidden lg:block">
+            <div 
+              className="flex items-center justify-between cursor-pointer md:cursor-default"
+              onClick={() => toggleSection('quicklinks')}
+            >
+              <span className="font-bold text-xl">Quick Links</span>
+              <FaChevronDown 
+                className={`lg:hidden transition-transform duration-200 ${
+                  openSection === 'quicklinks' ? 'rotate-180' : ''
+                }`}
+              />
+            </div>
+            <ul className={`mt-5 ${
+              openSection === 'quicklinks' ? 'block' : 'hidden'
+            } lg:block`}>
               <li className="my-2">
                 <Link to={"/"} className="hover:text-orange-500">Privacy Policy</Link>
               </li>
@@ -81,9 +144,9 @@ const Footer: React.FC = () => {
                 <Link to={"/"} className="hover:text-orange-500">Policy for Buyers</Link>
               </li>
             </ul>
-            </div>
+          </div>
         </div>
-        <div className="border-t border-gray-300 px-4 lg:px-20 py-4 text-center flex justify-between items-center">
+        <div className="border-t border-gray-300 px-4 lg:px-20 py-4 text-center flex flex-col lg:flex-row justify-between items-center gap-4">
           <div>
             Copyright &copy; 2025 Grillfood. All rights reserved.
           </div>
