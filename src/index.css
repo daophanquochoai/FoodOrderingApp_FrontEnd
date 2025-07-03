@@ -30,6 +30,15 @@ ol {
   body {
     width: 100%;
     height: 100%;
-    @apply overflow-x-hidden;
+    @apply overflow-x-hidden font-mono;
+    background-color: #faf5f0;
   }
+}
+
+.inputBox {
+  @apply w-full border border-gray-300 rounded-[24px] px-5 pt-5 pb-1 text-base font-medium placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 pr-14
+}
+
+.btn-primary {
+  @apply w-full px-4 py-3 cursor-pointer bg-[#FC4D26] hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-medium text-base tracking-wider my-3 font-kanit transition-all duration-500
 }
