@@ -1,13 +1,16 @@
-import { Outlet, Link } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/Footer";
 
-const ClientLayout = () => {
+const ClientLayout: React.FC = () => {
   return (
-    <div>
-      <nav>
-        <Link to="/">Trang chủ</Link> | <Link to="/about">Giới thiệu</Link>
-      </nav>
-      <hr />
-      <Outlet />
+    <div className="min-h-screen bg-gray-500">
+      <Header />
+      <main className="relative z-10">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   );
 };
