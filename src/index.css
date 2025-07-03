@@ -42,3 +42,7 @@ ol {
 .btn-primary {
   @apply w-full px-4 py-3 cursor-pointer bg-[#FC4D26] hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-medium text-base tracking-wider my-3 font-kanit transition-all duration-500
 }
+
+.underline-text {
+  @apply relative text-gray-900 cursor-pointer after:content-[""] after:absolute after:bottom-[-2px] after:left-0 after:h-[0.5px] after:w-full after:bg-gray-500 hover:after:bg-transparent
+}
