@@ -49,16 +49,20 @@ ol {
   @apply relative text-gray-900 cursor-pointer after:content-[""] after:absolute after:bottom-[-2px] after:left-0 after:h-[0.5px] after:w-full after:bg-gray-500 hover:after:bg-transparent
 }
 
+.underline-text-orange {
+  @apply invisible uppercase font-kanit relative text-orange-primary font-medium cursor-pointer after:content-[""] after:absolute after:bottom-[1px] after:left-0 after:h-[1.5px] after:w-full after:bg-orange-primary hover:after:bg-transparent
+}
+
 .btn-yellow-to-white {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 px-2 py-1 rounded-full bg-yellow-primary hover:bg-white uppercase font-bold text-black transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-yellow-primary hover:bg-white uppercase font-bold text-black transition-all duration-500
 }
 
 .btn-yellow-to-black {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 px-2 py-1 rounded-full bg-yellow-primary hover:bg-black uppercase font-bold text-black hover:text-white transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-yellow-primary hover:bg-black uppercase font-bold text-black hover:text-white transition-all duration-500
 }
 
 .btn-orange-to-black {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 px-2 py-1 rounded-full bg-orange-primary hover:bg-black uppercase font-bold text-white transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-orange-primary hover:bg-black uppercase font-bold text-white transition-all duration-500
 }
 
 @layer utilities {
@@ -152,6 +156,56 @@ ol {
 .SwipperBannerMain:hover .swiper-button-prev:hover:after,
 .SwipperBannerMain:hover .swiper-button-next:hover:after {
   color: #fff;
+}
+
+.SwipperBannerMain .swiper-pagination {
+  display: none;
+}
+
+/* ------------------------------------- */
+.LatestProductHome .swiper-pagination {
+  display: none;
+}
+
+.LatestProductHome .swiper-button-prev,
+.LatestProductHome .swiper-button-next {
+  display: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: all;
+  transition-duration: 2000;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.LatestProductHome:hover .swiper-button-prev,
+.LatestProductHome:hover .swiper-button-next {
+  display: flex;
+  transition: all;
+  transition-duration: 2000;
+}
+
+.LatestProductHome:hover .swiper-button-prev::after,
+.LatestProductHome:hover .swiper-button-next::after {
+  font-size: 18px;
+  color: #000;
+  font-weight: 800;
+}
+
+
+/* ------------------------------------- */
+
+.SlideCategoryHome .swiper-pagination {
+  display: none;
+}
+
+.SlideCategoryHome:hover .swiper-pagination {
+  display: block;
+}
+
+.SlideCategoryHome:hover .swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--orange-primary);
 }
 
 /* -------- end slide main ----------- */

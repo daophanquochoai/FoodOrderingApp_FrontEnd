@@ -11,6 +11,7 @@ const SlideMain = () => {
   return (
     <div className="lg:mt-[-110px] overflow-hidden">
       <Swiper
+        loop={true}
         spaceBetween={0}
         centeredSlides={true}
         autoplay={{

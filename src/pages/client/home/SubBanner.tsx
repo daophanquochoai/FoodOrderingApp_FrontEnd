@@ -67,7 +67,7 @@ const SubBanner = () => {
                   Today Best Deals!
                 </p>
 
-                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-yellow-to-black">
+                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-yellow-to-black px-2 py-1">
                   Order now
                   <FaArrowRightLong className="size-2 mb-[1px] md:size-3 lg:size-4 lg:mb-[2px] group-hover/icon-hover:translate-x-1 transition-transform duration-300" />
                 </button>
@@ -116,7 +116,7 @@ const SubBanner = () => {
                   Special Just ForYou
                 </p>
 
-                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-yellow-to-black">
+                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-yellow-to-black px-2 py-1">
                   Order now
                   <FaArrowRightLong className="size-2 mb-[1px] md:size-3 lg:size-4 lg:mb-[2px] group-hover/icon-hover:translate-x-1 transition-transform duration-300" />
                 </button>
@@ -161,7 +161,7 @@ const SubBanner = () => {
                   Special Just ForYou
                 </p>
 
-                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-orange-to-black">
+                <button className="group/icon-hover text-[clamp(6px,1vw,12px)] btn-orange-to-black px-2 py-1">
                   Order now
                   <FaArrowRightLong className="size-2 mb-[1px] md:size-3 lg:size-4 lg:mb-[2px] group-hover/icon-hover:translate-x-1 transition-transform duration-300" />
                 </button>
