@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { IoLocationOutline, IoMailOutline } from "react-icons/io5";
 import { FaChevronDown } from 'react-icons/fa';
 import { BiSupport } from "react-icons/bi";
@@ -28,15 +28,16 @@ const Footer: React.FC = () => {
                 }`}
               />
             </div>
-            <ul className={`mt-5 ${
+            <ul className={`mt-5 -ml-[3px] ${
               openSection === 'contact' ? 'block' : 'hidden'
             } lg:block`}>
               <li className="flex my-2">
                 <IoLocationOutline className="inline-block mr-2 mt-2 text-xl text-orange-500" />
                 <div>
                   <p>Grillfood - Fast Food Store</p>
-                  <p>507-Union Trade Ipsum Doler</p>
-                  <p>Centre France</p>
+                  <p>33 New Montgomery St.</p>
+                  <p>Ste 750 San Francisco,</p>
+                  <p>CA, USA 94105</p>
                 </div>
               </li>
               <li className="flex my-2">
@@ -67,19 +68,19 @@ const Footer: React.FC = () => {
               openSection === 'collections' ? 'block' : 'hidden'
             } lg:block`}>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Burger</Link>
+                <NavLink to={"/collections"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Burger</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Pizza</Link>
+                <NavLink to={"/collections"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Pizza</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Chicken</Link>
+                <NavLink to={"/collections"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Chicken</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Drink</Link>
+                <NavLink to={"/collections"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Drink</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Desserts</Link>
+                <NavLink to={"/collections"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Desserts</NavLink>
               </li>
             </ul>
           </div>
@@ -101,13 +102,13 @@ const Footer: React.FC = () => {
               openSection === 'services' ? 'block' : 'hidden'
             } lg:block`}>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">About Us</Link>
+                <NavLink to={"/about"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>About Us</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Contact</Link>
+                <NavLink to={"/contact"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Contact</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Order Tracking</Link>
+                <NavLink to={"/"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Order Tracking</NavLink>
               </li>
             </ul>
           </div>
@@ -129,19 +130,19 @@ const Footer: React.FC = () => {
               openSection === 'quicklinks' ? 'block' : 'hidden'
             } lg:block`}>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Privacy Policy</Link>
+                <NavLink to={"/privacy-policy"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Privacy Policy</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Refund Policy</Link>
+                <NavLink to={"/refund-policy"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Refund Policy</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Shipping Policy</Link>
+                <NavLink to={"/shipping-policy"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Shipping Policy</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Terms of Service</Link>
+                <NavLink to={"/terms-of-service"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Terms of Service</NavLink>
               </li>
               <li className="my-2">
-                <Link to={"/"} className="hover:text-orange-500">Policy for Buyers</Link>
+                <NavLink to={"/policy-for-buyers"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Policy for Buyers</NavLink>
               </li>
             </ul>
           </div>

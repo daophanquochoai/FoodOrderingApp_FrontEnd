@@ -21,7 +21,7 @@ const ClientBreadcrumb: React.FC<ClientBreadItemProps> = ({ title, items }) => {
 
     return {
       title: (
-        <Link to="/">
+        <Link to={item.to}>
           <span className="font-mono text-base tracking-wider">
             {item.label}
           </span>

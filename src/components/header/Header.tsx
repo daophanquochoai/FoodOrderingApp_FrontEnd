@@ -11,7 +11,9 @@ const Header: React.FC = () => {
   const isScrolled = useScrollEffect({ threshold: 50 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isUserOpen, setIsUserOpen] = useState(false);
   const cartItemCount = 5;
+
 
   const locationHome = useLocation();
 
@@ -64,7 +66,24 @@ const Header: React.FC = () => {
           <DesktopNav />
           <div className="p-7 flex items-center space-x-8 text-2xl">
             <FaSearch className="hover:text-orange-500 hover:cursor-pointer" />
-            <FaRegUser className="hover:text-orange-500 hover:cursor-pointer" />
+
+            <FaRegUser 
+              className="hover:text-orange-500 hover:cursor-pointer"
+              onClick={() => setIsUserOpen(!isUserOpen)}
+            />
+            {isUserOpen && (
+              <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-2">
+                <ul>
+                  <li className="py-2 hover:text-orange-500 text-base cursor-pointer" onClick={() => (window.location.href = "/account/login")}>
+                    Log in
+                  </li>
+                  <li className="py-2 hover:text-orange-500 text-base cursor-pointer" onClick={() => (window.location.href = "/account/register")}>
+                    Register
+                  </li>
+                </ul>
+              </div>
+            )}
+            
             <div className="relative">
               <BsBasket className="hover:text-orange-500 hover:cursor-pointer" />
               {cartItemCount > 0 && (
