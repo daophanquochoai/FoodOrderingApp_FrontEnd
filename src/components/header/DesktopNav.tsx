@@ -53,7 +53,7 @@ const DesktopNav: React.FC = () => {
                 )}
             </div>
         
-            <NavLink to={"/"} className={"hover:text-orange-500"}>
+            <NavLink to={"/collections"} className={"hover:text-orange-500"}>
                 COLLECTIONS
             </NavLink>
 
@@ -108,14 +108,14 @@ const DesktopNav: React.FC = () => {
                     <div className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg border border-gray-200 z-50">
                         <div className="py-2">
                             <NavLink 
-                                to="/" 
+                                to="/about" 
                                 className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-orange-500"
                                 onClick={closeDropdown}
                             >
                                 ABOUT
                             </NavLink>
                             <NavLink 
-                                to="/" 
+                                to="/contact" 
                                 className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-orange-500"
                                 onClick={closeDropdown}
                             >

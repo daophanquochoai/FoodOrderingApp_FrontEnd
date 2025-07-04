@@ -11,6 +11,13 @@ import Register from "../pages/client/auth/Register";
 import Login from "../pages/client/auth/Login";
 import ForgotPassword from "../pages/client/auth/ForgotPassword";
 import ResetPassword from "../pages/client/auth/ResetPassword";
+import Contact from "../pages/client/contact/Contact";
+import PrivacyPolicy from "../pages/policy/PrivacyPolicy";
+import RefundPolicy from "../pages/policy/RefundPolicy";
+import ShippingPolicy from "../pages/policy/ShippingPolicy";
+import TermsOfService from "../pages/policy/TermsOfService";
+import PolicyForBuyers from "../pages/policy/PolicyForBuyers";
+import Collections from "../pages/client/collection/Collections";
 
 const AppRoutes = () => {
   return (
@@ -19,10 +26,24 @@ const AppRoutes = () => {
       <Route element={<ClientLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} /> 
+
+        {/* policy routes */}
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />  
+        <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/shipping-policy" element={<ShippingPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
+        <Route path="/policy-for-buyers" element={<PolicyForBuyers />} />
+        
+        {/* auth routes */}
         <Route path="/account/register" element={<Register />} />
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/forgot-password" element={<ForgotPassword />} />
         <Route path="/account/reset/:token" element={<ResetPassword />} />
+        <Route path="*" element={<NotFound />} />
+
+        {/* collection route */}
+        <Route path="/collections" element={<Collections />} />
       </Route>
 
       {/* admin routes */}

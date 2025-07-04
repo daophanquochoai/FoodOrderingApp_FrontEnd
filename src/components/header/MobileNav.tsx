@@ -42,7 +42,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                     </span>
                     
                     <NavLink 
-                        to={"/"} 
+                        to={"/collections"} 
                         className="block text-lg hover:text-orange-500 transition-colors"
                         onClick={onClose}
                     >
@@ -50,7 +50,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                     </NavLink>
                     
                     <NavLink 
-                        to={"/"} 
+                        to={"/collections"} 
                         className="block text-lg hover:text-orange-500 transition-colors"
                         onClick={onClose}
                     >
@@ -58,7 +58,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                     </NavLink>
                     
                     <NavLink 
-                        to={"/"} 
+                        to={"/collections"} 
                         className="block text-lg hover:text-orange-500 transition-colors"
                         onClick={onClose}
                     >
@@ -66,7 +66,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                     </NavLink>
                     
                     <NavLink 
-                        to={"/"} 
+                        to={"/about"}
                         className="block text-lg hover:text-orange-500 transition-colors"
                         onClick={onClose}
                     >
@@ -74,7 +74,7 @@ const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                     </NavLink>
 
                     <NavLink 
-                        to={"/"} 
+                        to={"/contact"} 
                         className="block text-lg hover:text-orange-500 transition-colors"
                         onClick={onClose}
                     >
