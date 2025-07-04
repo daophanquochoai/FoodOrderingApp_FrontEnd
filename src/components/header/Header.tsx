@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useScrollEffect } from "../../hooks/header/useScrollEffect";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaSearch, FaRegUser } from "react-icons/fa";
@@ -10,11 +10,25 @@ import { useLocation } from "react-router-dom";
 const Header: React.FC = () => {
   const isScrolled = useScrollEffect({ threshold: 50 });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [isUserOpen, setIsUserOpen] = useState(false);
   const cartItemCount = 5;
 
 
   const locationHome = useLocation();
+
+  useEffect(() => {
+    const checkWidth = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+
+    return () => {
+      window.removeEventListener("resize", checkWidth);
+    };
+  }, [isMobile]);
 
   return (
     <>
@@ -22,9 +36,11 @@ const Header: React.FC = () => {
       <header
         className={`text-white font-bold fixed top-0 left-0 right-0 z-50 transition-all duration-300
                 ${
-                  isScrolled
+                  isMobile
                     ? "bg-black shadow-lg"
-                    : locationHome.pathname == "/"
+                    : isScrolled
+                    ? "bg-black shadow-lg"
+                    : locationHome.pathname === "/"
                     ? "bg-transparent"
                     : "bg-black"
                 }
