@@ -29,11 +29,16 @@ export default {
           400: "#60a5fa",
           500: "#3b82f6",
         },
+        yellow: {
+          700: "#FEC600",
+        },
         "dark-bg": "#101214",
         "dark-secondary": "#1d1f21",
         "dark-tertiary": "#3b3d40",
         "blue-primary": "#0275ff",
-        "stroke-dark": "#2d3135"
+        "stroke-dark": "#2d3135",
+        "orange-primary": "#FC4D26",
+        "yellow-primary": "#FEC600"
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -42,6 +47,7 @@ export default {
       fontFamily: {
         kanit: ['Kanit', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
+        playball: ['Playball', 'sans-serif'],
       }
     },
   },
