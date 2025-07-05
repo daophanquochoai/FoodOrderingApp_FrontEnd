@@ -5,60 +5,62 @@ import CategoryItem from "../../../components/category/CategoryItem";
 
 const CategoryHome = () => {
   return (
-    <div className="mt-2 py-10 w-screen bg-white">
-      <div className="flex mx-auto max-w-[85%] flex-col">
-        <h2 className="font-kanit text-[clamp(14px,4vw,50px)] font-medium w-full text-center">
-          Shop By Categories
-        </h2>
-        <div className="w-full h-fit">
-          <Swiper
-            loop={true}
-            breakpoints={{
-              0: {
-                slidesPerView: 2,
-              },
-              480: {
-                slidesPerView: 3,
-              },
-              768: {
-                slidesPerView: 4,
-              },
-              1250: {
-                slidesPerView: 5,
-              },
-            }}
-            freeMode={true}
-            pagination={{
-              clickable: true,
-            }}
-            spaceBetween={10}
-            modules={[FreeMode, Pagination]}
-            className="SlideCategoryHome h-[38vw] sm:h-[34vw] lg:h-[30vw]"
-          >
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
+    <div className="bg-white">
+      <div className="mt-2 pt-10 container">
+        <div className="flex mx-auto w-full flex-col">
+          <h2 className="font-kanit text-[clamp(14px,4vw,50px)] font-medium w-full text-center">
+            Shop By Categories
+          </h2>
+          <div className="w-full h-fit">
+            <Swiper
+              loop={true}
+              breakpoints={{
+                0: {
+                  slidesPerView: 2,
+                },
+                530: {
+                  slidesPerView: 3,
+                },
+                992: {
+                  slidesPerView: 4,
+                },
+                1400: {
+                  slidesPerView: 5,
+                },
+              }}
+              freeMode={true}
+              pagination={{
+                clickable: true,
+              }}
+              spaceBetween={10}
+              modules={[FreeMode, Pagination]}
+              className="SlideCategoryHome h-[300px] sm:h-[340px] md:h-[400px] lg:h-[420px]"
+            >
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
 
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
 
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
 
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
 
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
 
-            <SwiperSlide>
-              <CategoryItem />
-            </SwiperSlide>
-          </Swiper>
+              <SwiperSlide>
+                <CategoryItem />
+              </SwiperSlide>
+            </Swiper>
+          </div>
         </div>
       </div>
     </div>

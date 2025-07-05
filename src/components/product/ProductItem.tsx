@@ -11,7 +11,7 @@ type ProductItemProps = {
 
 const ProductItem: React.FC<ProductItemProps> = ({ discount, size, image }) => {
   return (
-    <div className="relative px-2 py-4 group flex flex-col h-[75vw] sm:h-[60vw] md:h-[40vw] lg:h-[32vw] justify-center items-center cursor-pointer bg-white rounded-lg">
+    <div className="relative px-2 py-4 group flex flex-col h-[350px] sm:h-[300px] md:h-[350px] lg:h-[450px] justify-center items-center cursor-pointer bg-white rounded-lg">
       {discount > 0 && (
         <div className="absolute group-hover:opacity-0 transition-opacity duration-500 top-3 left-3 w-[45px] h-[45px] rounded-full bg-[#FC4D26] z-10 flex justify-center items-center text-white font-medium">
           -{discount}%
@@ -35,7 +35,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ discount, size, image }) => {
         )}
       </div>
       <div className="flex flex-col items-center justify-center gap-2">
-        <h3 className="text-xl font-kanit font-medium text-[clamp(14px,1.5vw,30px)] ">
+        <h3 className="text-xl font-kanit font-medium text-[clamp(14px,1.5vw,30px)] text-center">
           McDonalds' Big Hug Burger
         </h3>
 

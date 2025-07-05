@@ -3,7 +3,7 @@ import category_1 from "../../assets/pizza1.webp";
 
 const CategoryItem = () => {
   return (
-    <div className="group flex flex-col h-[30vw] lg:h-[28vw] justify-center items-center cursor-pointer">
+    <div className="group flex flex-col  h-[280px] sm:h-[320px] md:h-[380px] lg:h-[400px] justify-center items-center cursor-pointer">
       <div className="h-[70%] p-3 overflow-hidden">
         <img
           src={category_1}

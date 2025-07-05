@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import sub_banner_1 from "../../../assets/sub-banner-1.webp";
 import sub_banner_2 from "../../../assets/sub-banner-2.webp";
 import sub_banner_3 from "../../../assets/sub-banner-3.webp";
-import { calc } from "antd/es/theme/internal";
 import { Col, Row } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 

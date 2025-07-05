@@ -13,6 +13,9 @@ export default {
         'max-500': {
           'raw': '(max-width: 500px)'
         }, // tu 0 -> 499
+        "min-2000": {
+          "raw": "(min-width: 2000px)"
+        }
       },
       colors: {
         white: "#ffffff",
@@ -48,7 +51,7 @@ export default {
         kanit: ['Kanit', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
         playball: ['Playball', 'sans-serif'],
-      }
+      },
     },
   },
   plugins: [],
