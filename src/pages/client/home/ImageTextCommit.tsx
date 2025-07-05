@@ -6,21 +6,25 @@ import img_commit_2 from "../../../assets/cms-icon-2_54x.png";
 
 const ImageTextCommit = () => {
   return (
-    <div className="w-screen">
-      <div className="w-[85%] block mx-auto">
+    <div className="container">
+      <div className="w-full block mx-auto py-4">
         <Row className="w-full">
           <Col
             xs={24}
             md={10}
-            xl={12}
+            xl={11}
             className="flex items-center justify-center"
           >
-            <div className="w-full h-auto">
-              <img src={imageCenter} alt="" className="w-full object-cover" />
+            <div className="w-full h-auto group overflow-hidden">
+              <img
+                src={imageCenter}
+                alt=""
+                className="w-full object-cover group-hover:scale-105 transition-transform duration-[1.5s]"
+              />
             </div>
           </Col>
 
-          <Col xs={24} md={14} xl={12}>
+          <Col xs={24} md={14} xl={13}>
             <div className="p-3 xl:pt-10 xl:pl-20 lg:pl-14 md:pl-10 pl-3 pt-0 flex flex-col gap-5">
               <h2 className="font-kanit text-[clamp(24px,3.5vw,50px)] font-medium leading-[50px]">
                 Amazing & Quality Food For Your Good Health
@@ -36,9 +40,9 @@ const ImageTextCommit = () => {
                 <Row gutter={[15, 15]}>
                   <Col xs={24} lg={12}>
                     <div className="flex items-center justify-center gap-3">
-                      <div className="max-w-[60px] max-h-[60px]">
+                      <div className="max-w-[80px] max-h-[80px]">
                         <img
-                          src={img_commit_2}
+                          src={img_commit_1}
                           alt=""
                           className="w-full h-full object-cover"
                         />
@@ -56,7 +60,7 @@ const ImageTextCommit = () => {
 
                   <Col xs={24} lg={12}>
                     <div className="flex items-center justify-center gap-3">
-                      <div className="max-w-[60px] max-h-[60px]">
+                      <div className="max-w-[80px] max-h-[80px]">
                         <img
                           src={img_commit_2}
                           alt=""

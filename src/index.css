@@ -134,6 +134,21 @@ ol {
   transition-duration: 2000;
 }
 
+@media (max-width: 678px) {
+
+  .SwipperBannerMain .swiper-button-prev,
+  .SwipperBannerMain .swiper-button-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .SwipperBannerMain:hover .swiper-button-prev::after,
+  .SwipperBannerMain:hover .swiper-button-next::after {
+    font-size: 12px;
+  }
+
+}
+
 .SwipperBannerMain:hover .swiper-button-prev,
 .SwipperBannerMain:hover .swiper-button-next {
   display: flex;
@@ -208,4 +223,105 @@ ol {
   background: var(--orange-primary);
 }
 
+/* ----------------------- */
+.SwipperStaffQuote .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+}
+
+.SwipperStaffQuote .swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--orange-primary);
+}
+
 /* -------- end slide main ----------- */
+
+
+
+.container {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 15px;
+  padding-left: 15px
+}
+
+@media (min-width: 476px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 476px) {
+  .container {
+    width: 100%
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 720px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    width: 960px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1140px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    width: 1340px;
+    max-width: 100%
+  }
+}
+
+
+/* ---------- marquee -------- */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: block;
+  animation: marquee 15s linear infinite;
+}
+
+/* ---------end marquee------- */

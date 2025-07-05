@@ -3,12 +3,12 @@ import { FreeMode, Pagination, Navigation } from "swiper/modules";
 import ProductItem from "../../../components/product/ProductItem";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 
-const LastestProductHome = () => {
+const DealOfWeekHome = () => {
   return (
     <div className="mt-8 py-8 container relative">
       <div className="flex w-full mx-auto flex-col relative">
         <h2 className="font-kanit text-[clamp(14px,4vw,50px)] font-medium w-full text-center mb-3">
-          Latest Products
+          Deal Of The Week
         </h2>
 
         {/* Swiper */}
@@ -47,19 +47,19 @@ const LastestProductHome = () => {
               <ProductItem discount={10} size={true} image={1} />
             </SwiperSlide>
             <SwiperSlide>
-              <ProductItem discount={0} size={true} image={2} />
+              <ProductItem discount={20} size={true} image={2} />
             </SwiperSlide>
             <SwiperSlide>
-              <ProductItem discount={0} size={false} image={2} />
+              <ProductItem discount={30} size={false} image={2} />
             </SwiperSlide>
             <SwiperSlide>
               <ProductItem discount={14} size={false} image={1} />
             </SwiperSlide>
             <SwiperSlide>
-              <ProductItem discount={0} size={false} image={1} />
+              <ProductItem discount={5} size={false} image={1} />
             </SwiperSlide>
             <SwiperSlide>
-              <ProductItem discount={20} size={false} image={2} />
+              <ProductItem discount={25} size={false} image={2} />
             </SwiperSlide>
           </Swiper>
         </div>
@@ -68,4 +68,4 @@ const LastestProductHome = () => {
   );
 };
 
-export default LastestProductHome;
+export default DealOfWeekHome;
