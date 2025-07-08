@@ -27,6 +27,7 @@ const Home: React.FC = () => {
       <BannerUnderMarqueeHome />
       <StaffQuoteHome />
       <BannerFooter />
+      {/* <Banner2 /> */}
     </div>
   );
 };

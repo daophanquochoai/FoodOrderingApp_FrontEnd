@@ -1,14 +1,14 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
-import CategoryItem from "../../../components/category/CategoryItem";
+import { CategoryItem } from "../../../components/category";
 
 const CategoryHome = () => {
   return (
     <div className="bg-white">
       <div className="mt-2 pt-10 container">
         <div className="flex mx-auto w-full flex-col">
-          <h2 className="font-kanit text-[clamp(14px,4vw,50px)] font-medium w-full text-center">
+          <h2 className="font-kanit text-[clamp(28px,4vw,50px)] font-medium w-full text-center">
             Shop By Categories
           </h2>
           <div className="w-full h-fit">
@@ -18,7 +18,7 @@ const CategoryHome = () => {
                 0: {
                   slidesPerView: 2,
                 },
-                530: {
+                490: {
                   slidesPerView: 3,
                 },
                 992: {

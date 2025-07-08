@@ -2,7 +2,7 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { Autoplay, Pagination } from "swiper/modules";
-import StaffQuoteCard from "../../../components/card/StaffQuoteCard";
+import { StaffQuoteCard } from "../../../components/card";
 
 const StaffQuoteHome = () => {
   return (

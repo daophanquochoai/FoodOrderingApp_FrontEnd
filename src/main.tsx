@@ -4,9 +4,12 @@ import "./index.css";
 import App from "./App.tsx";
 import "./sentry/sentry.config";
 import { BrowserRouter } from "react-router-dom";
+import { ModalProvider } from "./hooks/context/ModalContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
-    <App />
+    <ModalProvider>
+      <App />
+    </ModalProvider>
   </BrowserRouter>
 );

@@ -1,13 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import sub_banner_4 from "../../../assets/cms-banner-2.webp";
 import sub_banner_5 from "../../../assets/cms-banner-3.webp";
 import { Col, Row } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
+import {
+  BannerProps,
+  GenericBanner,
+  getBannerStyleByType,
+} from "../../../components/banner";
+
+const dataSubFake = [
+  {
+    type: "banner_sub",
+    variant: "yellow-text",
+    image:
+      "http://res.cloudinary.com/dl54jz2u3/image/upload/v1751772313/i5pxjtnv3rueaqvdjtta.webp",
+    title: "Smerican Food",
+    subTitle: "Double beef",
+    subTitle2: "Hot Dogs!",
+    buttonText: "Order now",
+    layout: "left",
+    text_level: 2,
+  },
+  {
+    type: "banner_sub",
+    variant: "yellow-text",
+    image:
+      "http://res.cloudinary.com/dl54jz2u3/image/upload/v1751772289/hdylvyzea8tx7ney16ny.webp",
+    title: "Delicious",
+    subTitle: "New Oninon",
+    subTitle2: "Burgure!",
+    buttonText: "Order now",
+    layout: "left",
+    text_level: 2,
+  },
+];
 
 const BannerUnderMarqueeHome = () => {
+  const [subBanners, setSubBanners] = useState<BannerProps[]>([]);
+
+  useEffect(() => {
+    const fetchBanners = async () => {
+      const final = dataSubFake.map((item: any) => {
+        const style = getBannerStyleByType(item.type, item, item.variant);
+        // console.log(style);
+        return {
+          ...style,
+        } as BannerProps;
+      });
+
+      setSubBanners(final);
+    };
+
+    fetchBanners();
+  }, []);
+
   return (
     <div className="container py-8">
       <Row gutter={[20, 20]}>
+        {/* {subBanners?.map((props, index) => (
+          <Col xs={24} lg={12} key={index}>
+            <div className="bg-gray-200 cursor-pointer group rounded-md h-[280px] md:h-[280px] pl-2 w-full">
+              <GenericBanner key={index} {...props} />
+            </div>
+          </Col>
+        ))} */}
+
         <Col xs={24} lg={12}>
           <div className="bg-gray-200 overflow-hidden cursor-pointer relative group rounded-md h-[300px] md:h-[280px] pl-2 w-full">
             <div

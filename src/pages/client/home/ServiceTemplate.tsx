@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import ServiceCard from "../../../components/card/ServiceCard";
+import { ServiceCard } from "../../../components/card";
 
 const ServiceTemplate = () => {
   const scrollServiceTemp = useRef<HTMLDivElement>(null);
