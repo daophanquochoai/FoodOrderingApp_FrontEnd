@@ -20,6 +20,7 @@ import PolicyForBuyers from "../pages/policy/PolicyForBuyers";
 import Collections from "../pages/client/collection/Collections";
 import CollectionDetail from "../pages/client/collection/CollectionDetail";
 import ProductDetail from "../pages/product/ProductDetail";
+import Checkout from "../pages/client/checkout/Checkout";
 
 
 const AppRoutes = () => {
@@ -54,6 +55,9 @@ const AppRoutes = () => {
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* checkout route */}
+      <Route path="/checkouts" element={<Checkout />} />
 
       {/* admin routes */}
       <Route
