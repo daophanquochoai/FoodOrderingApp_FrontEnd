@@ -26,10 +26,7 @@ ol {
 }
 
 @layer {
-  html {
-    font-family: var(--font-display);
-  }
-
+  
   body {
     width: 100%;
     height: 100%;
@@ -39,7 +36,7 @@ ol {
 }
 
 .inputBox {
-  @apply w-full border border-gray-300 rounded-[24px] px-5 pt-5 pb-1 text-base font-medium placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 pr-14
+  @apply w-full border border-gray-300 rounded-[24px] font-medium placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500
 }
 
 .btn-primary {
@@ -135,6 +132,21 @@ ol {
   transition-duration: 2000;
 }
 
+@media (max-width: 678px) {
+
+  .SwipperBannerMain .swiper-button-prev,
+  .SwipperBannerMain .swiper-button-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .SwipperBannerMain:hover .swiper-button-prev::after,
+  .SwipperBannerMain:hover .swiper-button-next::after {
+    font-size: 12px;
+  }
+
+}
+
 .SwipperBannerMain:hover .swiper-button-prev,
 .SwipperBannerMain:hover .swiper-button-next {
   display: flex;
@@ -168,33 +180,6 @@ ol {
   display: none;
 }
 
-.LatestProductHome .swiper-button-prev,
-.LatestProductHome .swiper-button-next {
-  display: none;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: #fff;
-  transition: all;
-  transition-duration: 2000;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
-
-.LatestProductHome:hover .swiper-button-prev,
-.LatestProductHome:hover .swiper-button-next {
-  display: flex;
-  transition: all;
-  transition-duration: 2000;
-}
-
-.LatestProductHome:hover .swiper-button-prev::after,
-.LatestProductHome:hover .swiper-button-next::after {
-  font-size: 18px;
-  color: #000;
-  font-weight: 800;
-}
-
-
 /* ------------------------------------- */
 
 .SlideCategoryHome .swiper-pagination {
@@ -209,4 +194,115 @@ ol {
   background: var(--orange-primary);
 }
 
+@media (max-width: 678px) {
+  .SlideCategoryHome .swiper-pagination {
+    display: block;
+  }
+
+  .SlideCategoryHome .swiper-pagination .swiper-pagination-bullet-active {
+    background: var(--orange-primary);
+  }
+}
+
+/* ----------------------- */
+.SwipperStaffQuote .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+}
+
+.SwipperStaffQuote .swiper-pagination .swiper-pagination-bullet-active {
+  background: var(--orange-primary);
+}
+
 /* -------- end slide main ----------- */
+
+
+
+.container {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 15px;
+  padding-left: 15px
+}
+
+@media (min-width: 476px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    padding-right: 15px;
+    padding-left: 15px
+  }
+}
+
+@media (min-width: 476px) {
+  .container {
+    width: 100%
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 720px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    width: 960px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    width: 1140px;
+    max-width: 100%
+  }
+}
+
+@media (min-width: 1400px) {
+  .container {
+    width: 1340px;
+    max-width: 100%
+  }
+}
+
+
+/* ---------- marquee -------- */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: block;
+  animation: marquee 15s linear infinite;
+}
+
+/* ---------end marquee------- */
