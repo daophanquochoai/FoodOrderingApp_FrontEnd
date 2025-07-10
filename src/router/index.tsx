@@ -19,6 +19,8 @@ import TermsOfService from "../pages/policy/TermsOfService";
 import PolicyForBuyers from "../pages/policy/PolicyForBuyers";
 import Collections from "../pages/client/collection/Collections";
 import CollectionDetail from "../pages/client/collection/CollectionDetail";
+import ProductDetail from "../pages/product/ProductDetail";
+
 
 const AppRoutes = () => {
   return (
@@ -41,11 +43,16 @@ const AppRoutes = () => {
         <Route path="/account/login" element={<Login />} />
         <Route path="/account/forgot-password" element={<ForgotPassword />} />
         <Route path="/account/reset/:token" element={<ResetPassword />} />
-        <Route path="*" element={<NotFound />} />
 
         {/* collection route */}
         <Route path="/collections" element={<Collections />} />
         <Route path="/collections/:categoryId" element={<CollectionDetail />} />
+
+        {/* product detail route */}
+        <Route path="/products/:product-name" element={<ProductDetail />} />
+
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
       </Route>
 
       {/* admin routes */}
