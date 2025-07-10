@@ -18,6 +18,7 @@ import ShippingPolicy from "../pages/policy/ShippingPolicy";
 import TermsOfService from "../pages/policy/TermsOfService";
 import PolicyForBuyers from "../pages/policy/PolicyForBuyers";
 import Collections from "../pages/client/collection/Collections";
+import CollectionDetail from "../pages/client/collection/CollectionDetail";
 
 const AppRoutes = () => {
   return (
@@ -44,6 +45,7 @@ const AppRoutes = () => {
 
         {/* collection route */}
         <Route path="/collections" element={<Collections />} />
+        <Route path="/collections/:categoryId" element={<CollectionDetail />} />
       </Route>
 
       {/* admin routes */}

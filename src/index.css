@@ -25,10 +25,7 @@ ol {
 }
 
 @layer {
-  html {
-    font-family: var(--font-display);
-  }
-
+  
   body {
     width: 100%;
     height: 100%;
@@ -38,7 +35,7 @@ ol {
 }
 
 .inputBox {
-  @apply w-full border border-gray-300 rounded-[24px] px-5 pt-5 pb-1 text-base font-medium placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500 pr-14
+  @apply w-full border border-gray-300 rounded-[24px] font-medium placeholder-transparent focus:outline-none focus:ring-2 focus:ring-blue-500
 }
 
 .btn-primary {

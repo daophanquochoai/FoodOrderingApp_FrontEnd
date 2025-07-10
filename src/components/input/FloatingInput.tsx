@@ -6,6 +6,7 @@ type FloatingInputProps = {
   id: string;
   type?: string;
   value: string;
+  small?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -14,6 +15,7 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
   id,
   type = "input",
   value,
+  small,
   onChange,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -28,11 +30,11 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
         value={value}
         onChange={onChange}
         placeholder={label}
-        className="peer inputBox"
+        className={`peer inputBox ${small ? "pl-5 pr-1 pt-5 pb-1 text-sm" : "pl-5 pr-14 pt-5 pb-1 text-base"}`}
       />
       <label
         htmlFor={id}
-        className="absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500"
+        className={`absolute left-5 text-gray-500 ${small ? "text-[10px] top-1" : "text-xs top-1"} transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 ${small ? "peer-focus:text-[10px] peer-focus:top-1" : "peer-focus:text-xs peer-focus:top-1"} peer-focus:text-blue-500`}
       >
         {label}
       </label>

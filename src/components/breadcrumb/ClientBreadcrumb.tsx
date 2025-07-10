@@ -32,7 +32,7 @@ const ClientBreadcrumb: React.FC<ClientBreadItemProps> = ({ title, items }) => {
 
   return (
     <div className="bg-[#ffffff] py-5 md:py-7 lg:py-9 flex flex-col items-center justify-center gap-1 ">
-      <h2 className="text-xl md:text-3xl font-kanit font-semibold tracking-wide">
+      <h2 className="text-xl md:text-3xl font-kanit font-medium tracking-wide">
         {title}
       </h2>
       <div>

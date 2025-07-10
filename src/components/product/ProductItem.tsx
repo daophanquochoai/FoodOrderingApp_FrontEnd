@@ -26,14 +26,14 @@ const ProductItem: React.FC<Food> = (food) => {
   const isOptions = sizes.length > 1 || !sizes.find((size) => size.name == "Standard");  // 
 
   return (
-    <div className="relative px-2 py-4 group flex flex-col h-[350px] sm:h-[300px] md:h-[350px] lg:h-[450px] justify-center items-center cursor-pointer bg-white rounded-lg">
+    <div className="relative px-2 py-4 group flex flex-col h-[350px] sm:h-[300px] md:h-[350px] lg:h-[450px] w-auto justify-center items-center cursor-pointer bg-white rounded-lg">
       {maxDiscount > 0 && (
         <div className="absolute group-hover:opacity-0 transition-opacity duration-500 top-3 left-3 w-[45px] h-[45px] rounded-full bg-[#FC4D26] z-10 flex justify-center items-center text-white font-medium">
           -{maxDiscount}%
         </div>
       )}
 
-      <div className="h-[70%] p-3 overflow-hidden relative">
+      <div className="h-[70%] w-full max-w-[350px] p-3 overflow-hidden relative">
         {/* <img
           src={img_hamburger_1}
           alt="product_image"
