@@ -75,7 +75,7 @@ const Checkout = () => {
 
     return (
         <>
-            <div className="bg-white py-6 px-40 border-b flex items-center justify-between">
+            <div className="bg-white py-6 px-6 lg:px-40 border-b flex items-center justify-between">
                 <strong className="text-lg">GrillFood - Fast Food Store</strong>
                 <Link to={"/"} className="flex items-center gap-2">
                     <RiShoppingBag4Line className="text-3xl text-blue-600" />

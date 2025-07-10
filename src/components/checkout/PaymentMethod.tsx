@@ -176,7 +176,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                         onBlur={handleBlur}
                                         maxLength={19}
                                         placeholder="Card Number"
-                                        className={`peer inputBox ${hasError('cardNumber') ? 'border-red-500 focus:border-red-500' : ''}`}
+                                        className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                                         required
                                     />
                                     <label
@@ -189,8 +189,8 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                         <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>
                                     )}
                                 </div>
-                                <div className="flex gap-4">
-                                    <div className="relative flex-1">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                                    <div className="relative">
                                         <input
                                             type="text"
                                             id="expiry"
@@ -199,7 +199,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             placeholder="Expiration Date (MM/YY)"
-                                            className={`peer inputBox ${hasError('expiry') ? 'border-red-500 focus:border-red-500' : ''}`}
+                                            className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                                             required
                                         />
                                         <label
@@ -212,7 +212,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                             <p className="mt-1 text-xs text-red-500">{errors.expiry}</p>
                                         )}
                                     </div>
-                                    <div className="relative flex-1">
+                                    <div className="relative">
                                         <input
                                             type="text"
                                             id="cvv"
@@ -221,7 +221,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             placeholder="CVV"
-                                            className={`peer inputBox ${hasError('cvv') ? 'border-red-500 focus:border-red-500' : ''}`}
+                                            className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                                             required
                                         />
                                         <label
@@ -244,7 +244,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                         onChange={handleChange}
                                         onBlur={handleBlur}
                                         placeholder="Name on card"
-                                        className={`peer inputBox ${hasError('cardholder') ? 'border-red-500 focus:border-red-500' : ''}`}
+                                        className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                                         required
                                     />
                                     <label
