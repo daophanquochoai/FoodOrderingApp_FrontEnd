@@ -19,6 +19,7 @@ import TermsOfService from "../pages/policy/TermsOfService";
 import PolicyForBuyers from "../pages/policy/PolicyForBuyers";
 import Collections from "../pages/client/collection/Collections";
 import ProductDetail from "../pages/product/ProductDetail";
+import Checkout from "../pages/client/checkout/Checkout";
 
 const AppRoutes = () => {
   return (
@@ -51,6 +52,9 @@ const AppRoutes = () => {
         {/* 404 */}
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* checkout route */}
+      <Route path="/checkouts" element={<Checkout />} />
 
       {/* admin routes */}
       <Route
