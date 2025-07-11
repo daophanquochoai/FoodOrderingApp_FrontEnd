@@ -4,10 +4,10 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { useEffect, useState } from "react";
 
 import {
-  BannerProps,
   GenericBanner,
   getBannerStyleByType,
 } from "../../../components/banner";
+import { BannerProps } from "../../../type";
 
 const dataFake = [
   {

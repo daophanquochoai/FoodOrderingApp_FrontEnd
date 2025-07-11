@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Category, FilterSidebar } from '../../../components/category';
 import { buildCategoryTree, getAllSubCategoryIds } from '../../../components/category/helper';
 import { ClientBreadcrumb } from '../../../components/breadcrumb';
-import { Food, ProductGrid, ProductHeader } from '../../../components/product';
+import { ProductGrid, ProductHeader } from '../../../components/product';
 import { Col, Row } from 'antd';
+import { Category, Food } from '../../../type';
 
 const categories: Category[] = [
   {
@@ -160,7 +160,7 @@ const foods: Food[] = [
       {
         size_id: 6,
         name: "Standard",
-        price: 5.99,
+        price: 5,
         discount: 0,
         ready_in_minutes: 10,
         status: true,
@@ -246,10 +246,10 @@ const CollectionDetail = () => {
             <Col lg={24}>
               <ProductHeader/>
             </Col>
-            <Col lg={8} xl={6}>
-              <FilterSidebar categories={categorySubs} productsList={foods}/>
+            <Col span={24}>
+              {/* <FilterSidebar categories={categorySubs} productsList={foods}/> */}
             </Col>
-            <Col lg={16} xl={18}>
+            <Col span={24}>
               <ProductGrid productsList={foods}/>
             </Col>
           </Row>

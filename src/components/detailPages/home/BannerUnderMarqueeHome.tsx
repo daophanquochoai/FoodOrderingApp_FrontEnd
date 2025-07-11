@@ -4,10 +4,10 @@ import sub_banner_5 from "../../../assets/cms-banner-3.webp";
 import { Col, Row } from "antd";
 import { FaArrowRightLong } from "react-icons/fa6";
 import {
-  BannerProps,
   GenericBanner,
   getBannerStyleByType,
 } from "../../../components/banner";
+import { BannerProps } from "../../../type";
 
 const dataSubFake = [
   {

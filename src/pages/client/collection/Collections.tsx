@@ -1,5 +1,8 @@
 import ClientBreadcrumb from "../../../components/breadcrumb/ClientBreadcrumb";
-import { Category, CategoryItem } from "../../../components/category";
+import { CategoryItem } from "../../../components/category";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Pagination } from "swiper/modules";
+import { Category } from "../../../type";
 
 const Collections = () => {
 
@@ -74,20 +77,43 @@ const Collections = () => {
 
     return (
         <>
-            <ClientBreadcrumb title="Collections" items={[{ label: "Home", to: "/" }]} />
+            <ClientBreadcrumb title="Collections" />
             <div className="py-4">
-                <div className="container">
-                    <div className="grid lg:grid-cols-5 md:grid-cols-4 grid-cols-3 max-500:grid-cols-2">
-                        {categories.length > 0 && categories.map((category) => (
-                            !category.parentId && (
-                                <div key={category.id}>
-                                    <CategoryItem {...category}/>
-                                </div>
-                            )
-                        ))}
-                    </div>
+              <div className="container">
+                <div className="h-[180px]">
+                  <Swiper
+                    loop={true}
+                    breakpoints={{
+                      0: {
+                        slidesPerView: 2,
+                      },
+                      560: {
+                        slidesPerView: 3,
+                      },
+                      992: {
+                        slidesPerView: 4,
+                      },
+                      1400: {
+                        slidesPerView: 6,
+                      },
+                    }}
+                    freeMode={true}
+                    pagination={{
+                      clickable: true,
+                    }}
+                    spaceBetween={10}
+                    modules={[FreeMode, Pagination]}
+                    className="SlideCategoryHome pb-12 lg:mb-3 h-full"
+                  >
+                    {categories.length > 0 && categories.map((category) => (
+                      <SwiperSlide key={category.id}>
+                        <CategoryItem {...category}/>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
-            </div>
+              </div>
+          </div>
         </>
     );
 };

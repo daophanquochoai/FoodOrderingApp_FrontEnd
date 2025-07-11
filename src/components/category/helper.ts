@@ -1,4 +1,5 @@
-import { Category, CategoryNode } from "./type";
+import { Category, CategoryNode } from "../../type";
+
 
 export const buildCategoryTree = (categories: Category[], parentId: number | null = null) : CategoryNode[] => {
   return (

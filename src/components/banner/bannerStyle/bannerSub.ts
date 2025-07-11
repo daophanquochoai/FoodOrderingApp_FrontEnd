@@ -1,5 +1,6 @@
 import { bannerProps } from "../../../defaultValue/home/bannerMain";
-import { BannerProps } from "../type";
+import { BannerProps } from "../../../type";
+
 
 let defaultValue = bannerProps;
 

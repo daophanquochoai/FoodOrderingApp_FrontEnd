@@ -1,3 +1,4 @@
+
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/client/home/Home";
 import About from "../pages/client/about/About";
@@ -24,58 +25,73 @@ import Checkout from "../pages/client/checkout/Checkout";
 
 
 const AppRoutes = () => {
-  return (
-    <Routes>
-      {/* client routes */}
-      <Route element={<ClientLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} /> 
+    return (
+        <Routes>
+            {/* client routes */}
+            <Route element={<ClientLayout />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
 
-        {/* policy routes */}
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />  
-        <Route path="/refund-policy" element={<RefundPolicy />} />
-        <Route path="/shipping-policy" element={<ShippingPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
-        <Route path="/policy-for-buyers" element={<PolicyForBuyers />} />
-        
-        {/* auth routes */}
-        <Route path="/account/register" element={<Register />} />
-        <Route path="/account/login" element={<Login />} />
-        <Route path="/account/forgot-password" element={<ForgotPassword />} />
-        <Route path="/account/reset/:token" element={<ResetPassword />} />
+                {/* policy routes */}
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />  
+                <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/shipping-policy" element={<ShippingPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
+                <Route path="/policy-for-buyers" element={<PolicyForBuyers />} />
 
-        {/* collection route */}
-        <Route path="/collections" element={<Collections />} />
-        <Route path="/collections/:categoryId" element={<CollectionDetail />} />
+                {/* auth routes */}
+                <Route path="/account/register" element={<Register />} />
+                <Route path="/account/login" element={<Login />} />
+                <Route path="/account/forgot-password" element={<ForgotPassword />} />
+                <Route path="/account/reset/:token" element={<ResetPassword />} />
 
-        {/* product detail route */}
-        <Route path="/products/:product-name" element={<ProductDetail />} />
+                {/* collection route */}
+                <Route path="/collections" element={<Collections />} />
+                <Route path="/collections/:categoryId" element={<CollectionDetail />} />
 
-        {/* 404 */}
-        <Route path="*" element={<NotFound />} />
-      </Route>
+                {/* product detail route */}
+                <Route path="/products/:product-name" element={<ProductDetail />} />
 
-      {/* checkout route */}
-      <Route path="/checkouts" element={<Checkout />} />
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+              </Route>
 
-      {/* admin routes */}
-      <Route
-        path="/admin"
-        element={
-          <RequireAuth>
-            <AdminLayout />
-          </RequireAuth>
-        }
-      >
-        <Route index element={<Dashboard />} />
-        <Route path="settings" element={<Setting />} />
-      </Route>
+              {/* checkout route */}
+              <Route path="/checkouts" element={<Checkout />} />
 
-      {/* 404 */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
+              {/* admin routes */}
+              <Route
+                path="/admin"
+                element={
+                  <RequireAuth>
+                    <AdminLayout />
+                  </RequireAuth>
+                }
+              >
+                <Route index element={<Dashboard />} />
+                <Route path="settings" element={<Setting />} />
+              </Route>
+
+            </Route>
+
+            {/* admin routes */}
+            <Route
+                path="/admin"
+                element={
+                    <RequireAuth>
+                        <AdminLayout />
+                    </RequireAuth>
+                }
+            >
+                <Route index element={<Dashboard />} />
+                <Route path="settings" element={<Setting />} />
+            </Route>
+
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
+        </Routes>
+    );
 };
 
 export default AppRoutes;

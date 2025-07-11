@@ -1,10 +1,10 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination, Navigation } from "swiper/modules";
-import ProductItem from "../../../components/product/ProductItem";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
-import { Food } from "../../../components/product";
+import { ProductItem } from "../../../components/product";
+import { Food } from "../../../type";
 
-const LastestProductHome = () => {
+const DealOfWeekHome = () => {
 
   const foods: Food[] = [
     {
@@ -76,28 +76,28 @@ const LastestProductHome = () => {
         },
       ],
     },
-    {
-      id: 3,
-      name: "Caesar Salad",
-      desc: "Fresh romaine lettuce with Caesar dressing, croutons, and parmesan.",
-      image:
-        "https://www.shutterstock.com/image-photo/caesar-salad-paper-bowl-take-600nw-1178418982.jpg",
-      status: true,
-      create_date: "2025-07-03",
-      last_update_time: "2025-07-07",
-      food_code: "FOOD003",
-      category_id: 4,
-      sizes: [
-        {
-          size_id: 6,
-          name: "Standard",
-          price: 5.99,
-          discount: 0,
-          ready_in_minutes: 10,
-          status: true,
-        },
-      ],
-    },
+    // {
+    //   id: 3,
+    //   name: "Caesar Salad",
+    //   desc: "Fresh romaine lettuce with Caesar dressing, croutons, and parmesan.",
+    //   image:
+    //     "https://www.shutterstock.com/image-photo/caesar-salad-paper-bowl-take-600nw-1178418982.jpg",
+    //   status: true,
+    //   create_date: "2025-07-03",
+    //   last_update_time: "2025-07-07",
+    //   food_code: "FOOD003",
+    //   category_id: 4,
+    //   sizes: [
+    //     {
+    //       size_id: 6,
+    //       name: "Standard",
+    //       price: 5.99,
+    //       discount: 0,
+    //       ready_in_minutes: 10,
+    //       status: true,
+    //     },
+    //   ],
+    // },
     {
       id: 4,
       name: "Vietnamese Iced Coffee",
@@ -121,46 +121,44 @@ const LastestProductHome = () => {
         },
       ],
     },
-    {
-      id: 5,
-      name: "Spaghetti Bolognese",
-      desc: "Spaghetti topped with a rich, meaty tomato sauce.",
-      image:
-        "https://media.istockphoto.com/id/152548999/photo/spaghetti-bolognese-on-white.jpg?s=612x612&w=0&k=20&c=6mpMNJlZohVjBqmsSLa3nVUBSpRmYAr6cQUjkFMO8jg=",
-      status: true,
-      create_date: "2025-07-05",
-      last_update_time: "2025-07-08",
-      food_code: "FOOD005",
-      category_id: 5,
-      rate: 4.5,
-      sizes: [
-        {
-          size_id: 8,
-          name: "Standard",
-          price: 6.5,
-          discount: 0,
-          ready_in_minutes: 15,
-          status: true,
-        },
-        {
-          size_id: 9,
-          name: "Medium",
-          price: 6.5,
-          discount: 0,
-          ready_in_minutes: 15,
-          status: true,
-        },
-      ],
-    },
+    // {
+    //   id: 5,
+    //   name: "Spaghetti Bolognese",
+    //   desc: "Spaghetti topped with a rich, meaty tomato sauce.",
+    //   image:
+    //     "https://media.istockphoto.com/id/152548999/photo/spaghetti-bolognese-on-white.jpg?s=612x612&w=0&k=20&c=6mpMNJlZohVjBqmsSLa3nVUBSpRmYAr6cQUjkFMO8jg=",
+    //   status: true,
+    //   create_date: "2025-07-05",
+    //   last_update_time: "2025-07-08",
+    //   food_code: "FOOD005",
+    //   category_id: 5,
+    //   rate: 4.5,
+    //   sizes: [
+    //     {
+    //       size_id: 8,
+    //       name: "Standard",
+    //       price: 6.5,
+    //       discount: 0,
+    //       ready_in_minutes: 15,
+    //       status: true,
+    //     },
+    //     {
+    //       size_id: 9,
+    //       name: "Medium",
+    //       price: 6.5,
+    //       discount: 0,
+    //       ready_in_minutes: 15,
+    //       status: true,
+    //     },
+    //   ],
+    // },
   ];
-  
-  
 
   return (
-    <div className="mt-6 pb-8 container relative">
+    <div className="mt-8 py-8 container relative">
       <div className="flex w-full mx-auto flex-col relative">
-        <h2 className="font-kanit text-[clamp(14px,4vw,50px)] font-medium w-full text-center mb-3">
-          Latest Products
+        <h2 className="font-kanit text-[clamp(28px,4vw,50px)] font-medium w-full text-center mb-3">
+          Deal Of The Week
         </h2>
 
         {/* Swiper */}
@@ -200,47 +198,6 @@ const LastestProductHome = () => {
                   <ProductItem {...food} />
                 </SwiperSlide>
               ))}
-
-            {/* <SwiperSlide>
-              <ProductItem
-                discount={0}
-                size={true}
-                image={2}
-                title="McDonalds' Big Hug Burger"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductItem
-                discount={0}
-                size={false}
-                image={2}
-                title="McDonalds' Big Hug Burger"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductItem
-                discount={14}
-                size={false}
-                image={1}
-                title="McDonalds' Big Hug Burger"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductItem
-                discount={0}
-                size={false}
-                image={1}
-                title="McDonalds' Big Hug Burger"
-              />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductItem
-                discount={20}
-                size={false}
-                image={2}
-                title="McDonalds' Big Hug Burger"
-              />
-            </SwiperSlide> */}
           </Swiper>
         </div>
       </div>
@@ -248,4 +205,4 @@ const LastestProductHome = () => {
   );
 };
 
-export default LastestProductHome;
+export default DealOfWeekHome;

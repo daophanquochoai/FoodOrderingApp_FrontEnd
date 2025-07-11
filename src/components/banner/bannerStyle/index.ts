@@ -1,6 +1,7 @@
 import { bannerFooter } from "./bannerFooter";
-import { bannerMain } from "./BannerMain";
-import { bannerSubOrange, bannerSubYellow } from "./BannerSub";
+import { bannerMain } from "./bannerMain";
+import { bannerSubOrange, bannerSubYellow } from "./bannerSub";
+
 
 export const getBannerStyleByType = (
   type: string,

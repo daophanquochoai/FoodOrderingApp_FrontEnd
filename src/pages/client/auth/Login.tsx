@@ -1,96 +1,100 @@
-import React, { useState } from "react";
-import ClientBreadcrumb from "../../../components/breadcrumb/ClientBreadcrumb";
-import FloatingInput from "../../../components/input/FloatingInput";
-import { Link } from "react-router-dom";
-import { validateEmail } from "../../../utils/helper";
+import React, { useState } from 'react';
+import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
+import FloatingInput from '../../../components/input/FloatingInput';
+import { Link } from 'react-router-dom';
+import { validateEmail } from '../../../utils/helper';
+import { useDispatch } from 'react-redux';
+import { loginRequest } from '../../../redux/slide/authSlide';
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+    const dispatch = useDispatch();
 
-  const [error, setError] = useState("");
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+    const [error, setError] = useState('');
 
-  const handleSignIn = (e: React.FormEvent) => {
-    e.preventDefault();
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({ ...formData, [e.target.id]: e.target.value });
+    };
 
-    if (!formData.email.trim()) {
-      setError("Please enter your email.");
-      return;
-    }
+    const handleSignIn = (e: React.FormEvent) => {
+        e.preventDefault();
 
-    if (!validateEmail(formData.email)) {
-      setError("Please enter a valid email.");
-      return;
-    }
+        if (!formData.email.trim()) {
+            setError('Please enter your email.');
+            return;
+        }
 
-    if (!formData.password.trim()) {
-      setError("Please enter your password.");
-      return;
-    }
+        if (!validateEmail(formData.email)) {
+            setError('Please enter a valid email.');
+            return;
+        }
 
-    setError("");
+        if (!formData.password.trim()) {
+            setError('Please enter your password.');
+            return;
+        }
 
-    console.log(formData);
-  };
+        setError('');
 
-  return (
-    <div>
-      <ClientBreadcrumb title="Account" items={[{ label: "Home", to: "/" }]} />
+        dispatch(loginRequest({ email: formData.email, password: formData.password }));
+    };
 
-      <div className="my-12">
-        <form
-          onSubmit={handleSignIn}
-          className="max-w-xl mx-auto p-8 pt-10 bg-white rounded-sm shadow-sm space-y-5"
-        >
-          <h2 className="text-xl md:text-3xl font-kanit font-semibold tracking-wide text-center">
-            Log in to your account
-          </h2>
+    return (
+        <div>
+            <ClientBreadcrumb title="Account" items={[{ label: 'Home', to: '/' }]} />
 
-          <FloatingInput
-            id="email"
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+            <div className="my-12">
+                <form
+                    onSubmit={handleSignIn}
+                    className="max-w-xl mx-auto p-8 pt-10 bg-white rounded-sm shadow-sm space-y-5"
+                >
+                    <h2 className="text-xl md:text-3xl font-kanit font-semibold tracking-wide text-center">
+                        Log in to your account
+                    </h2>
 
-          <FloatingInput
-            id="password"
-            label="Password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+                    <FloatingInput
+                        id="email"
+                        label="Email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
 
-          <div className="ml-1">
-            <Link to={"/account/forgot-password"}>
-              <span className="underline-text">Forgot your password?</span>
-            </Link>
-          </div>
+                    <FloatingInput
+                        id="password"
+                        label="Password"
+                        type="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
 
-          {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
+                    <div className="ml-1">
+                        <Link to={'/account/forgot-password'}>
+                            <span className="underline-text">Forgot your password?</span>
+                        </Link>
+                    </div>
 
-          <button className="btn-primary" type="submit">
-            Sign in
-          </button>
+                    {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
 
-          <div className="text-center">
-            <Link to={"/account/register"}>
-              <span className="underline-text text-base">
-                No account yet? Create an account
-              </span>
-            </Link>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+                    <button className="btn-primary" type="submit">
+                        Sign in
+                    </button>
+
+                    <div className="text-center">
+                        <Link to={'/account/register'}>
+                            <span className="underline-text text-base">
+                                No account yet? Create an account
+                            </span>
+                        </Link>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
 };
 
 export default Login;

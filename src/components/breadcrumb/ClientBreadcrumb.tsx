@@ -6,11 +6,11 @@ type BreadCrumbItem = string | { label: string; to: string };
 
 type ClientBreadItemProps = {
   title: string;
-  items: BreadCrumbItem[];
+  items?: BreadCrumbItem[];
 };
 
 const ClientBreadcrumb: React.FC<ClientBreadItemProps> = ({ title, items }) => {
-  const breadcrumbItems = items.map((item) => {
+  const breadcrumbItems = items?.map((item) => {
     if (typeof item == "string") {
       return {
         title: (

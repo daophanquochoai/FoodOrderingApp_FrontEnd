@@ -1,7 +1,8 @@
 import { Col, Row } from "antd";
 import React from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
-import { BannerProps } from "./type";
+import { BannerProps } from "../../type";
+
 
 const GenericBanner: React.FC<BannerProps> = ({
   image,

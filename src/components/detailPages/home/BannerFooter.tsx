@@ -4,10 +4,10 @@ import { Col, Row } from "antd";
 
 import { bannerProps } from "../../../defaultValue/home/bannerMain";
 import {
-  BannerProps,
   GenericBanner,
   getBannerStyleByType,
 } from "../../../components/banner";
+import { BannerProps } from "../../../type";
 
 // chỉ 1 banner
 const dataFake = {

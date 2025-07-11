@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Food } from "../product";
+import { Food } from "../index";
+
 
 export interface BaseModalProps {
   isOpen: boolean;
@@ -8,7 +9,7 @@ export interface BaseModalProps {
 
 
 export interface ModalOptionProductProps extends BaseModalProps {
-  product: Food;
+  product?: Food;
 }
 
 export type ModalState =

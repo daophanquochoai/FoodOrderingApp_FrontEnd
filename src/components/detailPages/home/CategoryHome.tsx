@@ -1,7 +1,8 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination } from "swiper/modules";
-import { Category, CategoryItem } from "../../../components/category";
+import { CategoryItem } from "../../../components/category";
+import { Category } from "../../../type";
 
 const CategoryHome = () => {
 
