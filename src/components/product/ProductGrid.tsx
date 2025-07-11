@@ -12,8 +12,8 @@ const ProductGrid = ({ productsList = [] }: FilterSidebarProps) => {
   const filteredFoods = filterFoods(productsList, searchParams) || [];
 
   return (
-    <div className='ml-0 md:ml-2 lg:ml-4 p-2'>
-      <div className='grid xl:grid-cols-3 md:grid-cols-2 gap-5 auto-rows-fr'>
+    <div className='mt-3'>
+      <div className='grid xl:grid-cols-4 md:grid-cols-3 gap-5 auto-rows-fr'>
         {filteredFoods.length > 0 &&
           filteredFoods.map((product) => (
             <div key={product.id}>

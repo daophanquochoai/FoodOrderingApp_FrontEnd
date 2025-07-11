@@ -1,4 +1,5 @@
-import { Food } from "../components/product";
+import { Food } from "../type";
+
 
 export const filterFoods = (foods: Food[] = [], searchParams: URLSearchParams) => {
 

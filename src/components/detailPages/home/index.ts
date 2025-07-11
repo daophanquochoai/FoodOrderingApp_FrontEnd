@@ -1,0 +1,12 @@
+export { default as BannerCenterHome } from './BannerCenterHome';
+export { default as BannerFooter } from './BannerFooter';
+export { default as BannerUnderMarqueeHome } from './BannerUnderMarqueeHome';
+export { default as CategoryHome } from './CategoryHome';
+export { default as DealOfWeekHome } from './DealOfWeekHome';
+export { default as ImageTextCommit } from './ImageTextCommit';
+export { default as LastestProductHome } from './LastestProductHome';
+export { default as MarqueeHome } from './MarqueeHome';
+export { default as ServiceTemplate } from './ServiceTemplate';
+export { default as SlideMain } from './SlideMain';
+export { default as StaffQuoteHome } from './StaffQuoteHome';
+export { default as SubBanner } from './SubBanner';

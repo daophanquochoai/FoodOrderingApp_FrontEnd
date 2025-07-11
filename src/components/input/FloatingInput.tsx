@@ -1,14 +1,8 @@
 import React, { useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { FloatingInputProps } from "../../type";
 
-type FloatingInputProps = {
-  label: string;
-  id: string;
-  type?: string;
-  value: string;
-  small?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+
 
 const FloatingInput: React.FC<FloatingInputProps> = ({
   label,

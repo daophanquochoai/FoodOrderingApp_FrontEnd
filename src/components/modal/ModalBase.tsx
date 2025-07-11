@@ -1,6 +1,7 @@
 import React from "react";
 import { IoMdClose } from "react-icons/io";
-import { BaseModalProps } from "./type";
+import { BaseModalProps } from "../../type/modal/modal";
+
 
 const ModalBase: React.FC<BaseModalProps & { children: React.ReactNode }> = ({
   isOpen,

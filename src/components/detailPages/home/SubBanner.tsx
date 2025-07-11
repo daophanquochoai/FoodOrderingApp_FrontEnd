@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import {
-  BannerProps,
   GenericBanner,
   getBannerStyleByType,
 } from "../../../components/banner";
+import { BannerProps } from "../../../type";
 
 const dataSubFake = [
   {

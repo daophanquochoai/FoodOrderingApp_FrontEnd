@@ -11,6 +11,7 @@ export type Category = {
   parentId: number | null;
   create_by: number;
   total_food?: number;
+  small?: boolean;
 };
 
 export type CategoryNode = Category & { children: CategoryNode[]};
