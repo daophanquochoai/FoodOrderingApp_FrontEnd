@@ -1,29 +1,20 @@
-import React from 'react'
-import { FilterSidebarProps } from '../category'
+import React from 'react';
 import ProductItem from './ProductItem';
-import { filterFoods } from '../../utils';
-import { useSearchParams } from 'react-router-dom';
+import { Food } from '../../type';
 
-const ProductGrid = ({ productsList = [] }: FilterSidebarProps) => {
-
-  // console.log(productsList);
-  const [searchParams] = useSearchParams();
-
-  const filteredFoods = filterFoods(productsList, searchParams) || [];
-
-  return (
-    <div className='mt-3'>
-      <div className='grid xl:grid-cols-4 md:grid-cols-3 gap-5 auto-rows-fr'>
-        {filteredFoods.length > 0 &&
-          filteredFoods.map((product) => (
-            <div key={product.id}>
-              <ProductItem {...product} />
+const ProductGrid = ({ products = [] }: { products: Food[] }) => {
+    return (
+        <div className="mt-3">
+            <div className="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-5 auto-rows-fr">
+                {products.length > 0 &&
+                    products.map((product) => (
+                        <div key={product.id}>
+                            <ProductItem {...product} />
+                        </div>
+                    ))}
             </div>
-          )
-        )}
-      </div>
-    </div>
-  )
-}
+        </div>
+    );
+};
 
-export default ProductGrid
+export default ProductGrid;

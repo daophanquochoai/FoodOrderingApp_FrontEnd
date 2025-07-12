@@ -1,7 +1,9 @@
-import { ErrorBoundary } from "@sentry/react";
-import AppRoutes from "./router";
-import { useState } from "react";
-import { ModalRenderer, ModalState } from "./components/modal";
+import { ErrorBoundary } from '@sentry/react';
+import AppRoutes from './router';
+import { useState } from 'react';
+import { ModalRenderer } from './components/modal';
+import { ConfigProvider } from 'antd';
+import { ModalState } from './type/modal/modal';
 
 // function MyComponent() {
 //   // Gây lỗi thử để test Sentry
@@ -10,17 +12,23 @@ import { ModalRenderer, ModalState } from "./components/modal";
 // }
 
 function App() {
-  const [modalState, setModalState] = useState<ModalState>({
-    type: null,
-  });
-
-  return (
-    <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
-      {/* <MyComponent /> */}
-      <AppRoutes />
-      <ModalRenderer />
-    </ErrorBoundary>
-  );
+    return (
+        <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
+            {/* <MyComponent /> */}
+            <ConfigProvider
+                theme={{
+                    token: {
+                        colorPrimary: '#f97316',
+                        colorPrimaryHover: '#fb923c',
+                        colorPrimaryActive: '#ea580c',
+                    },
+                }}
+            >
+                <AppRoutes />
+                <ModalRenderer />
+            </ConfigProvider>
+        </ErrorBoundary>
+    );
 }
 
 export default App;
