@@ -10,7 +10,7 @@ function* loginSaga(
 ): Generator<any, void, AxiosResponse<AuthState>> {
     try {
         const { email, password } = action.payload;
-        const response = yield call(authService.post, { email, password });
+        const response = yield call(() => authService.login({ email, password }));
         yield put(loginSuccess({ user: response?.data.user, token: response?.data.token || '' }));
     } catch (error: any) {
         yield put(loginFailure(error.message || 'Login failed'));
