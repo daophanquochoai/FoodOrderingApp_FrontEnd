@@ -15,18 +15,9 @@ function App() {
     return (
         <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
             {/* <MyComponent /> */}
-            <ConfigProvider
-                theme={{
-                    token: {
-                        colorPrimary: '#f97316',
-                        colorPrimaryHover: '#fb923c',
-                        colorPrimaryActive: '#ea580c',
-                    },
-                }}
-            >
-                <AppRoutes />
-                <ModalRenderer />
-            </ConfigProvider>
+
+            <AppRoutes />
+            <ModalRenderer />
         </ErrorBoundary>
     );
 }
