@@ -1,4 +1,4 @@
-import HttpService from '../config/httpService';
+import HttpService from "../../config/httpService";
 
 class AuthApi extends HttpService {
     constructor() {

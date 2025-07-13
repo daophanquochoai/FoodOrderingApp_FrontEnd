@@ -5,16 +5,16 @@ import { Link } from 'react-router-dom';
 import { validateEmail } from '../../../utils/helper';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuth } from '../../../store/selector/auth/auth.selector';
+import { common } from '../../../store/reducer';
 
 const Login = () => {
-
-    // selector 
+    // selector
     const auth = useSelector(selectAuth);
 
-    console.log(auth)
-
+    // hook
     const dispatch = useDispatch();
 
+    // state
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -22,7 +22,8 @@ const Login = () => {
 
     const [error, setError] = useState('');
 
-        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // event handling
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
@@ -45,7 +46,6 @@ const Login = () => {
         }
 
         setError('');
-
     };
 
     return (
