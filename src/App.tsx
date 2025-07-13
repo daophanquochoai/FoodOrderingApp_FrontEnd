@@ -1,15 +1,6 @@
 import { ErrorBoundary } from '@sentry/react';
 import AppRoutes from './router';
-import { useState } from 'react';
 import { ModalRenderer } from './components/modal';
-import { ConfigProvider } from 'antd';
-import { ModalState } from './type/modal/modal';
-
-// function MyComponent() {
-//   // Gây lỗi thử để test Sentry
-//   throw new Error("Lỗi thử nghiệm trong MyComponent!");
-//   return <div>Xin chào</div>;
-// }
 
 function App() {
     return (

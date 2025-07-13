@@ -3,10 +3,16 @@ import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
 import FloatingInput from '../../../components/input/FloatingInput';
 import { Link } from 'react-router-dom';
 import { validateEmail } from '../../../utils/helper';
-import { useDispatch } from 'react-redux';
-import { loginRequest } from '../../../redux/slide/authSlide';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuth } from '../../../store/selector/auth/auth.selector';
 
 const Login = () => {
+
+    // selector 
+    const auth = useSelector(selectAuth);
+
+    console.log(auth)
+
     const dispatch = useDispatch();
 
     const [formData, setFormData] = useState({
@@ -16,7 +22,7 @@ const Login = () => {
 
     const [error, setError] = useState('');
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
@@ -40,7 +46,6 @@ const Login = () => {
 
         setError('');
 
-        dispatch(loginRequest({ email: formData.email, password: formData.password }));
     };
 
     return (
