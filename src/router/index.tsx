@@ -21,6 +21,7 @@ import Collections from '../pages/client/collection/Collections';
 import ProductDetail from '../pages/product/ProductDetail';
 import Checkout from '../pages/client/checkout/Checkout';
 import Cart from '../pages/client/cart/Cart';
+import IngredientManagement from '../pages/admin/ingredientManagement';
 
 const AppRoutes = () => {
     return (
@@ -71,19 +72,7 @@ const AppRoutes = () => {
             >
                 <Route index element={<Dashboard />} />
                 <Route path="settings" element={<Setting />} />
-            </Route>
-
-            {/* admin routes */}
-            <Route
-                path="/admin"
-                element={
-                    <RequireAuth>
-                        <AdminLayout />
-                    </RequireAuth>
-                }
-            >
-                <Route index element={<Dashboard />} />
-                <Route path="settings" element={<Setting />} />
+                <Route path="ingredient-management" element={<IngredientManagement />} />
             </Route>
 
             {/* 404 */}
