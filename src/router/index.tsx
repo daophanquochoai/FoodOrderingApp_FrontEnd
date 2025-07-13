@@ -18,9 +18,9 @@ import ShippingPolicy from '../pages/policy/ShippingPolicy';
 import TermsOfService from '../pages/policy/TermsOfService';
 import PolicyForBuyers from '../pages/policy/PolicyForBuyers';
 import Collections from '../pages/client/collection/Collections';
-import CollectionDetail from '../pages/client/collection/CollectionDetail';
 import ProductDetail from '../pages/product/ProductDetail';
 import Checkout from '../pages/client/checkout/Checkout';
+import Cart from '../pages/client/cart/Cart';
 
 const AppRoutes = () => {
     return (
@@ -46,10 +46,12 @@ const AppRoutes = () => {
 
                 {/* collection route */}
                 <Route path="/collections" element={<Collections />} />
-                <Route path="/collections/:categoryId" element={<CollectionDetail />} />
 
                 {/* product detail route */}
                 <Route path="/products/:product-name" element={<ProductDetail />} />
+
+                {/* car */}
+                <Route path="/cart" element={<Cart />} />
 
                 {/* 404 */}
                 <Route path="*" element={<NotFound />} />

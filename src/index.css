@@ -26,7 +26,7 @@ ol {
 }
 
 @layer {
-  
+
   body {
     width: 100%;
     height: 100%;
@@ -40,7 +40,7 @@ ol {
 }
 
 .btn-primary {
-  @apply w-full px-4 py-3 cursor-pointer bg-orange-primary hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-medium text-base tracking-wider my-3 font-kanit transition-all duration-500
+  @apply w-full px-4 py-2 cursor-pointer bg-orange-primary hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-medium text-base tracking-wider my-3 font-kanit transition-all duration-500
 }
 
 .underline-text {
@@ -52,15 +52,15 @@ ol {
 }
 
 .btn-yellow-to-white {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-yellow-primary hover:bg-white uppercase font-bold text-black transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-4 lg:py-2 md:px-3 md:py-2 rounded-full bg-yellow-primary hover:bg-white uppercase font-bold text-black transition-all duration-500
 }
 
 .btn-yellow-to-black {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-yellow-primary hover:bg-black uppercase font-bold text-black hover:text-white transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-4 lg:py-2 md:px-3 md:py-2 rounded-full bg-yellow-primary hover:bg-black uppercase font-bold text-black hover:text-white transition-all duration-500
 }
 
 .btn-orange-to-black {
-  @apply flex items-center justify-center gap-2 font-montserrat lg:px-6 lg:py-3 md:px-4 md:py-2 rounded-full bg-orange-primary hover:bg-black uppercase font-bold text-white transition-all duration-500
+  @apply flex items-center justify-center gap-2 font-montserrat lg:px-4 lg:py-2 md:px-3 md:py-2 rounded-full bg-orange-primary hover:bg-black uppercase font-bold text-white transition-all duration-500
 }
 
 @layer utilities {
@@ -87,6 +87,18 @@ ol {
   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: #38475b;
     /* Màu thumb trong dark mode */
+  }
+
+  /* no scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE & Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
@@ -186,7 +198,7 @@ ol {
   display: none;
 }
 
-.SlideCategoryHome:hover .swiper-pagination {
+/* .SlideCategoryHome:hover .swiper-pagination {
   display: block;
 }
 
@@ -202,6 +214,11 @@ ol {
   .SlideCategoryHome .swiper-pagination .swiper-pagination-bullet-active {
     background: var(--orange-primary);
   }
+} */
+
+/* ------------------------------- */
+.SlideCategory .swiper-pagination {
+  display: none;
 }
 
 /* ----------------------- */
