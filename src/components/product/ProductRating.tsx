@@ -1,6 +1,5 @@
 import { Rate } from "antd";
 import { GoPencil } from "react-icons/go";
-import { ModalRenderer } from "../modal";
 import { useModalContext } from "../../hooks/context/ModalContext";
 
 interface Review {
@@ -89,7 +88,6 @@ const ProductRating = () => {
                     ))}
                 </div>
             </div>
-            <ModalRenderer />
         </>
     );
 };

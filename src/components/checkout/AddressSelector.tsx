@@ -3,14 +3,8 @@ import FloatingInput from "../input/FloatingInput";
 import FloatingSelect from "../input/FloatingSelect";
 import { useProvinces } from "../../hooks/address/useProvinces";
 import { useWards } from "../../hooks/address/useWards";
-
-interface SavedAddress {
-    id: string;
-    fullAddress: string;
-    province: string;
-    ward: string;
-    isDefault?: boolean;
-}
+import { Address } from "../../type";
+import { formatFullAddress } from "../../utils";
 
 interface AddressSelectorProps {
     selectedAddressId: string;
@@ -33,20 +27,20 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
     const [formError, setFormError] = useState("");
 
     // Mock saved addresses - thay bằng data từ API
-    const savedAddresses: SavedAddress[] = [
+    const savedAddresses: Address[] = [
         {
             id: "1",
-            fullAddress: "123 Nguyễn Huệ, Phường An Đông, Thành phố Hồ Chí Minh",
+            fullAddress: "123 Nguyễn Huệ",
             province: "79",
             ward: "27316",
-            isDefault: true
+            isDefault: true,
         },
         {
-            id: "2", 
-            fullAddress: "456 Lê Lợi, Phường Bến Thành, Thành phố Hồ Chí Minh",
+            id: "2",
+            fullAddress: "456 Lê Lợi",
             province: "79",
             ward: "26743",
-            isDefault: false
+            isDefault: false,
         }
     ];
 
@@ -181,7 +175,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                                         )}
                                     </div>
                                     <p className="text-gray-600 text-sm leading-relaxed">
-                                        {address.fullAddress}
+                                        {formatFullAddress(address)}
                                     </p>
                                 </div>
                             </div>
