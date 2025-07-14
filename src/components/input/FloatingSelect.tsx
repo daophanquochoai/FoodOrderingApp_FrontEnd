@@ -9,6 +9,7 @@ interface FloatingSelectProps {
     label: string;
     id: string;
     value: string;
+    name?: string;
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     options: Option[];
     required?: boolean;
@@ -19,17 +20,20 @@ interface FloatingSelectProps {
 const FloatingSelect: React.FC<FloatingSelectProps> = ({
     label,
     id,
+    name,
     value,
     onChange,
     options,
     required = false,
     placeholder = "Select an option"
 }) => {
+    const selectName = name || id;
     return (
         <div className="relative">
             <select
                 id={id}
                 value={value}
+                name={selectName}
                 onChange={onChange}
                 required={required}
                 className="peer w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none"

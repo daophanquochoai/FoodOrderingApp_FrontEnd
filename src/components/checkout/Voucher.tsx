@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-
-interface Voucher {
-    id: string;
-    code: string;
-    description: string;
-    type: string;
-    value: number;
-    maxDiscount: number;
-    endDate: string;
-    isActive: boolean;
-}
+import type { Voucher } from "../../type";
 
 interface VoucherProps {
     selectedVoucher?: string;

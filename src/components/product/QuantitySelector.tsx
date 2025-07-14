@@ -29,7 +29,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
     };
 
     return (
-        <div className={`w-fit ${small ? 'p-0' : 'p-2'}`}>
+        <div className={`quantity-selector w-fit ${small ? 'p-0' : 'p-2'}`}>
             <div
                 className={`flex items-center space-x-3 border border-gray-300 rounded-full ${
                     small ? 'py-1 px-2' : 'py-2 px-4'
