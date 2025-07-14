@@ -20,7 +20,7 @@ const ShippingPolicy = lazy(() => import('../pages/policy/ShippingPolicy'));
 const TermsOfService = lazy(() => import('../pages/policy/TermsOfService'));
 const PolicyForBuyers = lazy(() => import('../pages/policy/PolicyForBuyers'));
 const Collections = lazy(() => import('../pages/client/collection/Collections'));
-const ProductDetail = lazy(() => import('../pages/product/ProductDetail'));
+const ProductDetail = lazy(() => import('../pages/client/product/ProductDetail'));
 const Checkout = lazy(() => import('../pages/client/checkout/Checkout'));
 const Cart = lazy(() => import('../pages/client/cart/Cart'));
 
@@ -53,7 +53,7 @@ const AppRoutes = () => {
                     {/* product detail route */}
                     <Route path="/products/:product-name" element={<ProductDetail />} />
 
-                    {/* car */}
+                    {/* cart */}
                     <Route path="/cart" element={<Cart />} />
 
                     {/* 404 */}

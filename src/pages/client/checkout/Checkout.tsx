@@ -5,6 +5,7 @@ import AddressSelector from "../../../components/checkout/AddressSelector";
 import OrderDetail from "../../../components/checkout/OrderDetail";
 import PaymentMethod from "../../../components/checkout/PaymentMethod";
 import Voucher from "../../../components/checkout/Voucher";
+import Point from "../../../components/checkout/Point";
 
 interface CreditCardInfo {
   cardholder: string;
@@ -26,6 +27,10 @@ const Checkout = () => {
         cvv: "",
     });
     const [selectedVoucher, setSelectedVoucher] = useState<string>("");
+    const [pointsUsed, setPointsUsed] = useState<number>(0);
+
+    // Giả lập điểm của người dùng
+    const userPoints = 3500;
 
     const handleAddressSelect = (addressId: string) => {
         setSelectedAddressId(addressId);
@@ -41,6 +46,10 @@ const Checkout = () => {
         setSelectedVoucher(voucher);
         setError("");
     };
+
+    const handlePointsUsage = (points: number) => {
+        setPointsUsed(points);
+    }
 
     const handleNewAddressSave = (newAddress: any) => {
         console.log("New address saved:", newAddress);
@@ -69,6 +78,7 @@ const Checkout = () => {
             selectedPaymentMethod,
             creditCard,
             selectedVoucher,
+            pointsUsed,
             message: "Proceeding to checkout..."
         });
     };
@@ -105,6 +115,10 @@ const Checkout = () => {
                         selectedVoucher={selectedVoucher}
                         onVoucherSelect={handleVoucherSelect}
                     />
+                    <Point 
+                        userPoints={userPoints}
+                        onUsePoints={handlePointsUsage}
+                    />
                     {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
                     <button className="btn-primary" type="submit">
                         PAY NOW
@@ -113,6 +127,7 @@ const Checkout = () => {
                 <div className="p-10 md:sticky top-0">
                     <OrderDetail 
                         selectedVoucher={selectedVoucher}
+                        point={pointsUsed}
                     />
                 </div>
             </div>
