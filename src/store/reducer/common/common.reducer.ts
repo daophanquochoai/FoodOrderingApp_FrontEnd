@@ -1,6 +1,6 @@
+import { initCommonValue } from '@/defaultValue/common';
+import { CommonType } from '@/type/store/common';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { initCommonValue } from '../../../defaultValue/common.ts';
-import { CommonType } from '../../../type/store/common/index.ts';
 
 export const name = 'common';
 
