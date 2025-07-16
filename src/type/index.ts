@@ -5,3 +5,4 @@ export * from './input/input';
 export * from './slide';
 export * from './category/filterFromCategory';
 export * from './cart/cart';
+export * from './form/form';
