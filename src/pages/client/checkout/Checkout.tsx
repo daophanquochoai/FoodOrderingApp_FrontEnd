@@ -123,6 +123,12 @@ const Checkout = () => {
                     <button className="btn-primary" type="submit">
                         PAY NOW
                     </button>
+                    <div className="text-sm border-t border-gray-400 mt-4 pt-4">
+                        <Link to={"/refund-policy"} className="text-blue-500 underline">Refund Policy</Link>
+                        <Link to={"/shipping-policy"} className="text-blue-500 underline ml-4">Shipping Policy</Link>
+                        <Link to={"/privacy-policy"} className="text-blue-500 underline ml-4">Privacy Policy</Link>
+                        <Link to={"/terms-of-service"} className="text-blue-500 underline ml-4">Terms of Service</Link>
+                    </div>
                 </form>
                 <div className="p-10 md:sticky top-0">
                     <OrderDetail 
