@@ -6,7 +6,6 @@ function App() {
     return (
         <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
             {/* <MyComponent /> */}
-
             <AppRoutes />
             <ModalRenderer />
         </ErrorBoundary>
