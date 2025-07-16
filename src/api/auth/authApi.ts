@@ -1,11 +1,8 @@
-import HttpService from "../../config/httpService";
+import HttpService from '../../config/httpService';
 
 class AuthApi extends HttpService {
-    constructor() {
-        super('auth');
-    }
-
-    login = (data: { email: string; password: string }) => this.post(data, 'login');
+    login = (data: { username: string; password: string }) =>
+        this.post<{ access_token; refresh_token; data }>(data, 'login');
 }
 
-export const authService = new AuthApi();
+export const authApi = new AuthApi('auth');

@@ -1,51 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
 import FloatingInput from '../../../components/input/FloatingInput';
 import { Link } from 'react-router-dom';
-import { validateEmail } from '../../../utils/helper';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAuth } from '../../../store/selector/auth/auth.selector';
-import { common } from '../../../store/reducer';
+import { useDispatch } from 'react-redux';
+import { loginAction } from '@/store/action/auth/auth.action';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { userSchema } from '@/validation/auth.validation';
 
 const Login = () => {
-    // selector
-    const auth = useSelector(selectAuth);
-
     // hook
     const dispatch = useDispatch();
 
-    // state
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
+    // Sử dụng react-hook-form với yup
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: yupResolver(userSchema),
+        defaultValues: {
+            userName: '',
+            password: '',
+        },
     });
 
-    const [error, setError] = useState('');
-
-    // event handling
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
-    };
-
-    const handleSignIn = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!formData.email.trim()) {
-            setError('Please enter your email.');
-            return;
-        }
-
-        if (!validateEmail(formData.email)) {
-            setError('Please enter a valid email.');
-            return;
-        }
-
-        if (!formData.password.trim()) {
-            setError('Please enter your password.');
-            return;
-        }
-
-        setError('');
+    // Xử lý submit
+    const onSubmit = (data) => {
+        dispatch(loginAction({ username: data.userName, password: data.password }));
     };
 
     return (
@@ -54,7 +36,7 @@ const Login = () => {
 
             <div className="my-12">
                 <form
-                    onSubmit={handleSignIn}
+                    onSubmit={handleSubmit(onSubmit)}
                     className="max-w-xl mx-auto p-8 pt-10 bg-white rounded-sm shadow-sm space-y-5"
                 >
                     <h2 className="text-xl md:text-3xl font-kanit font-semibold tracking-wide text-center">
@@ -62,19 +44,21 @@ const Login = () => {
                     </h2>
 
                     <FloatingInput
-                        id="email"
-                        label="Email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
+                        id="userName"
+                        label="User Name"
+                        type="text"
+                        {...register('userName')}
+                        error={!!errors.userName}
+                        helperText={errors.userName?.message}
                     />
 
                     <FloatingInput
                         id="password"
                         label="Password"
                         type="password"
-                        value={formData.password}
-                        onChange={handleChange}
+                        {...register('password')}
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
                     />
 
                     <div className="ml-1">
@@ -83,9 +67,7 @@ const Login = () => {
                         </Link>
                     </div>
 
-                    {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
-
-                    <button className="btn-primary" type="submit">
+                    <button className="btn-primary" type="submit" disabled={isSubmitting}>
                         Sign in
                     </button>
 
