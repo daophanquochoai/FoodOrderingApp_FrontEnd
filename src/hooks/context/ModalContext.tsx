@@ -1,14 +1,21 @@
 import React, { createContext, useContext, useState } from "react";
-import { Food } from "../../components/product";
+import { ModalState } from "../../type/modal/modal";
 
-export type ModalState =
-  | {
-      type: "product";
-      variant: "options";
-      isOpen: boolean;
-      product: Food;
-    }
-  | { type: null };
+// export type ModalState =
+//   | {
+//       type: "product";
+//       variant: "options";
+//       isOpen: boolean;
+//       product: Food;
+//     }
+//   | {
+//       type: "review";
+//       variant: "write";
+//       isOpen: boolean;
+//       productId: string;
+//       onSubmit: (rating: number, comment: string) => void;
+//     }
+//   | { type: null };
 
 type ModalContextType = {
   modalState: ModalState;

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Food } from "../index";
+import { Food, Address } from "../index";
 
 
 export interface BaseModalProps {
@@ -12,11 +11,35 @@ export interface ModalOptionProductProps extends BaseModalProps {
   product?: Food;
 }
 
+export interface ModalReviewProps extends BaseModalProps {
+  productId: string;
+  onSubmit: (rating: number, comment: string) => void;
+}
+
+export interface ModalAddressProps extends BaseModalProps {
+  address?: Address;
+  onSubmit: (address: any) => void;
+}
+
 export type ModalState =
   | {
       type: "product";
       variant: "options";
       isOpen: boolean;
       product: Food;
+    }
+  | {
+      type: "review";
+      variant: "write";
+      isOpen: boolean;
+      productId: string;
+      onSubmit: (rating: number, comment: string) => void;
+    }
+  | {
+      type: "address";
+      variant: "add" | "edit";
+      isOpen: boolean;
+      address?: Address;
+      onSubmit: (address: any) => void;
     }
   | { type: null };
