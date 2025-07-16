@@ -1,9 +1,10 @@
-import { combineReducers } from "redux";
-import authReducer, { name as authName } from "./auth/index.ts";  
+import { combineReducers } from 'redux';
+import { auth, common } from '.';
 
 const rootReducers = combineReducers({
-    [authName]: authReducer,
-})
+    [auth.name]: auth.default.reducer,
+    [common.name]: common.default.reducer,
+});
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
 

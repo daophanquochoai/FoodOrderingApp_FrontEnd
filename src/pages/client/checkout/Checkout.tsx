@@ -5,6 +5,7 @@ import AddressSelector from "../../../components/checkout/AddressSelector";
 import OrderDetail from "../../../components/checkout/OrderDetail";
 import PaymentMethod from "../../../components/checkout/PaymentMethod";
 import Voucher from "../../../components/checkout/Voucher";
+import Point from "../../../components/checkout/Point";
 
 interface CreditCardInfo {
   cardholder: string;
@@ -26,6 +27,10 @@ const Checkout = () => {
         cvv: "",
     });
     const [selectedVoucher, setSelectedVoucher] = useState<string>("");
+    const [pointsUsed, setPointsUsed] = useState<number>(0);
+
+    // Giả lập điểm của người dùng
+    const userPoints = 3500;
 
     const handleAddressSelect = (addressId: string) => {
         setSelectedAddressId(addressId);
@@ -41,6 +46,10 @@ const Checkout = () => {
         setSelectedVoucher(voucher);
         setError("");
     };
+
+    const handlePointsUsage = (points: number) => {
+        setPointsUsed(points);
+    }
 
     const handleNewAddressSave = (newAddress: any) => {
         console.log("New address saved:", newAddress);
@@ -69,6 +78,7 @@ const Checkout = () => {
             selectedPaymentMethod,
             creditCard,
             selectedVoucher,
+            pointsUsed,
             message: "Proceeding to checkout..."
         });
     };
@@ -77,7 +87,7 @@ const Checkout = () => {
         <>
             <div className="bg-white py-6 px-6 lg:px-40 border-b flex items-center justify-between">
                 <strong className="text-lg">GrillFood - Fast Food Store</strong>
-                <Link to={"/"} className="flex items-center gap-2">
+                <Link to={"/cart"} className="flex items-center gap-2">
                     <RiShoppingBag4Line className="text-3xl text-blue-600" />
                 </Link>
             </div>
@@ -105,14 +115,25 @@ const Checkout = () => {
                         selectedVoucher={selectedVoucher}
                         onVoucherSelect={handleVoucherSelect}
                     />
+                    <Point 
+                        userPoints={userPoints}
+                        onUsePoints={handlePointsUsage}
+                    />
                     {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
                     <button className="btn-primary" type="submit">
                         PAY NOW
                     </button>
+                    <div className="text-sm border-t border-gray-400 mt-4 pt-4">
+                        <Link to={"/refund-policy"} className="text-blue-500 underline">Refund Policy</Link>
+                        <Link to={"/shipping-policy"} className="text-blue-500 underline ml-4">Shipping Policy</Link>
+                        <Link to={"/privacy-policy"} className="text-blue-500 underline ml-4">Privacy Policy</Link>
+                        <Link to={"/terms-of-service"} className="text-blue-500 underline ml-4">Terms of Service</Link>
+                    </div>
                 </form>
                 <div className="p-10 md:sticky top-0">
                     <OrderDetail 
                         selectedVoucher={selectedVoucher}
+                        point={pointsUsed}
                     />
                 </div>
             </div>
