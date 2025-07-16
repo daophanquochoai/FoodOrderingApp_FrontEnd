@@ -11,6 +11,8 @@ const FormRangeInput: React.FC<FormRangeInputProps> = ({
     placeholderFrom = 'From',
     placeholderTo = 'To',
     type = 'number',
+    errorFrom,
+    errorTo,
 }) => {
     return (
         <div className="flex flex-col">
@@ -20,14 +22,24 @@ const FormRangeInput: React.FC<FormRangeInputProps> = ({
                     name={nameFrom}
                     control={control}
                     render={({ field }) => (
-                        <Input {...field} placeholder={placeholderFrom} type={type} />
+                        <div className="flex flex-col">
+                            <Input {...field} placeholder={placeholderFrom} type={type} />
+                            {errorFrom && (
+                                <p className="text-xs text-red-500 mt-1">{errorFrom.message}</p>
+                            )}
+                        </div>
                     )}
                 />
                 <Controller
                     name={nameTo}
                     control={control}
                     render={({ field }) => (
-                        <Input {...field} placeholder={placeholderTo} type={type} />
+                        <div className="flex flex-col">
+                            <Input {...field} placeholder={placeholderTo} type={type} />
+                            {errorTo && (
+                                <p className="text-xs text-red-500 mt-1">{errorTo.message}</p>
+                            )}
+                        </div>
                     )}
                 />
             </div>

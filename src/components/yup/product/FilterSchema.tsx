@@ -29,6 +29,19 @@ export const FilterProductSchema = yup.object().shape({
         .optional()
         .transform((v, o) => (o == '' ? null : v)),
 
+    minReady: yup
+        .number()
+        .nullable()
+        .optional()
+        .transform((v, o) => (o == '' ? null : v))
+        .min(0, 'Tối thiểu 0'),
+
+    maxReady: yup
+        .number()
+        .nullable()
+        .optional()
+        .transform((v, o) => (o == '' ? null : v)),
+
     foodIds: yup.array().of(yup.string()).nullable().optional(),
 
     size: yup.array().of(yup.string()).nullable().optional(),

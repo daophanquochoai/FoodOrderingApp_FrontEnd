@@ -10,6 +10,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
     options,
     placeholder,
     mode,
+    error,
 }) => {
     return (
         <Controller
@@ -27,6 +28,7 @@ const FormSelect: React.FC<FormSelectProps> = ({
                         options={options}
                         onChange={field.onChange}
                     />
+                    {error && <p className="text-xs text-red-500 mt-1">{error.message}</p>}
                 </div>
             )}
         />

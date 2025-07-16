@@ -17,7 +17,8 @@ export interface FormRangeInputProps {
     placeholderFrom?: string;
     placeholderTo?: string;
     type?: string;
-    error?: FieldError;
+    errorFrom?: FieldError;
+    errorTo?: FieldError;
 }
 
 export interface Option {

@@ -51,6 +51,8 @@ const FormFilter = () => {
                         nameTo="maxDiscount"
                         control={control}
                         label="Discount (%)"
+                        errorFrom={errors.minDiscount}
+                        errorTo={errors.maxDiscount}
                     />
 
                     <FormRangeInput
@@ -58,6 +60,8 @@ const FormFilter = () => {
                         nameTo="maxPrice"
                         control={control}
                         label="Price"
+                        errorFrom={errors.minPrice}
+                        errorTo={errors.maxPrice}
                     />
 
                     <FormRangeInput
@@ -65,6 +69,8 @@ const FormFilter = () => {
                         nameTo="maxReady"
                         control={control}
                         label="Ready In Minute"
+                        errorFrom={errors.minReady}
+                        errorTo={errors.maxReady}
                     />
 
                     <FormSelect
