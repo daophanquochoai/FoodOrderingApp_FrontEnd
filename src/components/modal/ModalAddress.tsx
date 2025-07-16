@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ModalBase from "./ModalBase";
-import { ModalAddressProps } from "../../type/modal/modal";
+import { ModalAddressProps } from "@/type/modal/modal";
 import { Address } from "../../type";
 import { useProvinces } from "../../hooks/address/useProvinces";
 import { useWards } from "../../hooks/address/useWards";

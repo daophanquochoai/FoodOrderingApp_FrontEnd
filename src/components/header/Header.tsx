@@ -76,19 +76,17 @@ const Header: React.FC = () => {
                             onClick={() => handleDropdownClick('user')}
                         />
                         {isOpen('user') && (
-                            <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-2">
+                            <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-3">
                                 <ul>
                                     <li
-                                        className="py-2 hover:text-orange-500 text-base cursor-pointer"
                                         onClick={closeDropdown}
                                     >
-                                        <Link to={"/account/login"}>Login</Link>
+                                        <Link to={"/account/login"} className='hover:text-orange-500 text-base'>Login</Link>
                                     </li>
                                     <li
-                                        className="py-2 hover:text-orange-500 text-base cursor-pointer"
                                         onClick={closeDropdown}
                                     >
-                                        <Link to={"/account/register"}>Register</Link>
+                                        <Link to={"/account/register"} className='hover:text-orange-500 text-base'>Register</Link>
                                     </li>
                                 </ul>
                             </div>

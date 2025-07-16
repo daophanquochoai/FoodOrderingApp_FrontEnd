@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useModalContext } from "../../../hooks/context/ModalContext";
-import { Address } from "../../../type";
+import { useModalContext } from "@/hooks/context/ModalContext";
+import { Address } from "@/type";
 import { Button, Card, Tag, Empty, Popconfirm } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { formatFullAddress } from "../../../utils";

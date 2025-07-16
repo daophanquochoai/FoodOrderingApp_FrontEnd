@@ -9,6 +9,7 @@ const Home = lazy(() => import('../pages/client/home/Home'));
 const About = lazy(() => import('../pages/client/about/About'));
 const Dashboard = lazy(() => import('../pages/admin/dashboard/Dashboard'));
 const Setting = lazy(() => import('../pages/admin/setting/Setting'));
+const CategoryManagement = lazy(() => import('../pages/admin/category/CategoryManagement'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 const Register = lazy(() => import('../pages/client/auth/Register'));
 const Login = lazy(() => import('../pages/client/auth/Login'));
@@ -91,6 +92,7 @@ const AppRoutes = () => {
                 >
                     <Route index element={<Dashboard />} />
                     <Route path="settings" element={<Setting />} />
+                    <Route path="category-management" element={<CategoryManagement />} />
                 </Route>
 
                 {/* 404 */}

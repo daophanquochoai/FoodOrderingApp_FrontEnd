@@ -1,11 +1,9 @@
-import { Food, Address } from "../index";
-
+import { Food, Address, Category } from "../index";
 
 export interface BaseModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
 
 export interface ModalOptionProductProps extends BaseModalProps {
   product?: Food;
@@ -19,6 +17,12 @@ export interface ModalReviewProps extends BaseModalProps {
 export interface ModalAddressProps extends BaseModalProps {
   address?: Address;
   onSubmit: (address: any) => void;
+}
+
+export interface ModalCategoryProps extends BaseModalProps {
+  category?: Category;
+  variant: "add" | "edit" | "delete";
+  onSubmit: (category: any) => void;
 }
 
 export type ModalState =
@@ -41,5 +45,12 @@ export type ModalState =
       isOpen: boolean;
       address?: Address;
       onSubmit: (address: any) => void;
+    }
+  | {
+      type: "category";
+      variant: "add" | "edit" | "delete";
+      isOpen: boolean;
+      category?: Category;
+      onSubmit: (category: any) => void;
     }
   | { type: null };

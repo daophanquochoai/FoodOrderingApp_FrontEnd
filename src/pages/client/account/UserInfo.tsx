@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { FloatingInput } from "../../../components/input";
 import { User } from "../../../type/user/user";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { message as antMessage, Upload } from "antd";
@@ -191,40 +190,67 @@ const UserInfo = () => {
                         <p className="text-gray-500 mt-2 text-sm">Click to upload or change your profile photo</p>
                     </div>
                     
-                    <div>
-                        <FloatingInput 
-                            label="Full Name"
-                            id="fullName"
+                    <div className="relative">
+                        <input
                             type="text"
+                            id="fullName"
+                            name="fullName"
                             value={formData.fullName}
                             onChange={handleChange}
+                            placeholder="Full Name"
+                            className={`peer inputBox px-5 py-2 pt-5 pb-1`}
+                            required
                         />
+                        <label
+                            htmlFor="fullName"
+                            className={`absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
+                        >
+                            Full Name
+                        </label>
                         {errors.fullName && (
                             <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
                         )}
                     </div>
 
-                    <div>
-                        <FloatingInput 
-                            label="Phone Number" 
-                            id="phone"
+                    <div className="relative">
+                        <input
                             type="tel"
+                            id="phone"
+                            name="phone"
                             value={formData.phone}
                             onChange={handleChange}
+                            placeholder="Phone Number"
+                            className={`peer inputBox px-5 py-2 pt-5 pb-1`}
+                            required
                         />
+                        <label
+                            htmlFor="phone"
+                            className={`absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
+                        >
+                            Phone Number
+                        </label>
                         {errors.phone && (
                             <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
                         )}
                     </div>
 
-                    <div>
-                        <FloatingInput 
-                            label="Email"
-                            id="email"
+                    <div className="relative">
+                        <input
                             type="email"
+                            id="email"
+                            name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            placeholder="Email"
+                            className={`peer inputBox px-5 py-2 pt-5 pb-1`}
+                            required
                         />
+                        <label
+                            htmlFor="email"
+                            className={`absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
+                        >
+                            Email
+                        </label>
                         {errors.email && (
                             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
                         )}

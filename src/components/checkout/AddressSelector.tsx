@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import FloatingInput from "../input/FloatingInput";
-import FloatingSelect from "../input/FloatingSelect";
+import { FloatingSelect } from "../input";
 import { useProvinces } from "../../hooks/address/useProvinces";
 import { useWards } from "../../hooks/address/useWards";
 import { Address } from "../../type";
@@ -197,13 +196,24 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                     </div>
                     
                     <div className="space-y-4">
-                        <FloatingInput
-                            label="Street Address"
-                            id="address"
-                            type="text"
-                            value={newAddressData.address}
-                            onChange={handleInputChange}
-                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                id="address"
+                                name="address"
+                                value={newAddressData.address}
+                                onChange={handleInputChange}
+                                placeholder="Street Address"
+                                className={`peer inputBox px-5 py-2 pt-5 pb-1`}
+                                required
+                            />
+                            <label
+                                htmlFor="address"
+                                className={`absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
+                            >
+                                Street Address
+                            </label>
+                        </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FloatingSelect
