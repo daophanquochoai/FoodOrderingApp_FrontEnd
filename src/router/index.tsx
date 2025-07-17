@@ -3,6 +3,8 @@ import { lazy, Suspense } from 'react';
 import RequireAuth from '../guards/RequireAuth';
 import ClientLayout from '../layouts/ClientLayout';
 import AdminLayout from '../layouts/AdminLayout';
+import LoadingPage from '@/pages/LoadingPage';
+import ServerError500 from '@/pages/500';
 
 const Home = lazy(() => import('../pages/client/home/Home'));
 const About = lazy(() => import('../pages/client/about/About'));
@@ -26,7 +28,7 @@ const Cart = lazy(() => import('../pages/client/cart/Cart'));
 
 const AppRoutes = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingPage />}>
             <Routes>
                 {/* client routes */}
                 <Route element={<ClientLayout />}>
@@ -75,22 +77,23 @@ const AppRoutes = () => {
                     <Route index element={<Dashboard />} />
                     <Route path="settings" element={<Setting />} />
                 </Route>
-             {/* admin routes */}
-            <Route
-            path="/admin"
-            element={
-                <RequireAuth>
-                    <AdminLayout />
-                </RequireAuth>
-            }
-        >
-            <Route index element={<Dashboard />} />
-            <Route path="settings" element={<Setting />} />
-            </Route>
+                {/* admin routes */}
+                <Route
+                    path="/admin"
+                    element={
+                        <RequireAuth>
+                            <AdminLayout />
+                        </RequireAuth>
+                    }
+                >
+                    <Route index element={<Dashboard />} />
+                    <Route path="settings" element={<Setting />} />
+                </Route>
 
-            {/* 404 */}
-            <Route path="*" element={<NotFound />} />
-        </Routes>
+                <Route path="/500" element={<ServerError500 />} />
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
         </Suspense>
     );
 };

@@ -1,6 +1,5 @@
 // src/services/HttpService.ts
 import axios, { AxiosInstance } from 'axios';
-import http from './http';
 import { parseCookies, setCookie } from 'nookies';
 
 class HttpService {
@@ -18,7 +17,7 @@ class HttpService {
     private async handleError(error: any) {
         let formatError = {};
         if (!error?.response) {
-            // to page 500
+            // window.location.href = '/500';
         }
         if (error?.response) {
             const { data, status } = error.response;
@@ -62,6 +61,7 @@ class HttpService {
                                 return Promise.reject(formatError);
                             } else {
                                 // navigate to login
+                                // window.location.href = '/500';
                                 return;
                             }
                         }
@@ -70,13 +70,13 @@ class HttpService {
                 case 503:
                     if (!isServer)
                         // navigate to 503
+                        // window.location.href = '/500';
                         break;
                 default:
                     break;
             }
             const { message, ...restData } = data;
             formatError = { message, status, ...restData };
-            console.log('from response error: ', formatError);
         }
 
         // Aborted request case
@@ -84,8 +84,6 @@ class HttpService {
             formatError = { message: 'Request aborted', status: 'canceled' };
         }
         // For dev only
-        console.log('error', '>>>', error);
-        console.log('error to JSON', '>>>', error.toJSON());
         return Promise.reject(formatError);
     }
 

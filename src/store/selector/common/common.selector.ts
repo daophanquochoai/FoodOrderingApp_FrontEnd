@@ -17,3 +17,11 @@ export const selectMessageQueue = createSelector(
     selectState,
     (state: CommonType): MessageType[] => state.messageQueue
 );
+
+/**
+ * get loading page
+ */
+export const selectLoading = createSelector(
+    selectState,
+    (state: CommonType): boolean => state.loadingPage
+);
