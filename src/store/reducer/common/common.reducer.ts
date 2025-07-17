@@ -32,6 +32,9 @@ const commonSlice = createSlice({
         setNotificationMessage(state, action: PayloadAction<string>) {
             addMessage(state, action.payload, 'info');
         },
+        setLoading(state, { payload }: PayloadAction<boolean>) {
+            state.loadingPage = payload;
+        },
     },
 });
 

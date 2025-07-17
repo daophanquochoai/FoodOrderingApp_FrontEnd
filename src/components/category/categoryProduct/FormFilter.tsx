@@ -1,12 +1,10 @@
-import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { Input, Select, DatePicker, Button } from 'antd';
-import dayjs from 'dayjs';
+import { Input, Select } from 'antd';
 import { FilterFormValues } from '../../../type';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectFilter, selectSize } from '@/store/selector/client/collection/food.selector';
+import { food } from '@/store/reducer';
 
-const { RangePicker } = DatePicker;
-
-const sizeOptions = ['Small', 'Medium', 'Large'].map((s) => ({ label: s, value: s }));
 const foodOptions = [
     { label: 'Burger', value: '1' },
     { label: 'Pizza', value: '2' },
@@ -14,6 +12,12 @@ const foodOptions = [
 ];
 
 const FormFilter = () => {
+    // selector
+    const filter = useSelector(selectFilter);
+    const sizeFilter = useSelector(selectSize);
+    const dispatch = useDispatch();
+
+    // control
     const { control, handleSubmit, reset } = useForm<FilterFormValues>();
 
     const onSubmit = (data: FilterFormValues) => {
@@ -22,6 +26,19 @@ const FormFilter = () => {
             startDate: data.dateRange?.[0]?.toISOString(),
             endDate: data.dateRange?.[1]?.toISOString(),
         });
+    };
+
+    // event handling
+    const handleChange = (e, feild) => {
+        if (e == null) {
+            return;
+        }
+        dispatch(
+            food.actions.setFilter({
+                ...filter,
+                [feild]: e,
+            })
+        );
     };
 
     return (
@@ -38,7 +55,12 @@ const FormFilter = () => {
                                 <label className="mb-1 text-sm font-medium text-gray-700">
                                     Search
                                 </label>
-                                <Input {...field} placeholder="Search name or desc" />
+                                <Input
+                                    {...field}
+                                    onChange={(e) => handleChange(e?.target?.value, 'search')}
+                                    value={filter.search}
+                                    placeholder="Search name or desc"
+                                />
                             </div>
                         )}
                     />
@@ -53,14 +75,30 @@ const FormFilter = () => {
                                 name="minDiscount"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
+                                    <Input
+                                        {...field}
+                                        onChange={(e) =>
+                                            handleChange(e?.target?.value, 'minDiscount')
+                                        }
+                                        value={filter.minDiscount}
+                                        placeholder="From"
+                                        type="number"
+                                    />
                                 )}
                             />
                             <Controller
                                 name="maxDiscount"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
+                                    <Input
+                                        {...field}
+                                        value={filter.maxDiscount}
+                                        onChange={(e) =>
+                                            handleChange(e?.target?.value, 'maxDiscount')
+                                        }
+                                        placeholder="To"
+                                        type="number"
+                                    />
                                 )}
                             />
                         </div>
@@ -74,14 +112,26 @@ const FormFilter = () => {
                                 name="minPrice"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
+                                    <Input
+                                        {...field}
+                                        value={filter.minPrice}
+                                        onChange={(e) => handleChange(e?.target?.value, 'minPrice')}
+                                        placeholder="From"
+                                        type="number"
+                                    />
                                 )}
                             />
                             <Controller
                                 name="maxPrice"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
+                                    <Input
+                                        {...field}
+                                        value={filter.maxPrice}
+                                        onChange={(e) => handleChange(e?.target?.value, 'maxPrice')}
+                                        placeholder="To"
+                                        type="number"
+                                    />
                                 )}
                             />
                         </div>
@@ -97,14 +147,26 @@ const FormFilter = () => {
                                 name="minReady"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
+                                    <Input
+                                        {...field}
+                                        value={filter.minReady}
+                                        onChange={(e) => handleChange(e?.target?.value, 'minReady')}
+                                        placeholder="From"
+                                        type="number"
+                                    />
                                 )}
                             />
                             <Controller
                                 name="maxReady"
                                 control={control}
                                 render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
+                                    <Input
+                                        {...field}
+                                        value={filter.maxReady}
+                                        onChange={(e) => handleChange(e?.target?.value, 'maxReady')}
+                                        placeholder="To"
+                                        type="number"
+                                    />
                                 )}
                             />
                         </div>
@@ -126,7 +188,11 @@ const FormFilter = () => {
                                     showSearch
                                     placeholder="Select Food"
                                     options={foodOptions}
-                                    onChange={field.onChange}
+                                    onChange={(value) => {
+                                        field.onChange(value);
+                                        console.log(value);
+                                        handleChange(value, 'foodIds');
+                                    }}
                                 />
                             </div>
                         )}
@@ -147,15 +213,22 @@ const FormFilter = () => {
                                     allowClear
                                     showSearch
                                     placeholder="Select size"
-                                    options={sizeOptions}
-                                    onChange={field.onChange}
+                                    options={(sizeFilter ?? []).map((s) => ({
+                                        label: (s as any).name,
+                                        value: (s as any).id?.toString(),
+                                    }))}
+                                    onChange={(value) => {
+                                        field.onChange(value);
+                                        console.log(value);
+                                        handleChange(value, 'sizeIds');
+                                    }}
                                 />
                             </div>
                         )}
                     />
 
                     {/* Date range */}
-                    <Controller
+                    {/* <Controller
                         name="dateRange"
                         control={control}
                         render={({ field }) => (
@@ -171,7 +244,7 @@ const FormFilter = () => {
                                 />
                             </div>
                         )}
-                    />
+                    /> */}
                 </div>
 
                 {/* Buttons */}

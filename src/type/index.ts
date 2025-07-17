@@ -2,7 +2,6 @@ export * from './product/product';
 export * from './category/category';
 export * from './banner/banner';
 export * from './input/input';
-export * from './slide';
 export * from './category/filterFromCategory';
 export * from './cart/cart';
 export * from './user/user';
