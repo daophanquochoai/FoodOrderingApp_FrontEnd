@@ -13,8 +13,12 @@ interface Voucher {
 
 interface OrderDetailProps {
     selectedVoucher?: string | null;
+    point?: number;
 }
-const OrderDetail: React.FC<OrderDetailProps> = ({selectedVoucher}) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({
+    selectedVoucher,
+    point = 0
+}) => {
     const vouchers: Voucher[] = [
         {
             id: "1",
@@ -97,7 +101,8 @@ const OrderDetail: React.FC<OrderDetailProps> = ({selectedVoucher}) => {
 
     const subtotal = calculateSubtotal();
     const discount = calculateDiscount(subtotal);
-    const total = subtotal - discount;
+    const pointsDiscount = point / 1000;
+    const total = subtotal - discount - pointsDiscount;
 
     return (
         <div className="xl:w-2/3">
@@ -142,6 +147,17 @@ const OrderDetail: React.FC<OrderDetailProps> = ({selectedVoucher}) => {
                         )}
                     </div>
                     <p>-${discount.toFixed(2)}</p>
+                </div>
+            )}
+            {point > 0 && (
+                <div className="flex items-center justify-between mt-2 text-purple-600">
+                    <div className="flex items-center">
+                        <p>Points discount</p>
+                        <span className="ml-2 bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                            {point.toLocaleString()} points
+                        </span>
+                    </div>
+                    <p>-${pointsDiscount.toFixed(2)}</p>
                 </div>
             )}
             <div className="flex items-center justify-between mt-2">

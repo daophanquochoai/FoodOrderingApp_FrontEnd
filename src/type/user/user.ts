@@ -1,10 +1,8 @@
 export type User = {
   id: number;
   name: string,
-  username: string,
-  email: string,
-  address: any,
   phone: string,
-  website: string,
-  company: any
+  address: any,
+  image: string,
+  username: string // email
 }

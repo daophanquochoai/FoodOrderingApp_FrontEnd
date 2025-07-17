@@ -1,25 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useScrollEffect } from '../../hooks/header/useScrollEffect';
 import { GiHamburgerMenu } from 'react-icons/gi';
-import { FaSearch, FaRegUser } from 'react-icons/fa';
 import { BsBasket } from 'react-icons/bs';
 import DesktopNav from './DesktopNav';
 import MobileNav from './MobileNav';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useDropdown } from '../../hooks/header/useDropdown';
 import { IoSearchOutline } from 'react-icons/io5';
 import { IoPersonOutline } from 'react-icons/io5';
 import CartDrawer from '../cart/CartDrawer';
+import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
     const isScrolled = useScrollEffect({ threshold: 50 });
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isUserOpen, setIsUserOpen] = useState(false);
     const [isOpenCartDraw, setIsOpenCartDraw] = useState(false);
     const cartItemCount = 5;
     const navigate = useNavigate();
-
+    const { handleDropdownClick, closeDropdown, isOpen, dropdownRef } = useDropdown();
     const locationHome = useLocation();
 
     useEffect(() => {
@@ -69,27 +68,25 @@ const Header: React.FC = () => {
                         </div>
                     </div>
                     <DesktopNav />
-                    <div className=" p-7 flex items-center space-x-8 text-2xl">
+                    <div ref={dropdownRef} className=" p-7 flex items-center space-x-8 text-2xl">
                         <IoSearchOutline className="hover:text-orange-500 lg:size-6 size-5 hover:cursor-pointer" />
 
                         <IoPersonOutline
                             className="hover:text-orange-500 hover:cursor-pointer lg:size-6 size-5"
-                            onClick={() => setIsUserOpen(!isUserOpen)}
+                            onClick={() => handleDropdownClick('user')}
                         />
-                        {isUserOpen && (
-                            <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-2">
+                        {isOpen('user') && (
+                            <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-3">
                                 <ul>
                                     <li
-                                        className="py-2 hover:text-orange-500 text-base cursor-pointer"
-                                        onClick={() => navigate('/account/login')}
+                                        onClick={closeDropdown}
                                     >
-                                        Log in
+                                        <Link to={"/account/login"} className='hover:text-orange-500 text-base'>Login</Link>
                                     </li>
                                     <li
-                                        className="py-2 hover:text-orange-500 text-base cursor-pointer"
-                                        onClick={() => navigate('/account/register')}
+                                        onClick={closeDropdown}
                                     >
-                                        Register
+                                        <Link to={"/account/register"} className='hover:text-orange-500 text-base'>Register</Link>
                                     </li>
                                 </ul>
                             </div>

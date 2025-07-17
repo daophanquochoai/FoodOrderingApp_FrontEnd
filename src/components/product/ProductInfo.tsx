@@ -56,9 +56,11 @@ const ProductInfo = () => {
                         ORDER NOW
                     </button>
                 </div>
-                <button className="text-white w-[385px] font-bold bg-black my-2 py-3 px-16 rounded-full">
-                    BUY IT NOW
-                </button>
+                <Link to={"/checkouts"} className="w-fit">
+                    <button className="text-white w-[385px] text-center font-bold bg-black my-2 py-3 px-16 rounded-full">
+                        BUY IT NOW
+                    </button>
+                </Link>
                 <div className="flex mt-2">
                     <strong>Category:</strong>
                     <Link to={"/"} className="hover:text-orange-500 ml-1">Pizza</Link>
