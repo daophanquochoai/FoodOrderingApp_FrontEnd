@@ -1,6 +1,7 @@
 export interface CommonType {
     messageQueue: MessageType[];
     loadingPage: boolean;
+    modal: ModalState[];
 }
 
 export type MessageType = {
@@ -18,4 +19,13 @@ export interface Filter {
     order?: string;
     startDate?: Date;
     endDate?: Date;
+}
+
+export interface ModalState {
+    data?: Record<string, any>;
+    type?: ModalType;
+}
+
+export enum ModalType {
+    DETAIL_PRODUCT = 'DETAIL_PRODUCT',
 }

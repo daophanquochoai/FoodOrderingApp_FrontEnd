@@ -1,15 +1,33 @@
 import React from 'react';
-import img_hamburger_1 from '../../assets/ham-1.webp';
 import { Rate } from 'antd';
-import { useModalContext } from '../../hooks/context/ModalContext';
 import { Food } from '@/type/store/client/collection/food.style';
 import chicken from '../../assets/chicken.jpg';
+import { useDispatch, useSelector } from 'react-redux';
+import { common } from '@/store/reducer';
+import { ModalType } from '@/type/store/common';
+import { selectModal } from '@/store/selector/common/common.selector';
 
 const ProductItem: React.FC<Food> = (food) => {
-    const { setModalState } = useModalContext();
+    //hook
+    const dispatch = useDispatch();
+
+    const modal = useSelector(selectModal);
+
+    // event handling
+    const handleOpenModal = () => {
+        dispatch(
+            common.actions.showModal({
+                data: food,
+                type: ModalType.DETAIL_PRODUCT,
+            })
+        );
+    };
 
     return (
-        <div className="relative px-2 py-4 group flex flex-col h-[330px] w-auto justify-center items-center cursor-pointer bg-white rounded-lg">
+        <div
+            onClick={handleOpenModal}
+            className="relative px-2 py-4 group flex flex-col h-[330px] w-auto justify-center items-center cursor-pointer bg-white rounded-lg"
+        >
             {food.foodSizes != null && (
                 <div className="absolute group-hover:opacity-0 transition-opacity duration-500 top-3 left-3 w-[40px] h-[40px] rounded-full bg-[#FC4D26] z-10 flex justify-center items-center text-white text-sm font-medium">
                     -{food.foodSizes[0].discount}%
@@ -50,14 +68,7 @@ const ProductItem: React.FC<Food> = (food) => {
                 </div>
                 <button
                     className="btn-yellow-to-black text-[12px] px-4 py-2"
-                    onClick={() =>
-                        setModalState({
-                            type: 'product',
-                            variant: 'options',
-                            isOpen: true,
-                            product: food,
-                        })
-                    }
+                    onClick={handleOpenModal}
                 >
                     options
                 </button>
