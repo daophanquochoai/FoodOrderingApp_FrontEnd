@@ -3,6 +3,8 @@ import { lazy, Suspense } from 'react';
 import RequireAuth from '../guards/RequireAuth';
 import ClientLayout from '../layouts/ClientLayout';
 import AdminLayout from '../layouts/AdminLayout';
+import LoadingPage from '@/pages/LoadingPage';
+import ServerError500 from '@/pages/500';
 import ScrollToTop from '../components/common/ScrollToTop';
 
 const Home = lazy(() => import('../pages/client/home/Home'));
@@ -34,7 +36,7 @@ const UserPoint = lazy(() => import('../pages/client/account/UserPoint'));
 
 const AppRoutes = () => {
     return (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<LoadingPage />}>
             <ScrollToTop />
             <Routes>
                 {/* client routes */}
@@ -95,6 +97,7 @@ const AppRoutes = () => {
                     <Route path="category-management" element={<CategoryManagement />} />
                 </Route>
 
+                <Route path="/500" element={<ServerError500 />} />
                 {/* 404 */}
                 <Route path="*" element={<NotFound />} />
             </Routes>

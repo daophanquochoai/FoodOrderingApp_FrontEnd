@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from "react";
 import { ModalState } from "../../type/modal/modal";
 
@@ -18,28 +19,26 @@ import { ModalState } from "../../type/modal/modal";
 //   | { type: null };
 
 type ModalContextType = {
-  modalState: ModalState;
-  setModalState: React.Dispatch<React.SetStateAction<ModalState>>;
+    modalState: ModalState;
+    setModalState: React.Dispatch<React.SetStateAction<ModalState>>;
 };
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [modalState, setModalState] = useState<ModalState>({ type: null });
+export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [modalState, setModalState] = useState<ModalState>({ type: null });
 
-  return (
-    <ModalContext.Provider value={{ modalState, setModalState }}>
-      {children}
-    </ModalContext.Provider>
-  );
+    return (
+        <ModalContext.Provider value={{ modalState, setModalState }}>
+            {children}
+        </ModalContext.Provider>
+    );
 };
 
 export const useModalContext = () => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error("useModal must be used within a ModalProvider");
-  }
-  return context;
+    const context = useContext(ModalContext);
+    if (!context) {
+        throw new Error('useModal must be used within a ModalProvider');
+    }
+    return context;
 };

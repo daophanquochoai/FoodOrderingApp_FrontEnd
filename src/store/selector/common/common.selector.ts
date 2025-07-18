@@ -1,5 +1,5 @@
 import { name } from '../../reducer/common/common.reducer';
-import { CommonType, MessageType } from '../../../type/store/common';
+import { CommonType, MessageType, ModalState } from '../../../type/store/common';
 import { createSelector } from '@reduxjs/toolkit';
 
 // select state
@@ -16,4 +16,20 @@ export const selectCommon = createSelector(selectState, (state: CommonType) => s
 export const selectMessageQueue = createSelector(
     selectState,
     (state: CommonType): MessageType[] => state.messageQueue
+);
+
+/**
+ * get loading page
+ */
+export const selectLoading = createSelector(
+    selectState,
+    (state: CommonType): boolean => state.loadingPage
+);
+
+/**
+ * get modal
+ */
+export const selectModal = createSelector(
+    selectState,
+    (state: CommonType): ModalState[] => state.modal
 );

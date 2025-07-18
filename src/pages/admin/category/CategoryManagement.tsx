@@ -4,6 +4,10 @@ import { Category } from "@/type";
 import { Button, Table, Space, Tag } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectModal } from '@/store/selector/common/common.selector';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
 const CategoryManagement = () => {
     const [categoryList, setCategoryList] = useState<Category[]>([
@@ -31,24 +35,38 @@ const CategoryManagement = () => {
         }
     ]);
     
-    const { setModalState } = useModalContext();
+    const dispatch = useDispatch();
 
-    const handleOpenCategoryModal = (variant: "add" | "edit" | "delete", category?: Category) => {
-        setModalState({
-            type: "category",
-            variant,
-            isOpen: true,
-            category,
-            onSubmit: (data) => {
-                if (variant === "add") {
-                    setCategoryList([...categoryList, data]);
-                } else if (variant === "edit") {
-                    setCategoryList(categoryList.map(cat => cat.id === data.id ? data : cat));
-                } else if (variant === "delete") {
-                    setCategoryList(categoryList.filter(cat => cat.id !== data.id));
-                }
-            }
-        });
+    const modal = useSelector(selectModal); 
+
+    const handleOpenAddCategoryModal = () => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.CATEGORY,
+                variant: "add",
+                data: null
+            })
+        );
+    };
+
+    const handleOpenEditCategoryModal = (category: Category) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.CATEGORY,
+                variant: "edit",
+                data: category
+            })
+        );
+    };
+
+    const handleOpenDeleteCategoryModal = (category: Category) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.CATEGORY,
+                variant: "delete",
+                data: category
+            })
+        );
     };
 
     const columns: ColumnsType<Category> = [
@@ -118,14 +136,14 @@ const CategoryManagement = () => {
                     <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => handleOpenCategoryModal("edit", record)}
+                        onClick={() => handleOpenEditCategoryModal(record)}
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
                     />
                     <Button
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleOpenCategoryModal("delete", record)}
+                        onClick={() => handleOpenDeleteCategoryModal(record)}
                         size="small"
                     />
                 </Space>
@@ -140,7 +158,7 @@ const CategoryManagement = () => {
                 <Button 
                     type="primary" 
                     icon={<PlusOutlined />} 
-                    onClick={() => handleOpenCategoryModal("add")}
+                    onClick={() => handleOpenAddCategoryModal()}
                     className="bg-blue-500 hover:bg-blue-600"
                 >
                     Add New Category

@@ -1,5 +1,5 @@
 import { initCommonValue } from '@/defaultValue/common';
-import { CommonType } from '@/type/store/common';
+import { CommonType, ModalState } from '@/type/store/common';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const name = 'common';
@@ -31,6 +31,15 @@ const commonSlice = createSlice({
 
         setNotificationMessage(state, action: PayloadAction<string>) {
             addMessage(state, action.payload, 'info');
+        },
+        setLoading(state, { payload }: PayloadAction<boolean>) {
+            state.loadingPage = payload;
+        },
+        setHiddenModal(state, { payload }: PayloadAction<any>) {
+            state.modal = state.modal.filter((item) => item.type !== payload);
+        },
+        showModal(state, { payload }: PayloadAction<any>) {
+            state.modal.push(payload);
         },
     },
 });

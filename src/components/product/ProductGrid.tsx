@@ -1,6 +1,5 @@
-import React from 'react';
+import { Food } from '@/type/store/client/collection/food.style';
 import ProductItem from './ProductItem';
-import { Food } from '../../type';
 
 const ProductGrid = ({ products = [] }: { products: Food[] }) => {
     return (

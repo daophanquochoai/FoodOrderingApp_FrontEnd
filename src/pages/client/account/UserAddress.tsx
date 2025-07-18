@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { useModalContext } from "@/hooks/context/ModalContext";
 import { Address } from "@/type";
 import { Button, Card, Tag, Empty, Popconfirm } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import { formatFullAddress } from "../../../utils";
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
 const UserAddress = () => {
     const [addressList, setAddressList] = useState<Address[]>([
@@ -23,43 +25,26 @@ const UserAddress = () => {
         }
     ]);
 
-    const { setModalState } = useModalContext();
+    const dispatch = useDispatch();
 
-    const handleOpenAddressModal = (variant: "add" | "edit", address?: Address) => {
-        setModalState({
-            type: "address",
-            variant,
-            isOpen: true,
-            address,
-            onSubmit: (data) => {
-                if (variant === "add") {
-                    // Thêm địa chỉ mới
-                    // Nếu địa chỉ mới là mặc định, cập nhật các địa chỉ khác thành không mặc định
-                    if (data.isDefault) {
-                        const updatedAddresses = addressList.map(addr => ({
-                            ...addr,
-                            isDefault: false
-                        }));
-                        setAddressList([...updatedAddresses, data]);
-                    } else {
-                        setAddressList([...addressList, data]);
-                    }
-                } else {
-                    // Cập nhật địa chỉ
-                    const updatedAddresses = addressList.map(addr => {
-                        if (addr.id === data.id) {
-                            return data;
-                        }
-                        // Nếu địa chỉ hiện tại là mặc định và một địa chỉ khác được đặt làm mặc định
-                        if (addr.isDefault && data.isDefault && addr.id !== data.id) {
-                            return { ...addr, isDefault: false };
-                        }
-                        return addr;
-                    });
-                    setAddressList(updatedAddresses);
-                }
-            },
-        });
+    const handleOpenAddAddressModal = () => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.ADDRESS,
+                variant: "add",
+                data: null
+            })
+        );
+    };
+
+    const handleOpenEditAddressModal = (address: Address) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.ADDRESS,
+                variant: "edit",
+                data: address
+            })
+        );
     };
 
     const handleDeleteAddress = (id: string) => {
@@ -89,7 +74,7 @@ const UserAddress = () => {
                     <Button 
                         type="primary" 
                         icon={<PlusOutlined />} 
-                        onClick={() => handleOpenAddressModal("add")}
+                        onClick={handleOpenAddAddressModal}
                         className="bg-orange-500 hover:bg-orange-600"
                     >
                         Add New Address
@@ -121,7 +106,7 @@ const UserAddress = () => {
                                         <Button 
                                             type="text" 
                                             icon={<EditOutlined />} 
-                                            onClick={() => handleOpenAddressModal("edit", address)}
+                                            onClick={() => handleOpenEditAddressModal(address)}
                                         >
                                             Edit
                                         </Button>

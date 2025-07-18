@@ -1,11 +1,12 @@
 import React from 'react';
-import category_1 from '../../assets/pizza1.webp';
+import burger from '../../assets/burger.jpg';
 
 import { useNavigate } from 'react-router-dom';
-import { Category } from '../../type';
+import { Category } from '@/type/store/client/collection/collection.style';
 
 const CategoryItem: React.FC<Category> = (category) => {
-    const { image, name, id, small } = category;
+    const { image, name, id } = category;
+    const small = '';
     const navigate = useNavigate();
 
     const handleClickDetail = () => {
@@ -27,9 +28,13 @@ const CategoryItem: React.FC<Category> = (category) => {
         >
             <div className={`${small ? 'h-[65%]' : 'h-[55%]'} p-3 overflow-hidden`}>
                 <img
-                    src={image}
+                    src={image || burger}
                     alt="category_image"
                     className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-[750ms]"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null; // tránh loop vô hạn
+                        e.currentTarget.src = burger;
+                    }}
                 />
             </div>
             <div className="flex flex-col items-center justify-center gap-1">
@@ -42,7 +47,7 @@ const CategoryItem: React.FC<Category> = (category) => {
                 >
                     {name}
                 </h3>
-                {small ? null : (
+                {/* {small ? null : (
                     <p
                         className={`group-hover:visible underline-text-orange ${
                             small ? 'text-[16px]' : 'text-[16px]'
@@ -50,7 +55,7 @@ const CategoryItem: React.FC<Category> = (category) => {
                     >
                         Order Now
                     </p>
-                )}
+                )} */}
             </div>
         </div>
     );
