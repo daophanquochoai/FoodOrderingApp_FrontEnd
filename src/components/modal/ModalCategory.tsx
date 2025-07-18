@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { ModalCategoryProps } from "@/type/modal/modal";
 import ModalBase from "./ModalBase";
 import { Category } from "@/type";
 import { Button } from "antd";
 import { FloatingSelect } from "../input";
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
-const ModalCategory: React.FC<ModalCategoryProps> = ({
-    isOpen,
-    onClose,
-    category,
-    variant,
-    onSubmit
-}) => {
+const ModalCategory: React.FC<any> = (props) => {
+    const { data, type, variant } = props;
     const getModalTitle = (): string => {
         switch (variant) {
-            case "add":
-                return "Add New Category";
             case "edit":
                 return "Edit Category";
             case "delete":
                 return "Delete Category";
             default:
-                return "Category"; // Fallback
+                return "Add Category";
         }
     };
 
@@ -50,6 +45,8 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
         }
     ];
     
+    const dispatch = useDispatch();
+
     const title = getModalTitle();
     
     const [formData, setFormData] = useState({
@@ -68,12 +65,12 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (variant === "edit" && category) {
+        if (variant === "edit" && data) {
             setFormData({
-                name: category.name,
-                image: category.image,
-                desc: category.desc,
-                parentId: category.parentId
+                name: data.name,
+                image: data.image,
+                desc: data.desc,
+                parentId: data.parentId
             });
         } else {
             setFormData({
@@ -88,7 +85,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
             image: "",
             desc: ""
         });
-    }, [variant, category]);
+    }, [data]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -141,6 +138,10 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
         return isValid;
     };
 
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal({ type: ModalType.CATEGORY }));
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -149,7 +150,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
 
         try {
             // Ensure id is at most 3 digits
-            let generatedId = category ? category.id : Date.now() % 1000;
+            let generatedId = data ? data.id : Date.now() % 1000;
             if (generatedId > 999) generatedId = 999;
 
             const categoryData: Category = {
@@ -163,7 +164,8 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                 status: true,
                 create_by: 1, // Assuming current user ID is 1
             };
-            await onSubmit(categoryData);
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             onClose();
         } catch (error) {
             console.error("Error submitting form:", error);
@@ -173,7 +175,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
     };
 
     return (
-        <ModalBase isOpen={isOpen} onClose={onClose}>
+        <ModalBase type={type}>
             <div>
                 <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
                 {variant === "delete" ? (
@@ -185,7 +187,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                                 type="primary"
                                 danger
                                 onClick={() => {
-                                    onSubmit(category!);
+                                    
                                     onClose();
                                 }}
                                 loading={isSubmitting}
@@ -207,7 +209,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                                 className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                             />
                             <label
-                                htmlFor="address"
+                                htmlFor="name"
                                 className={`absolute left-5 top-1 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
                             >
                                 Category Name
@@ -264,7 +266,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                             options={[
                                 { value: "", label: "No Parent" },
                                 ...categoryList
-                                    .filter(cat => !(variant === "edit" && category && cat.id === category.id))
+                                    .filter(cat => !(variant === "edit" && data && cat.id === data.id))
                                     .map(cat => ({
                                         value: cat.id.toString(),
                                         label: cat.name
@@ -284,7 +286,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                                 loading={isSubmitting}
                                 className="bg-blue-500 hover:bg-blue-600"
                             >
-                                {variant === "add" ? "Add Category" : "Update Category"}
+                                {variant === "update" ? "Update Category" : "Add Category"}
                             </Button>
                         </div>
                     </form>

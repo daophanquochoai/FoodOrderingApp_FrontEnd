@@ -24,8 +24,12 @@ export interface Filter {
 export interface ModalState {
     data?: Record<string, any>;
     type?: ModalType;
+    variant?: string;
 }
 
 export enum ModalType {
     DETAIL_PRODUCT = 'DETAIL_PRODUCT',
+    ADDRESS = 'ADDRESS',
+    CATEGORY = 'CATEGORY',
+    REVIEW = 'REVIEW',
 }

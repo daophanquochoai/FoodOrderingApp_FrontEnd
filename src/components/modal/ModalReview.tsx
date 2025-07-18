@@ -1,22 +1,26 @@
 import React, { useState } from "react";
 import { Rate, Button } from "antd";
 import ModalBase from "./ModalBase";
-import { ModalReviewProps } from "../../type/modal/modal";
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
 
-const ModalReview: React.FC<ModalReviewProps> = ({
-    isOpen,
-    onClose,
-    productId,
-    onSubmit,
-}) => {
+const ModalReview: React.FC<any> = (props) => {
+    const { type } = props;
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const dispatch = useDispatch();
 
-    const handleSubmit = () => {
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal(type));
+    };
+
+    const handleSubmit = async () => {
         if (rating === 0) return;
         setIsSubmitting(true);
-        onSubmit(rating, comment);
+        // Simulate API call to submit review
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         setRating(0);
         setComment("");
         setIsSubmitting(false);
@@ -24,7 +28,7 @@ const ModalReview: React.FC<ModalReviewProps> = ({
     };
 
     return (
-        <ModalBase isOpen={isOpen} onClose={onClose}>
+        <ModalBase type={type}>
             <div>
                 <h2 className="text-xl font-semibold mb-6 text-center">WRITE A REVIEW</h2>
                 <div className="flex justify-center mb-6">

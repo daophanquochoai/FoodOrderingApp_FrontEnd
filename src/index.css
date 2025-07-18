@@ -323,3 +323,13 @@ ol {
 }
 
 /* ---------end marquee------- */
+
+.custom-collapse .ant-collapse-header {
+    background: #fff !important;
+    border-bottom: 1px solid #f3f4f6;
+    border-radius: 0 !important;
+}
+
+.custom-collapse .ant-collapse-content {
+    background: transparent !important;
+}

@@ -6,10 +6,20 @@ import { ModalOptionProductProps } from '../../type/modal/modal';
 import ProductInfo from '../product/ProductInfo';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
 const ModalOptionProduct: React.FC<any> = (props) => {
     const { data, type } = props;
+    const dispatch = useDispatch();  
+      
     // Hàm điều khiển đóng modal
+
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal(type));
+    };
+
     const handleContentClick = (e: React.MouseEvent) => {
         const target = e.target as HTMLElement;
         if (target.closest('.quantity-selector')) {
