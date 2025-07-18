@@ -16,10 +16,13 @@ import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { Ingredient, IngredientRaw } from '../../../type';
 import { mapIngredients } from '../../../utils/mapIngredients';
+import { useModalContext } from '../../../hooks/context/ModalContext';
 
 type DataIndex = keyof Ingredient;
 
 const IngredientManagement: React.FC = () => {
+    const { setModalState } = useModalContext();
+
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
@@ -214,8 +217,24 @@ const IngredientManagement: React.FC = () => {
 
     const dataSource: Ingredient[] = mapIngredients(rawData);
 
+    const handleAddNew = () => {
+        setModalState({
+            type: 'ingredient',
+            variant: 'add',
+            isOpen: true,
+        });
+    };
+
     return (
         <div>
+            <div className="flex items-center justify-between mb-2">
+                <h1 className="text-2xl font-bold">Ingredient Management</h1>
+                <div className="">
+                    <Button type="primary" onClick={handleAddNew}>
+                        + New Ingredient
+                    </Button>
+                </div>
+            </div>
             <Table
                 columns={columns}
                 dataSource={dataSource}

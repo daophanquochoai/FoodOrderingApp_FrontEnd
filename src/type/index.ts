@@ -6,3 +6,4 @@ export * from './slide';
 export * from './category/filterFromCategory';
 export * from './cart/cart';
 export * from './ingredient/ingredient';
+export * from './form/form';

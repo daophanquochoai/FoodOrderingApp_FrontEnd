@@ -1,8 +1,10 @@
 import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { Input, Select, DatePicker, Button } from 'antd';
-import dayjs from 'dayjs';
+import { useForm } from 'react-hook-form';
+import { DatePicker } from 'antd';
 import { FilterFormValues } from '../../../type';
+import { FormDateRangePicker, FormInput, FormRangeInput, FormSelect } from '../../form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FilterProductSchema } from '../../yup/product';
 
 const { RangePicker } = DatePicker;
 
@@ -14,7 +16,14 @@ const foodOptions = [
 ];
 
 const FormFilter = () => {
-    const { control, handleSubmit, reset } = useForm<FilterFormValues>();
+    const {
+        control,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: yupResolver(FilterProductSchema),
+    });
 
     const onSubmit = (data: FilterFormValues) => {
         console.log('Filter values:', {
@@ -29,149 +38,60 @@ const FormFilter = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="p-5 bg-white rounded-xl space-y-4">
                 {/* Grid chia nhóm */}
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-                    {/* Search */}
-                    <Controller
+                    <FormInput
                         name="search"
                         control={control}
-                        render={({ field }) => (
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700">
-                                    Search
-                                </label>
-                                <Input {...field} placeholder="Search name or desc" />
-                            </div>
-                        )}
+                        label="Search"
+                        placeholder="Search name or desc"
+                        error={errors.search}
                     />
 
-                    {/* Discount */}
-                    <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700">
-                            Discount (%)
-                        </label>
-                        <div className="flex gap-2">
-                            <Controller
-                                name="minDiscount"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
-                                )}
-                            />
-                            <Controller
-                                name="maxDiscount"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
-                                )}
-                            />
-                        </div>
-                    </div>
+                    <FormRangeInput
+                        nameFrom="minDiscount"
+                        nameTo="maxDiscount"
+                        control={control}
+                        label="Discount (%)"
+                        errorFrom={errors.minDiscount}
+                        errorTo={errors.maxDiscount}
+                    />
 
-                    {/* Price */}
-                    <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700">Price</label>
-                        <div className="flex gap-2">
-                            <Controller
-                                name="minPrice"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
-                                )}
-                            />
-                            <Controller
-                                name="maxPrice"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
-                                )}
-                            />
-                        </div>
-                    </div>
+                    <FormRangeInput
+                        nameFrom="minPrice"
+                        nameTo="maxPrice"
+                        control={control}
+                        label="Price"
+                        errorFrom={errors.minPrice}
+                        errorTo={errors.maxPrice}
+                    />
 
-                    {/* Ready in minutes */}
-                    <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700">
-                            Ready In Minute
-                        </label>
-                        <div className="flex gap-2">
-                            <Controller
-                                name="minReady"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="From" type="number" />
-                                )}
-                            />
-                            <Controller
-                                name="maxReady"
-                                control={control}
-                                render={({ field }) => (
-                                    <Input {...field} placeholder="To" type="number" />
-                                )}
-                            />
-                        </div>
-                    </div>
+                    <FormRangeInput
+                        nameFrom="minReady"
+                        nameTo="maxReady"
+                        control={control}
+                        label="Ready In Minute"
+                        errorFrom={errors.minReady}
+                        errorTo={errors.maxReady}
+                    />
 
-                    {/* Food select */}
-                    <Controller
+                    <FormSelect
                         name="foodIds"
                         control={control}
-                        render={({ field }) => (
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700">
-                                    Select Food
-                                </label>
-                                <Select
-                                    {...field}
-                                    mode="multiple"
-                                    allowClear
-                                    showSearch
-                                    placeholder="Select Food"
-                                    options={foodOptions}
-                                    onChange={field.onChange}
-                                />
-                            </div>
-                        )}
+                        label="Select Food"
+                        options={foodOptions}
+                        placeholder="Select food"
+                        mode="multiple"
                     />
 
-                    {/* Size select */}
-                    <Controller
+                    <FormSelect
                         name="size"
                         control={control}
-                        render={({ field }) => (
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700">
-                                    Size
-                                </label>
-                                <Select
-                                    {...field}
-                                    mode="multiple"
-                                    allowClear
-                                    showSearch
-                                    placeholder="Select size"
-                                    options={sizeOptions}
-                                    onChange={field.onChange}
-                                />
-                            </div>
-                        )}
+                        label="Size"
+                        options={sizeOptions}
+                        placeholder="Select size"
+                        mode="multiple"
                     />
 
-                    {/* Date range */}
-                    <Controller
-                        name="dateRange"
-                        control={control}
-                        render={({ field }) => (
-                            <div className="flex flex-col">
-                                <label className="mb-1 text-sm font-medium text-gray-700">
-                                    Date Range
-                                </label>
-                                <DatePicker.RangePicker
-                                    {...field}
-                                    className="w-full"
-                                    placeholder={['From', 'To']}
-                                    onChange={field.onChange}
-                                />
-                            </div>
-                        )}
-                    />
+                    <FormDateRangePicker name="dateRange" control={control} label="Date Range" />
                 </div>
 
                 {/* Buttons */}

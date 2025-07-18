@@ -9,7 +9,7 @@ export const mapIngredients = (raw: IngredientRaw[]): Ingredient[] => {
         else if (totalQuantity <= item.low_threshold) status = 'low_stock';
 
         return {
-            key: item.id,
+            id: item.id,
             name: item.name,
             unit: item.unit,
             quantity: totalQuantity,
