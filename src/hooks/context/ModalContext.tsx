@@ -1,6 +1,5 @@
-
-import React, { createContext, useContext, useState } from "react";
-import { ModalState } from "../../type/modal/modal";
+import React, { createContext, useContext, useState } from 'react';
+import { ModalState } from '../../type/modal/modal';
 
 // export type ModalState =
 //   | {

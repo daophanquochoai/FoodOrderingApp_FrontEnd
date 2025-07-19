@@ -1,6 +1,9 @@
 import { Rate } from "antd";
 import { GoPencil } from "react-icons/go";
 import { useModalContext } from "../../hooks/context/ModalContext";
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
 interface Review {
     id: string;
@@ -28,18 +31,12 @@ const ProductRating = () => {
         }
     ];
 
-    const { setModalState } = useModalContext();
+    const dispatch = useDispatch();
 
     const handleOpenReviewModal = () => {
-        setModalState({
-            type: "review",
-            variant: "write",
-            isOpen: true,
-            productId: "12345", // Example product ID
-            onSubmit: (rating, comment) => {
-                console.log(`Received rating: ${rating}, comment: ${comment}`);
-            },
-        });
+        dispatch(common.actions.showModal({
+            type: ModalType.REVIEW,
+        }));
     };
 
     const calculateAverageRating = (): number => {

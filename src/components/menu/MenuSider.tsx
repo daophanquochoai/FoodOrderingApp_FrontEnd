@@ -13,6 +13,8 @@ import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
 
 const MenuSider = () => {
+    const baseAdmin: string = '/admin';
+
     const items = [
         {
             key: 'system',
@@ -21,11 +23,11 @@ const MenuSider = () => {
             children: [
                 {
                     key: '/',
-                    label: <Link to="/admin">Dashboard</Link>,
+                    label: <Link to={`${baseAdmin}`}>Dashboard</Link>,
                 },
                 {
                     key: '/account-management',
-                    label: <Link to="/admin">Account Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Account Management</Link>,
                     icon: <MdOutlineManageAccounts />,
                 },
             ],
@@ -41,12 +43,12 @@ const MenuSider = () => {
                 },
                 {
                     key: '/order-management',
-                    label: <Link to="/admin">Order Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
                 },
                 {
                     key: '/voucher-management',
-                    label: <Link to="/admin">Voucher Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Voucher Management</Link>,
                     icon: <CiDiscount1 />,
                 },
             ],
@@ -63,22 +65,24 @@ const MenuSider = () => {
                 },
                 {
                     key: '/product-management',
-                    label: <Link to="/admin">Product Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Product Management</Link>,
                     icon: <IoFastFoodOutline />,
                 },
                 {
                     key: '/recipe-management',
-                    label: <Link to="/admin">Recipe Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Recipe Management</Link>,
                     icon: <BiFoodMenu />,
                 },
                 {
                     key: '/ingredient-management',
-                    label: <Link to="/admin">Ingredient Management</Link>,
+                    label: (
+                        <Link to={`${baseAdmin}/ingredient-management`}>Ingredient Management</Link>
+                    ),
                     icon: <CgSmartHomeRefrigerator />,
                 },
                 {
                     key: '/source-management',
-                    label: <Link to="/admin">Source Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Source Management</Link>,
                     icon: <VscSourceControl />,
                 },
             ],
@@ -90,12 +94,12 @@ const MenuSider = () => {
             children: [
                 {
                     key: '/profit-statistics',
-                    label: <Link to="/admin">Profit Statistics</Link>,
+                    label: <Link to={`${baseAdmin}`}>Profit Statistics</Link>,
                     icon: <GiChart />,
                 },
                 {
                     key: '/product-statistics',
-                    label: <Link to="/admin">Product Statistics</Link>,
+                    label: <Link to={`${baseAdmin}`}>Product Statistics</Link>,
                     icon: <AiOutlineBarChart />,
                 },
             ],

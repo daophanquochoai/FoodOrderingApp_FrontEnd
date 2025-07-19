@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
-import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
-import ProductInfo from '../../../components/product/ProductInfo';
-import ProductRating from '../../../components/product/ProductRating';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { fetchFoodById } from '@/store/action/client/collection/collection.action';
 import { selectFoodDetail } from '@/store/selector/client/collection/food.selector';
 import burger from '../../../assets/burger.jpg';
+import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
+import { Collapse, CollapseProps } from 'antd';
+import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
+import ProductDisplay from '../../../components/product/ProductDisplay';
+import ProductInfo from '../../../components/product/ProductInfo';
+import ProductRating from '../../../components/product/ProductRating';
 
 const ProductDetail: React.FC = () => {
     //hook
@@ -19,6 +22,47 @@ const ProductDetail: React.FC = () => {
             dispatch(fetchFoodById(param?.id));
         }
     }, [param.id]);
+    const items: CollapseProps['items'] = [
+        {
+            key: '1',
+            label: (
+                <span className="font-bold flex items-center gap-3">
+                    <TbTruckDelivery className="text-xl" /> Delivery Information
+                </span>
+            ),
+            children: (
+                <div className="py-2">
+                    <p>Standard Delivery: 2-4 business days</p>
+                    <p>Express Delivery: Same day delivery for orders placed before 11:00 AM</p>
+                    <p>Delivery hours: Monday to Friday, 9:00 AM - 9:00 PM</p>
+                    <p>Weekend Delivery: Saturday and Sunday, 10:00 AM - 8:00 PM</p>
+                    <p>Free delivery for orders above $30</p>
+                </div>
+            ),
+        },
+        {
+            key: '2',
+            label: (
+                <span className="font-bold flex items-center gap-3">
+                    <TbTruckReturn className="text-xl" /> Return Policy
+                </span>
+            ),
+            children: (
+                <div className="py-2">
+                    <p>We strive to ensure customer satisfaction with every order.</p>
+                    <p>If you're not satisfied with your meal:</p>
+                    <ul className="list-disc pl-5 mt-2">
+                        <li>Contact us within 30 minutes of delivery</li>
+                        <li>We offer replacement or refund for quality issues</li>
+                        <li>Refunds are processed within 3-5 business days</li>
+                        <li>
+                            Food quality or temperature issues are eligible for immediate resolution
+                        </li>
+                    </ul>
+                </div>
+            ),
+        },
+    ];
 
     return (
         <>

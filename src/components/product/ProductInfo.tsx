@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import QuantitySelector from '../../components/product/QuantitySelector';
 import { FoodSize } from '@/type/store/client/collection/food.style';
 import { formatMoney } from '@/utils/formatRender';
@@ -44,6 +43,11 @@ const ProductInfo = () => {
                         </span>
                     </div>
                 </div>
+                {foodDetail?.desc && (
+                    <p className="text-gray-600 break-words whitespace-pre-line">
+                        {foodDetail?.desc}
+                    </p>
+                )}
             </div>
             <div className="flex flex-col">
                 <strong className="mb-2">Size</strong>
@@ -79,11 +83,6 @@ const ProductInfo = () => {
                         ORDER NOW
                     </button>
                 </div>
-                <Link to={'/checkouts'} className="w-fit">
-                    <button className="text-white w-[385px] text-center font-bold bg-black my-2 py-3 px-16 rounded-full">
-                        BUY IT NOW
-                    </button>
-                </Link>
                 {foodDetail?.category && (
                     <>
                         <div className="flex mt-2">

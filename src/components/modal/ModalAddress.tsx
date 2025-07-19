@@ -7,14 +7,13 @@ import { useWards } from "../../hooks/address/useWards";
 import { FloatingSelect } from "../input";
 import { Button, Checkbox } from "antd";
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { useDispatch } from 'react-redux';
+import { common } from "@/store/reducer";
+import { ModalType } from "@/type/store/common";
 
-const ModalAddress: React.FC<ModalAddressProps> = ({
-    isOpen,
-    onClose,
-    address,
-    onSubmit
-}) => {
-    const isEditing = address !== undefined && address !== null;
+const ModalAddress: React.FC<any> = (props) => {
+    const { data, type, variant } = props;
+    const isEditing = data !== undefined && data !== null;
     const title = isEditing ? "Edit Address" : "Add New Address";
     const [formData, setFormData] = useState({
         fullAddress: "",
@@ -32,13 +31,15 @@ const ModalAddress: React.FC<ModalAddressProps> = ({
     const { provinces } = useProvinces();
     const { wards } = useWards(formData.province);
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        if (isEditing && address) {
+        if (isEditing && data) {
             setFormData({
-                fullAddress: address.fullAddress,
-                province: address.province,
-                ward: address.ward,
-                isDefault: address.isDefault || false,
+                fullAddress: data.fullAddress,
+                province: data.province,
+                ward: data.ward,
+                isDefault: data.isDefault || false,
             });
         } else {
             setFormData({
@@ -53,7 +54,7 @@ const ModalAddress: React.FC<ModalAddressProps> = ({
             province: "",
             ward: "",
         });
-    }, [isEditing, address]);
+    }, [isEditing, data]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
@@ -114,6 +115,10 @@ const ModalAddress: React.FC<ModalAddressProps> = ({
         return isValid;
     };
 
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal(type));
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
@@ -122,13 +127,14 @@ const ModalAddress: React.FC<ModalAddressProps> = ({
         
         try {
             const addressData: Address = {
-                id: isEditing ? address.id : Date.now().toString(), // Generate new ID for new address
+                id: isEditing ? data.id : Date.now().toString(), // Generate new ID for new address
                 fullAddress: formData.fullAddress,
                 province: formData.province,
                 ward: formData.ward,
                 isDefault: formData.isDefault,
             };
-            await onSubmit(addressData);
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             onClose();
         } catch (error) {
             console.error("Error submitting address:", error);
@@ -138,7 +144,7 @@ const ModalAddress: React.FC<ModalAddressProps> = ({
     };
 
     return (
-        <ModalBase isOpen={isOpen} onClose={onClose}>
+        <ModalBase type={type}>
             <div>
                 <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">

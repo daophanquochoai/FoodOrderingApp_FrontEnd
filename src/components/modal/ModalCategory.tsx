@@ -1,105 +1,102 @@
-import React, { useState, useEffect } from "react";
-import { ModalCategoryProps } from "@/type/modal/modal";
-import ModalBase from "./ModalBase";
-import { Category } from "@/type";
-import { Button } from "antd";
-import { FloatingSelect } from "../input";
+import React, { useState, useEffect } from 'react';
+import ModalBase from './ModalBase';
+import { Category } from '@/type';
+import { Button } from 'antd';
+import { FloatingSelect } from '../input';
+import { useDispatch } from 'react-redux';
+import { common } from '@/store/reducer';
+import { ModalType } from '@/type/store/common';
 
-const ModalCategory: React.FC<ModalCategoryProps> = ({
-    isOpen,
-    onClose,
-    category,
-    variant,
-    onSubmit
-}) => {
+const ModalCategory: React.FC<any> = (props) => {
+    const { data, type, variant } = props;
     const getModalTitle = (): string => {
         switch (variant) {
-            case "add":
-                return "Add New Category";
-            case "edit":
-                return "Edit Category";
-            case "delete":
-                return "Delete Category";
+            case 'edit':
+                return 'Edit Category';
+            case 'delete':
+                return 'Delete Category';
             default:
-                return "Category"; // Fallback
+                return 'Add Category';
         }
     };
 
     const categoryList: Category[] = [
         {
             id: 1,
-            name: "Chicken",
-            image: "https://grillfood-demo.myshopify.com/cdn/shop/files/13_474a9d6a-8185-41aa-9876-efe49e338886.jpg?v=1746869562&width=416",
-            desc: "Delicious chicken dishes",
-            create_date: "2025-01-01",
-            late_update_time: "2025-01-01",
+            name: 'Chicken',
+            image: 'https://grillfood-demo.myshopify.com/cdn/shop/files/13_474a9d6a-8185-41aa-9876-efe49e338886.jpg?v=1746869562&width=416',
+            desc: 'Delicious chicken dishes',
+            create_date: '2025-01-01',
+            late_update_time: '2025-01-01',
             status: true,
             parentId: null,
-            create_by: 1
+            create_by: 1,
         },
         {
             id: 2,
-            name: "Spicy Chicken",
-            image: "https://grillfood-demo.myshopify.com/cdn/shop/files/4_f05eb882-424b-41e4-958c-fff1757c2958.jpg?v=1746869562&width=416",
-            desc: "Spicy chicken dishes",
-            create_date: "2025-01-02",
-            late_update_time: "2025-01-02",
+            name: 'Spicy Chicken',
+            image: 'https://grillfood-demo.myshopify.com/cdn/shop/files/4_f05eb882-424b-41e4-958c-fff1757c2958.jpg?v=1746869562&width=416',
+            desc: 'Spicy chicken dishes',
+            create_date: '2025-01-02',
+            late_update_time: '2025-01-02',
             status: true,
             parentId: 1,
-            create_by: 1
-        }
+            create_by: 1,
+        },
     ];
-    
+
+    const dispatch = useDispatch();
+
     const title = getModalTitle();
-    
+
     const [formData, setFormData] = useState({
-        name: "",
-        image: "",
-        desc: "",
+        name: '',
+        image: '',
+        desc: '',
         parentId: null as number | null,
     });
 
     const [errors, setErrors] = useState({
-        name: "",
-        image: "",
-        desc: "",
+        name: '',
+        image: '',
+        desc: '',
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        if (variant === "edit" && category) {
+        if (variant === 'edit' && data) {
             setFormData({
-                name: category.name,
-                image: category.image,
-                desc: category.desc,
-                parentId: category.parentId
+                name: data.name,
+                image: data.image,
+                desc: data.desc,
+                parentId: data.parentId,
             });
         } else {
             setFormData({
-                name: "",
-                image: "",
-                desc: "",
-                parentId: null
+                name: '',
+                image: '',
+                desc: '',
+                parentId: null,
             });
         }
         setErrors({
-            name: "",
-            image: "",
-            desc: ""
+            name: '',
+            image: '',
+            desc: '',
         });
-    }, [variant, category]);
+    }, [data]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
         if (name in errors) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ""
+                [name]: '',
             }));
         }
     };
@@ -108,12 +105,12 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value ? parseInt(value) : null
+            [name]: value ? parseInt(value) : null,
         }));
         if (name in errors) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ""
+                [name]: '',
             }));
         }
     };
@@ -123,22 +120,26 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
         const newErrors = { ...errors };
 
         if (!formData.name.trim()) {
-            newErrors.name = "Category name is required.";
+            newErrors.name = 'Category name is required.';
             isValid = false;
         }
 
         if (!formData.image.trim()) {
-            newErrors.image = "Image URL is required.";
+            newErrors.image = 'Image URL is required.';
             isValid = false;
         }
 
         if (!formData.desc.trim()) {
-            newErrors.desc = "Description is required.";
+            newErrors.desc = 'Description is required.';
             isValid = false;
         }
 
         setErrors(newErrors);
         return isValid;
+    };
+
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal({ type: ModalType.CATEGORY }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -149,7 +150,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
 
         try {
             // Ensure id is at most 3 digits
-            let generatedId = category ? category.id : Date.now() % 1000;
+            let generatedId = data ? data.id : Date.now() % 1000;
             if (generatedId > 999) generatedId = 999;
 
             const categoryData: Category = {
@@ -163,29 +164,33 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                 status: true,
                 create_by: 1, // Assuming current user ID is 1
             };
-            await onSubmit(categoryData);
+            // Simulate API call
+            await new Promise((resolve) => setTimeout(resolve, 1000));
             onClose();
         } catch (error) {
-            console.error("Error submitting form:", error);
+            console.error('Error submitting form:', error);
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <ModalBase isOpen={isOpen} onClose={onClose}>
+        <ModalBase type={type}>
             <div>
                 <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
-                {variant === "delete" ? (
+                {variant === 'delete' ? (
                     <div>
-                        <p className="text-center text-red-600">Are you sure you want to delete this category?</p>
+                        <p className="text-center text-red-600">
+                            <>
+                                Are you sure you want to delete the category <b>"{data.name}"</b>
+                            </>
+                        </p>
                         <div className="flex justify-end space-x-3 mt-6">
                             <Button onClick={onClose}>Cancel</Button>
                             <Button
                                 type="primary"
                                 danger
                                 onClick={() => {
-                                    onSubmit(category!);
                                     onClose();
                                 }}
                                 loading={isSubmitting}
@@ -201,13 +206,13 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                                 type="text"
                                 id="name"
                                 name="name"
-                                value={formData.name || ""}
+                                value={formData.name || ''}
                                 onChange={handleInputChange}
                                 placeholder="Category Name"
                                 className={`peer inputBox px-5 py-2 pt-5 pb-1`}
                             />
                             <label
-                                htmlFor="address"
+                                htmlFor="name"
                                 className={`absolute left-5 top-1 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
                             >
                                 Category Name
@@ -221,7 +226,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                                 type="text"
                                 id="image"
                                 name="image"
-                                value={formData.image || ""}
+                                value={formData.image || ''}
                                 onChange={handleInputChange}
                                 placeholder="Image URL"
                                 className={`peer inputBox px-5 py-2 pt-5 pb-1`}
@@ -240,7 +245,7 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                             <textarea
                                 id="desc"
                                 name="desc"
-                                value={formData.desc || ""}
+                                value={formData.desc || ''}
                                 onChange={handleInputChange}
                                 placeholder="Description"
                                 className={`peer inputBox px-5 py-2 pt-5 pb-1`}
@@ -259,32 +264,30 @@ const ModalCategory: React.FC<ModalCategoryProps> = ({
                             label="Parent Category"
                             id="parentId"
                             name="parentId"
-                            value={formData.parentId?.toString() || ""}
+                            value={formData.parentId?.toString() || ''}
                             onChange={handleSelectChange}
                             options={[
-                                { value: "", label: "No Parent" },
+                                { value: '', label: 'No Parent' },
                                 ...categoryList
-                                    .filter(cat => !(variant === "edit" && category && cat.id === category.id))
-                                    .map(cat => ({
+                                    .filter(
+                                        (cat) => !(variant === 'edit' && data && cat.id === data.id)
+                                    )
+                                    .map((cat) => ({
                                         value: cat.id.toString(),
-                                        label: cat.name
-                                    }))
+                                        label: cat.name,
+                                    })),
                             ]}
                             placeholder="Select parent category"
                         />
                         <div className="flex justify-end space-x-3 mt-6">
-                            <Button
-                                onClick={onClose}
-                            >
-                                Cancel
-                            </Button>
+                            <Button onClick={onClose}>Cancel</Button>
                             <Button
                                 type="primary"
                                 htmlType="submit"
                                 loading={isSubmitting}
                                 className="bg-blue-500 hover:bg-blue-600"
                             >
-                                {variant === "add" ? "Add Category" : "Update Category"}
+                                {variant === 'update' ? 'Update Category' : 'Add Category'}
                             </Button>
                         </div>
                     </form>

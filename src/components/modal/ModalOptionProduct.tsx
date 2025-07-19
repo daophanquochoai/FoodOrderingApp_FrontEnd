@@ -5,7 +5,7 @@ import { Col, Row } from 'antd';
 import { ModalOptionProductProps } from '../../type/modal/modal';
 import ProductInfo from '../product/ProductInfo';
 import { FaArrowRight } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { common, food } from '@/store/reducer';
 
