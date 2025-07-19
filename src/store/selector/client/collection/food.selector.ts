@@ -20,3 +20,8 @@ export const selectFilter = createSelector(selectState, (state: FoodSlice) => st
  * get size
  */
 export const selectSize = createSelector(selectState, (state: FoodSlice) => state.sizes);
+
+/**
+ * get food detail
+ */
+export const selectFoodDetail = createSelector(selectState, (state: FoodSlice) => state.foodDetail);

@@ -5,29 +5,28 @@ import { Col, Row } from 'antd';
 import { ModalOptionProductProps } from '../../type/modal/modal';
 import ProductInfo from '../product/ProductInfo';
 import { FaArrowRight } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { common, food } from '@/store/reducer';
 
 const ModalOptionProduct: React.FC<any> = (props) => {
+    //data
     const { data, type } = props;
-    // Hàm điều khiển đóng modal
-    const handleContentClick = (e: React.MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('.quantity-selector')) {
-            return;
-        }
-        if (target.tagName === 'BUTTON' || target.closest('button')) {
-            onClose();
-            return;
-        }
-        if (target.tagName === 'A' || target.closest('a')) {
-            onClose();
-            return;
-        }
+
+    //hook
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    // event handling
+    const navigateToProductDetail = () => {
+        dispatch(common.actions.setHiddenModal(type));
+        dispatch(food.actions.setFoodDetail(data));
+        navigate(`/products/${data?.id}`);
     };
 
     return (
         <ModalBase type={type}>
-            <div onClick={handleContentClick}>
+            <div>
                 <Row>
                     <Col span={24} md={12}>
                         <div className="w-full h-full overflow-hidden">
@@ -39,14 +38,14 @@ const ModalOptionProduct: React.FC<any> = (props) => {
                         </div>
                     </Col>
                     <Col span={24} md={12}>
-                        <ProductInfo data={data} />
-                        <Link
-                            to={'/products/product-name'}
-                            className="flex items-center gap-4 mt-10"
+                        <ProductInfo />
+                        <p
+                            className="flex items-center gap-4 mt-10 cursor-pointer"
+                            onClick={navigateToProductDetail}
                         >
                             <span className="underline">View Full Product Details</span>
                             <FaArrowRight />
-                        </Link>
+                        </p>
                     </Col>
                 </Row>
             </div>

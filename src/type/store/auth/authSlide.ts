@@ -11,3 +11,16 @@ export interface User {
     authorities: string;
     username: string;
 }
+
+export interface createUser {
+    id?: number;
+    name?: string;
+    phoneNumber?: string;
+    image?: string;
+    email?: string;
+    password?: string;
+    isActive?: boolean;
+    role?: {
+        roleName?: string;
+    };
+}

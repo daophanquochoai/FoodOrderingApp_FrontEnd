@@ -3,25 +3,29 @@ import { Link } from 'react-router-dom';
 import QuantitySelector from '../../components/product/QuantitySelector';
 import { FoodSize } from '@/type/store/client/collection/food.style';
 import { formatMoney } from '@/utils/formatRender';
+import { useSelector } from 'react-redux';
+import { selectFoodDetail } from '@/store/selector/client/collection/food.selector';
 
-const ProductInfo = ({ data }) => {
-    console.log(data);
+const ProductInfo = () => {
     //selector
+    const foodDetail = useSelector(selectFoodDetail);
+    //state
     const [selectedSize, setSelectedSize] = useState<FoodSize>(null);
 
     //state
     const [quantity, setQuantity] = useState<number>(1);
 
+    //useEffect
     useEffect(() => {
-        if (data?.foodSizes != null && data?.foodSizes.length > 0) {
-            setSelectedSize(data?.foodSizes[0]);
+        if (foodDetail?.foodSizes != null && foodDetail?.foodSizes.length > 0) {
+            setSelectedSize(foodDetail?.foodSizes[0]);
         }
-    }, [data]);
+    }, [foodDetail]);
 
     return (
         <>
             <div className="flex flex-col gap-4 border-b border-gray-400 pb-4 mb-4">
-                <strong className="text-2xl">{data?.name}</strong>
+                <strong className="text-2xl">{foodDetail?.name}</strong>
                 <div className="flex gap-4">
                     <span className="text-xl text-gray-600 line-through">
                         $
@@ -45,8 +49,8 @@ const ProductInfo = ({ data }) => {
                 <strong className="mb-2">Size</strong>
                 <div className="space-y-3">
                     <div className="flex space-x-3">
-                        {data?.foodSizes &&
-                            data?.foodSizes.map((option) => (
+                        {foodDetail?.foodSizes &&
+                            foodDetail?.foodSizes.map((option) => (
                                 <div
                                     key={option.id}
                                     className={`block px-4 py-2 border-2 rounded-full w-auto cursor-pointer transition-all
@@ -80,17 +84,17 @@ const ProductInfo = ({ data }) => {
                         BUY IT NOW
                     </button>
                 </Link>
-                {data?.category && (
+                {foodDetail?.category && (
                     <>
                         <div className="flex mt-2">
                             <strong>Category:</strong>
                             <p className="hover:text-orange-500 ml-1">
-                                {data?.category?.name || ''}
+                                {foodDetail?.category?.name || ''}
                             </p>
                         </div>
                         <div className="flex mt-2">
                             <strong>Description:</strong>
-                            <p className="hover:text-orange-500 ml-1">{data?.desc}</p>
+                            <p className="hover:text-orange-500 ml-1">{foodDetail?.desc}</p>
                         </div>
                     </>
                 )}

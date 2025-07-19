@@ -5,6 +5,9 @@ class FoodApi extends HttpService {
     getFoodByFilter = (data: FilterFood) => {
         return this.post(data, 'all');
     };
+    getFoodById = (id: number) => {
+        return this.getOne(id);
+    };
 }
 
 export const foodApi = new FoodApi('food');

@@ -50,4 +50,5 @@ export interface FoodSlice {
     foods: Food[];
     filter: FilterFood;
     sizes: Size[];
+    foodDetail: Food;
 }

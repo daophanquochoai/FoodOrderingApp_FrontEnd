@@ -16,6 +16,9 @@ const FoodSlice = createSlice({
         setSize(state, { payload }: PayloadAction<any>) {
             state.sizes = payload;
         },
+        setFoodDetail(state, { payload }: PayloadAction<any>) {
+            state.foodDetail = payload;
+        },
     },
 });
 

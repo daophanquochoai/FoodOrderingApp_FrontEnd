@@ -41,6 +41,7 @@ const AppRoutes = () => {
             <Routes>
                 {/* client routes */}
                 <Route element={<ClientLayout />}>
+                    <Route path="/login" element={<Login />} />
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
@@ -62,7 +63,7 @@ const AppRoutes = () => {
                     <Route path="/collections" element={<Collections />} />
 
                     {/* product detail route */}
-                    <Route path="/products/:product-name" element={<ProductDetail />} />
+                    <Route path="/products/:id" element={<ProductDetail />} />
 
                     {/* cart */}
                     <Route path="/cart" element={<Cart />} />

@@ -12,7 +12,7 @@ const Login = () => {
     // hook
     const dispatch = useDispatch();
 
-    // Sử dụng react-hook-form với yup
+    // yup
     const {
         register,
         handleSubmit,
@@ -25,7 +25,7 @@ const Login = () => {
         },
     });
 
-    // Xử lý submit
+    // event handling
     const onSubmit = (data) => {
         dispatch(loginAction({ username: data.userName, password: data.password }));
     };

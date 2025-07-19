@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type FloatingInputProps = {
     label: string;
     id: string;
@@ -5,4 +7,4 @@ export type FloatingInputProps = {
     error: boolean;
     helperText: string;
     small?: boolean;
-};
+} & React.InputHTMLAttributes<HTMLInputElement>;

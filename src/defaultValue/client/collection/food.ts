@@ -52,4 +52,5 @@ export const initFoodSlice: FoodSlice = {
     foods: [],
     filter: initFoodFilter,
     sizes: [],
+    foodDetail: null,
 };

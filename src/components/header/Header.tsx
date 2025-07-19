@@ -78,15 +78,21 @@ const Header: React.FC = () => {
                         {isOpen('user') && (
                             <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-3">
                                 <ul>
-                                    <li
-                                        onClick={closeDropdown}
-                                    >
-                                        <Link to={"/account/login"} className='hover:text-orange-500 text-base'>Login</Link>
+                                    <li onClick={closeDropdown}>
+                                        <Link
+                                            to={'/account/login'}
+                                            className="hover:text-orange-500 text-base"
+                                        >
+                                            Login
+                                        </Link>
                                     </li>
-                                    <li
-                                        onClick={closeDropdown}
-                                    >
-                                        <Link to={"/account/register"} className='hover:text-orange-500 text-base'>Register</Link>
+                                    <li onClick={closeDropdown}>
+                                        <Link
+                                            to={'/account/register'}
+                                            className="hover:text-orange-500 text-base"
+                                        >
+                                            Register
+                                        </Link>
                                     </li>
                                 </ul>
                             </div>
@@ -110,6 +116,10 @@ const Header: React.FC = () => {
             <CartDrawer isOpen={isOpenCartDraw} onClose={() => setIsOpenCartDraw(false)} />
 
             <MobileNav isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
+            <div className="flex gap-[40px]">
+                <Link to={'/login'}>Dang nhap</Link>
+                <button>Dang ky</button>
+            </div>
         </>
     );
 };
