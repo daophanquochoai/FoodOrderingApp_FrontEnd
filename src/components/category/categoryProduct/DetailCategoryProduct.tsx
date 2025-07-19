@@ -1,7 +1,7 @@
 import React from 'react';
-import { Food } from '../../../type';
 import { ProductGrid } from '../../product';
 import { FilterBar } from '../../category';
+import { Food } from '@/type/store/client/collection/food.style';
 
 const DetailCategoryProduct = ({ products }: { products: Food[] }) => {
     return (

@@ -12,16 +12,20 @@ import {
 import React, { useRef, useState } from 'react';
 
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { Ingredient, IngredientRaw } from '../../../type';
 import { mapIngredients } from '../../../utils/mapIngredients';
 import { useModalContext } from '../../../hooks/context/ModalContext';
+import { ModalType } from '@/type/store/common';
+import { common } from '@/store/reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectModal } from '@/store/selector/common/common.selector';
 
 type DataIndex = keyof Ingredient;
 
 const IngredientManagement: React.FC = () => {
-    const { setModalState } = useModalContext();
+    const dispatch = useDispatch();
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -191,6 +195,28 @@ const IngredientManagement: React.FC = () => {
             onFilter: (value, record) =>
                 record.late_update_time?.startsWith(value as string) || false,
         },
+        {
+            title: 'Actions',
+            key: 'actions',
+            width: '150px',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        onClick={() => handleOpenEditIngredientModal(record)}
+                        className="bg-blue-500 hover:bg-blue-600"
+                        size="small"
+                    />
+                    <Button
+                        danger
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleOpenDeleteIngredientModal(record)}
+                        size="small"
+                    />
+                </Space>
+            ),
+        },
     ];
 
     const rawData: IngredientRaw[] = [
@@ -217,30 +243,51 @@ const IngredientManagement: React.FC = () => {
 
     const dataSource: Ingredient[] = mapIngredients(rawData);
 
-    const handleAddNew = () => {
-        setModalState({
-            type: 'ingredient',
-            variant: 'add',
-            isOpen: true,
-        });
+    const handleOpenAddIngredientModal = () => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.INGREDIENT,
+                variant: 'add',
+                data: null,
+            })
+        );
+    };
+
+    const handleOpenEditIngredientModal = (ingredient: Ingredient) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.INGREDIENT,
+                variant: 'edit',
+                data: ingredient,
+            })
+        );
+    };
+
+    const handleOpenDeleteIngredientModal = (ingredient: Ingredient) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.INGREDIENT,
+                variant: 'delete',
+                data: ingredient,
+            })
+        );
     };
 
     return (
         <div>
-            <div className="flex items-center justify-between mb-2">
-                <h1 className="text-2xl font-bold">Ingredient Management</h1>
-                <div className="">
-                    <Button type="primary" onClick={handleAddNew}>
-                        + New Ingredient
-                    </Button>
-                </div>
+            <h1 className="text-2xl font-bold">Ingredient Management</h1>
+            <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
+                <Button type="primary" onClick={handleOpenAddIngredientModal}>
+                    + New Ingredient
+                </Button>
+
+                <Table
+                    columns={columns}
+                    dataSource={dataSource}
+                    rowKey="key"
+                    scroll={{ x: 'max-content' }}
+                />
             </div>
-            <Table
-                columns={columns}
-                dataSource={dataSource}
-                rowKey="key"
-                scroll={{ x: 'max-content' }}
-            />
         </div>
     );
 };

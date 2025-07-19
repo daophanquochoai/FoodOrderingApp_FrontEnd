@@ -59,8 +59,8 @@ const MenuSider = () => {
             icon: <IoFastFoodOutline />,
             children: [
                 {
-                    key: '6',
-                    label: 'Category Management',
+                    key: '/category-management',
+                    label: <Link to="/admin/category-management">Category Management</Link>,
                     icon: <MdOutlineCategory />,
                 },
                 {

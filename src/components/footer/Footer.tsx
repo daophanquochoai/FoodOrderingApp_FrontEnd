@@ -35,9 +35,9 @@ const Footer: React.FC = () => {
                 <IoLocationOutline className="inline-block mr-2 mt-2 text-xl text-orange-500" />
                 <div>
                   <p>Grillfood - Fast Food Store</p>
-                  <p>33 New Montgomery St.</p>
-                  <p>Ste 750 San Francisco,</p>
-                  <p>CA, USA 94105</p>
+                  <p>11 Nguyen Dinh Chieu St.</p>
+                  <p>Sai Gon Ward, Ho Chi Minh</p>
+                  <p>Vietnam 71007</p>
                 </div>
               </li>
               <li className="flex my-2">
@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex my-2">
                 <BiSupport className="inline-block mr-2 mt-1 text-xl text-orange-500" />
-                <p>0987-654-321</p>
+                <p>(+84) 0987-654-321</p>
               </li>
             </ul>
           </div>

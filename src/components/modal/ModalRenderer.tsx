@@ -1,39 +1,31 @@
+import { useSelector } from 'react-redux';
+import { selectModal } from '@/store/selector/common/common.selector';
+import { ModalType } from '@/type/store/common';
 import ModalOptionProduct from './ModalOptionProduct';
-import { useModalContext } from '../../hooks/context/ModalContext';
+import ModalAddress from './ModalAddress';
+import ModalCategory from './ModalCategory';
+import ModalReview from './ModalReview';
 import ModalIngredient from './ModalIngredient';
 
 export const ModalRenderer = () => {
-    const { modalState, setModalState } = useModalContext();
+    const modals = useSelector(selectModal);
 
-    switch (modalState.type) {
-        case 'product':
-            if (modalState.variant == 'options')
-                return (
-                    <ModalOptionProduct
-                        isOpen={modalState.isOpen}
-                        onClose={() => setModalState({ type: null })}
-                        product={modalState.product}
-                    />
-                );
+    const renderModal = modals.map((modal) => {
+        switch (modal.type) {
+            case ModalType.DETAIL_PRODUCT:
+                return <ModalOptionProduct key={modal.type} {...modal} />;
+            case ModalType.ADDRESS:
+                return <ModalAddress key={modal.type} {...modal} />;
+            case ModalType.CATEGORY:
+                return <ModalCategory key={modal.type} {...modal} />;
+            case ModalType.REVIEW:
+                return <ModalReview key={modal.type} {...modal} />;
+            case ModalType.INGREDIENT:
+                return <ModalIngredient key={modal.type} {...modal} />;
+            default:
+                return null;
+        }
+    });
 
-            break;
-
-        case 'ingredient':
-            if (
-                'variant' in modalState &&
-                (modalState.variant === 'add' || modalState.variant === 'edit')
-            )
-                return (
-                    <ModalIngredient
-                        isOpen={modalState.isOpen}
-                        onClose={() => setModalState({ type: null })}
-                        ingredient={modalState.ingredient}
-                        variant={modalState.variant}
-                    />
-                );
-            break;
-
-        default:
-            break;
-    }
+    return <div>{renderModal}</div>;
 };

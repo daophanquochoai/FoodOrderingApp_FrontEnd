@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import FloatingInput from "../input/FloatingInput";
-import FloatingSelect from "../input/FloatingSelect";
+import { FloatingSelect } from "../input";
 import { useProvinces } from "../../hooks/address/useProvinces";
 import { useWards } from "../../hooks/address/useWards";
-
-interface SavedAddress {
-    id: string;
-    fullAddress: string;
-    province: string;
-    ward: string;
-    isDefault?: boolean;
-}
+import { Address } from "../../type";
+import { formatFullAddress } from "../../utils";
 
 interface AddressSelectorProps {
     selectedAddressId: string;
@@ -33,20 +26,20 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
     const [formError, setFormError] = useState("");
 
     // Mock saved addresses - thay bằng data từ API
-    const savedAddresses: SavedAddress[] = [
+    const savedAddresses: Address[] = [
         {
             id: "1",
-            fullAddress: "123 Nguyễn Huệ, Phường An Đông, Thành phố Hồ Chí Minh",
+            fullAddress: "123 Nguyễn Huệ",
             province: "79",
             ward: "27316",
-            isDefault: true
+            isDefault: true,
         },
         {
-            id: "2", 
-            fullAddress: "456 Lê Lợi, Phường Bến Thành, Thành phố Hồ Chí Minh",
+            id: "2",
+            fullAddress: "456 Lê Lợi",
             province: "79",
             ward: "26743",
-            isDefault: false
+            isDefault: false,
         }
     ];
 
@@ -181,7 +174,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                                         )}
                                     </div>
                                     <p className="text-gray-600 text-sm leading-relaxed">
-                                        {address.fullAddress}
+                                        {formatFullAddress(address)}
                                     </p>
                                 </div>
                             </div>
@@ -203,13 +196,24 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                     </div>
                     
                     <div className="space-y-4">
-                        <FloatingInput
-                            label="Street Address"
-                            id="address"
-                            type="text"
-                            value={newAddressData.address}
-                            onChange={handleInputChange}
-                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                id="address"
+                                name="address"
+                                value={newAddressData.address}
+                                onChange={handleInputChange}
+                                placeholder="Street Address"
+                                className={`peer inputBox px-5 py-2 pt-5 pb-1`}
+                                required
+                            />
+                            <label
+                                htmlFor="address"
+                                className={`absolute left-5 top-1 text-gray-500 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
+                            >
+                                Street Address
+                            </label>
+                        </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FloatingSelect
