@@ -13,6 +13,15 @@ const CategorySilce = createSlice({
         setFilter(state, { payload }: PayloadAction<any>) {
             state.filter = payload;
         },
+        setFilterOption(state, { payload }: PayloadAction<any>) {
+            state.filterOption = {
+                ...state.filterOption,
+                category: payload,
+            };
+        },
+        setLoading(state, { payload }: PayloadAction<any>) {
+            state.loadingTable = payload;
+        },
     },
 });
 

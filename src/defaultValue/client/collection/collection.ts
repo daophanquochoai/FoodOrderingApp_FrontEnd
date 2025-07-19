@@ -1,6 +1,7 @@
 import {
     Category,
     Collection,
+    EStatusCategory,
     FilterCategory,
 } from '@/type/store/client/collection/collection.style';
 
@@ -23,7 +24,7 @@ export const filterCategory: FilterCategory = {
     endDate: null,
     deep: 0,
     id: null,
-    statusCategories: null,
+    statusCategories: [EStatusCategory.ACTIVE],
 };
 
 export const initCollection: Collection = {

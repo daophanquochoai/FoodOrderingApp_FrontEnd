@@ -6,7 +6,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectModal } from '@/store/selector/common/common.selector';
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { selectCategoryAdmin } from '@/store/selector/admin/category/category.selector';
+import {
+    selectCategoryAdmin,
+    selectLoadingTable,
+} from '@/store/selector/admin/category/category.selector';
 import { fetchCategoryFirst } from '@/store/action/admin/category/category.action';
 import { selectFilterCategory } from '@/store/selector/client/collection/collection.selector';
 import { Category } from '@/type/store/client/collection/collection.style';
@@ -19,8 +22,7 @@ const CategoryManagement = () => {
     //selector
     const filter = useSelector(selectFilterCategory);
     const category = useSelector(selectCategoryAdmin);
-
-    console.log(category);
+    const loadingTable = useSelector(selectLoadingTable);
 
     // useEffect
     useEffect(() => {
@@ -110,16 +112,21 @@ const CategoryManagement = () => {
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
                     />
-                    <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteCategoryModal(record)}
-                        size="small"
-                    />
+                    {(record?.foods == null ||
+                        record?.foods.length == 0 ||
+                        record.parent == null) && (
+                        <Button
+                            danger
+                            icon={<DeleteOutlined />}
+                            onClick={() => handleOpenDeleteCategoryModal(record)}
+                            size="small"
+                        />
+                    )}
                 </Space>
             ),
         },
     ];
+    console.log(category?.data);
 
     return (
         <>
@@ -134,6 +141,7 @@ const CategoryManagement = () => {
                     Add New Category
                 </Button>
                 <Table
+                    loading={loadingTable}
                     columns={columns}
                     dataSource={category?.data}
                     rowKey="id"

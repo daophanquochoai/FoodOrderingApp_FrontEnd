@@ -1,29 +1,132 @@
 import { categoryApi } from '@/api/client/category/category.api';
 import { collectionApi } from '@/api/client/collection/collection.api';
-import { fetchCategoryFirst } from '@/store/action/admin/category/category.action';
+import { filterApi } from '@/api/filter/fitler.api';
+import {
+    createCategory,
+    deleteCategory,
+    fetchCategoryFirst,
+    updateCategory,
+} from '@/store/action/admin/category/category.action';
 import { category, common } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/admin/category/category.selector';
+import { ModalType } from '@/type/store/common';
 import { takeLeading } from 'redux-saga/effects';
-import { all, call, fork, put, select } from 'typed-redux-saga';
+import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
 
 // hanlde fetch first
 function* handleFetchFirst() {
     yield put(common.actions.setLoading(true));
 
     try {
+        //fetch category
+        yield handleFetchCategoryTable();
+        // fetch filet
+        yield handleFetchFilterOption();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        yield put(common.actions.setLoading(false));
+    }
+}
+
+// fetch data table
+function* handleFetchCategoryTable() {
+    yield put(category.actions.setLoading(true));
+    try {
         const { fitler } = yield all({
             fitler: select(selectFilter),
         });
 
-        console.log(fitler);
         const { data } = yield call(collectionApi.getCategoryByFilter, fitler);
 
         yield put(category.actions.setCategory(data?.data));
     } catch (e) {
         console.error(e);
     } finally {
-        yield put(common.actions.setLoading(false));
+        yield put(category.actions.setLoading(false));
     }
+}
+
+//delete category
+function* handleDeleteCategory({ payload }) {
+    try {
+        yield call(categoryApi.updateCategory, {
+            ...payload,
+            status: 'DELETE',
+        });
+
+        console.log({
+            ...payload,
+            status: 'DELETE',
+        });
+        //fetch category
+        yield handleFetchCategoryTable();
+
+        yield put(common.actions.setHiddenModal(ModalType.CATEGORY));
+        yield put(common.actions.setSuccessMessage('Update category successful'));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    }
+}
+
+// update category
+function* handleUpdateCategory({ payload }) {
+    try {
+        yield call(categoryApi.updateCategory, payload);
+
+        //fetch category
+        yield handleFetchCategoryTable();
+
+        yield put(common.actions.setHiddenModal(ModalType.CATEGORY));
+        yield put(common.actions.setSuccessMessage('Update category successful'));
+    } catch (e) {
+        yield put(common.actions.setErrorMessage(e?.message));
+        console.error(e);
+    }
+}
+
+// create category
+function* handleCreateCategory({ payload }) {
+    try {
+        yield call(categoryApi.createCategory, payload);
+
+        //fetch category
+        yield handleFetchCategoryTable();
+
+        yield put(common.actions.setHiddenModal(ModalType.CATEGORY));
+        yield put(common.actions.setSuccessMessage('Create ategory successful'));
+    } catch (e) {
+        yield put(common.actions.setErrorMessage(e?.message));
+        console.error(e);
+    }
+}
+
+// handle get filter
+function* handleFetchFilterOption() {
+    try {
+        const { data } = yield call(filterApi.getFilter, {
+            options: ['CATEGORY'],
+        });
+        yield put(category.actions.setFilterOption(data?.data?.category || []));
+    } catch (e) {
+        yield put(common.actions.setErrorMessage(e?.message));
+    }
+}
+
+// watch delete category
+function* watchDeleteCategory() {
+    yield takeEvery(deleteCategory, handleDeleteCategory);
+}
+
+//watch update category
+function* watchUpdateCategory() {
+    yield takeEvery(updateCategory, handleUpdateCategory);
+}
+
+//watch create category
+function* watchCreateCategory() {
+    yield takeEvery(createCategory, handleCreateCategory);
 }
 
 // watch fetch first category
@@ -33,5 +136,10 @@ function* watchFetchFirst() {
 
 // watch all category
 export function* watchCategogy() {
-    yield* all([fork(watchFetchFirst)]);
+    yield* all([
+        fork(watchFetchFirst),
+        fork(watchCreateCategory),
+        fork(watchUpdateCategory),
+        fork(watchDeleteCategory),
+    ]);
 }

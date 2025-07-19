@@ -97,8 +97,8 @@ class HttpService {
     post = <T = any>(data: any, endpoint = '') =>
         this.instance.post<T>(`/${this.entity}/${endpoint}`, data);
 
-    put = <T = any>(id: string | number, data: any) =>
-        this.instance.put<T>(`/${this.entity}/${id}`, data);
+    put = <T = any>(id: string | number, data: any, path: string) =>
+        this.instance.put<T>(`/${this.entity}/${path}/${id}`, data);
 
     patch = <T = any>(id: string | number, data: any) =>
         this.instance.patch<T>(`/${this.entity}/${id}`, data);

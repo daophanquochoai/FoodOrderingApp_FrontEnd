@@ -19,3 +19,19 @@ export const selectCategoryAdmin = createSelector(
  * get filter
  */
 export const selectFilter = createSelector(selectState, (state: CategorySlice) => state.filter);
+
+/**
+ * get filter option
+ */
+export const selectFilterOption = createSelector(
+    selectState,
+    (state: CategorySlice) => state.filterOption
+);
+
+/**
+ * get loading page
+ */
+export const selectLoadingTable = createSelector(
+    selectState,
+    (state: CategorySlice) => state.loadingTable
+);
