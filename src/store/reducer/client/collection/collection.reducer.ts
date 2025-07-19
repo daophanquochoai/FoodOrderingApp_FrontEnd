@@ -1,5 +1,4 @@
 import { initCollection } from '@/defaultValue/client/collection/collection';
-import { Category } from '@/type';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export const name = 'collection';

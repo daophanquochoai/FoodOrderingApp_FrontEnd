@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
 import FloatingInput from '../../../components/input/FloatingInput';
 import { Link } from 'react-router-dom';
-import { validateEmail, validateName } from '../../../utils/helper';
 import { GetProp, Upload, UploadProps } from 'antd';
 import { useDispatch } from 'react-redux';
 import { common } from '@/store/reducer';

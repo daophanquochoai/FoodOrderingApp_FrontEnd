@@ -50,10 +50,9 @@ function* handleFetchCategory() {
             filterCategory: select(selectFilterCategory),
         });
         //get category by api
-        const responseCategory = yield* call(collectionApi.getCategoryByFilter, filterCategory);
-        console.log(123);
+        const { data } = yield* call(collectionApi.getCategoryByFilter, filterCategory);
         //save
-        yield put(collection.actions.setCategory(responseCategory?.data?.data));
+        yield put(collection.actions.setCategory(data?.data?.data));
     } catch (e) {
         console.error(e);
     }

@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import ModalBase from './ModalBase';
 import { Category } from '@/type';
-import { Button } from 'antd';
+import { Button, GetProp, Upload, UploadProps } from 'antd';
 import { FloatingSelect } from '../input';
 import { useDispatch } from 'react-redux';
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const ModalCategory: React.FC<any> = (props) => {
+    // state
+    const [loading, setLoading] = useState(false);
+    const [image, setImage] = useState('');
+
+    // selector
+
     const { data, type, variant } = props;
     const getModalTitle = (): string => {
         switch (variant) {
@@ -174,6 +183,38 @@ const ModalCategory: React.FC<any> = (props) => {
         }
     };
 
+    // event handling
+    const handleChangeImage: UploadProps['onChange'] = (info) => {
+        if (info.file.status === 'uploading') {
+            setLoading(true);
+            setImage('');
+            return;
+        }
+        if (info.file.status === 'done') {
+            setLoading(false);
+            setImage(info?.file?.response);
+        }
+    };
+
+    const beforeUpload = (file: FileType) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            dispatch(common.actions.setErrorMessage('You can only upload JPG/PNG file!'));
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            dispatch(common.actions.setErrorMessage('Image must smaller than 2MB!'));
+        }
+        return isJpgOrPng && isLt2M;
+    };
+
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
     return (
         <ModalBase type={type}>
             <div>
@@ -201,6 +242,23 @@ const ModalCategory: React.FC<any> = (props) => {
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <Upload
+                                name="image"
+                                listType="picture-card"
+                                className="avatar-uploader overflow-hidden"
+                                showUploadList={false}
+                                action={`${import.meta.env.VITE_BACKEND_URL}/upload`}
+                                beforeUpload={beforeUpload}
+                                onChange={handleChangeImage}
+                            >
+                                {image ? (
+                                    <img src={image} alt="avatar" style={{ width: '100%' }} />
+                                ) : (
+                                    uploadButton
+                                )}
+                            </Upload>
+                        </div>
                         <div className="relative">
                             <input
                                 type="text"
@@ -219,26 +277,6 @@ const ModalCategory: React.FC<any> = (props) => {
                             </label>
                             {errors.name && (
                                 <p className="mt-1 text-xs text-red-500">{errors.name}</p>
-                            )}
-                        </div>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                id="image"
-                                name="image"
-                                value={formData.image || ''}
-                                onChange={handleInputChange}
-                                placeholder="Image URL"
-                                className={`peer inputBox px-5 py-2 pt-5 pb-1`}
-                            />
-                            <label
-                                htmlFor="image"
-                                className={`absolute left-5 top-1 text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500`}
-                            >
-                                Image URL
-                            </label>
-                            {errors.image && (
-                                <p className="mt-1 text-xs text-red-500">{errors.image}</p>
                             )}
                         </div>
                         <div className="relative">
