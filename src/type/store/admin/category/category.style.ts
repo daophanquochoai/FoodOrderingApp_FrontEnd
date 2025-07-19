@@ -8,6 +8,7 @@ export interface CategorySlice {
     };
     filter: FilterCategory;
     filterOption: FilterOptions;
+    loadingTable: boolean;
 }
 
 export interface FilterOptions {

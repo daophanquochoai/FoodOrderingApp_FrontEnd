@@ -6,3 +6,18 @@ const categoryAction = getCommonActionsTypeByName(name);
 
 // fetch first
 export const fetchCategoryFirst = createAction(categoryAction.firstFetch);
+
+// create category
+export const createCategory = createAction(categoryAction.create, (data) => ({
+    payload: data,
+}));
+
+// update category
+export const updateCategory = createAction(categoryAction.update, (data) => ({
+    payload: data,
+}));
+
+// delete category
+export const deleteCategory = createAction(categoryAction.delete, (data) => ({
+    payload: data,
+}));

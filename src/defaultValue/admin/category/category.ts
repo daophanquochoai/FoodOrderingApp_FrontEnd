@@ -14,4 +14,5 @@ export const initCategorySlice: CategorySlice = {
         ...filterCategory,
         deep: 1,
     },
+    loadingTable: false,
 };
