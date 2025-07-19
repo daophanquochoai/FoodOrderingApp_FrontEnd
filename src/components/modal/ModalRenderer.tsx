@@ -5,6 +5,7 @@ import ModalOptionProduct from './ModalOptionProduct';
 import ModalAddress from './ModalAddress';
 import ModalCategory from './ModalCategory';
 import ModalReview from './ModalReview';
+import ModalIngredient from './ModalIngredient';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -19,6 +20,8 @@ export const ModalRenderer = () => {
                 return <ModalCategory key={modal.type} {...modal} />;
             case ModalType.REVIEW:
                 return <ModalReview key={modal.type} {...modal} />;
+            case ModalType.INGREDIENT:
+                return <ModalIngredient key={modal.type} {...modal} />;
             default:
                 return null;
         }

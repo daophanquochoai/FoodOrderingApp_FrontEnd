@@ -32,4 +32,5 @@ export enum ModalType {
     ADDRESS = 'ADDRESS',
     CATEGORY = 'CATEGORY',
     REVIEW = 'REVIEW',
+    INGREDIENT = 'INGREDIENT',
 }

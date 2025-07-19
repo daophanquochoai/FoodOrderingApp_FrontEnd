@@ -33,6 +33,7 @@ const UserAddress = lazy(() => import('../pages/client/account/UserAddress'));
 const UserOrder = lazy(() => import('../pages/client/account/UserOrder'));
 const UserVoucher = lazy(() => import('../pages/client/account/UserVoucher'));
 const UserPoint = lazy(() => import('../pages/client/account/UserPoint'));
+const IngredientManagement = lazy(() => import('../pages/admin/ingredientManagement'));
 
 const AppRoutes = () => {
     return (
@@ -95,6 +96,7 @@ const AppRoutes = () => {
                     <Route index element={<Dashboard />} />
                     <Route path="settings" element={<Setting />} />
                     <Route path="category-management" element={<CategoryManagement />} />
+                    <Route path="ingredient-management" element={<IngredientManagement />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
