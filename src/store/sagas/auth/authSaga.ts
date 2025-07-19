@@ -38,7 +38,7 @@ function* handleCreateUser({ payload }) {
         yield call(userApi.createUser, payload);
 
         yield put(common.actions.setSuccessMessage('Create account successful'));
-
+        console.log(123);
         setTimeout(() => {
             window.location.href = '/login';
         }, 1000);
