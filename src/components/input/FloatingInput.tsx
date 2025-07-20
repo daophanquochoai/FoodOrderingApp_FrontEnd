@@ -12,20 +12,33 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
     ...inputProps
 }) => {
     const [showPassword, setShowPassword] = useState(false);
-    const isPassword = type == 'password';
+    const isPassword = type === 'password';
+    const isTextarea = type === 'textarea';
     const inputType = isPassword && showPassword ? 'text' : type;
 
     return (
         <div className="relative">
-            <input
-                type={inputType}
-                id={id}
-                placeholder={label}
-                className={`peer inputBox ${
-                    small ? 'pl-5 pr-1 pt-5 pb-1 text-sm' : 'pl-5 pr-14 pt-5 pb-1 text-base'
-                }`}
-                {...inputProps}
-            />
+            {isTextarea ? (
+                <textarea
+                    id={id}
+                    placeholder={label}
+                    className={`peer inputBox resize-none h-28 ${
+                        small ? 'pl-5 pr-1 pt-5 pb-1 text-sm' : 'pl-5 pr-14 pt-5 pb-1 text-base'
+                    }`}
+                    {...inputProps}
+                />
+            ) : (
+                <input
+                    type={inputType}
+                    id={id}
+                    placeholder={label}
+                    className={`peer inputBox ${
+                        small ? 'pl-5 pr-1 pt-5 pb-1 text-sm' : 'pl-5 pr-14 pt-5 pb-1 text-base'
+                    }`}
+                    {...inputProps}
+                />
+            )}
+
             <label
                 htmlFor={id}
                 className={`absolute left-5 text-gray-500 ${
@@ -38,7 +51,8 @@ const FloatingInput: React.FC<FloatingInputProps> = ({
             >
                 {label}
             </label>
-            {error && <p className="text-red-500 text-sm">* {helperText}</p>}
+
+            {error && <p className="text-red-500 text-sm mt-1">* {helperText}</p>}
 
             {isPassword && (
                 <button

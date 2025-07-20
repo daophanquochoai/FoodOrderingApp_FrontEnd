@@ -65,7 +65,7 @@ const MenuSider = () => {
                 },
                 {
                     key: '/product-management',
-                    label: <Link to={`${baseAdmin}`}>Product Management</Link>,
+                    label: <Link to={`${baseAdmin}/product-management`}>Product Management</Link>,
                     icon: <IoFastFoodOutline />,
                 },
                 {

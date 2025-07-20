@@ -10,6 +10,7 @@ const FormFloatingInput: React.FC<FormFloatingInputProps> = ({
     placeholder,
     type = 'text',
     error,
+    helperText,
     small,
 }) => {
     return (
@@ -24,13 +25,10 @@ const FormFloatingInput: React.FC<FormFloatingInputProps> = ({
                         label={label}
                         placeholder={placeholder || label}
                         type={type}
+                        error={error}
+                        helperText={helperText}
                         small={small}
                     />
-                    {(error || fieldState.error) && (
-                        <p className="text-xs text-red-500 mt-1">
-                            {(error || fieldState.error)?.message}
-                        </p>
-                    )}
                 </div>
             )}
         />

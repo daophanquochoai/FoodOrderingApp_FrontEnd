@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { InferType } from 'yup';
+import { Asserts } from 'yup';
 import { FilterProductSchema } from '../../components/yup/product';
 
 // export type FilterFormValues = {
@@ -16,7 +16,7 @@ import { FilterProductSchema } from '../../components/yup/product';
 //     dateRange?: [dayjs.Dayjs, dayjs.Dayjs];
 // };
 
-export type FilterFormValues = InferType<typeof FilterProductSchema>;
+export type FilterFormValues = Asserts<typeof FilterProductSchema>;
 
 export interface FilterMobileProps {
     isOpen: boolean;

@@ -32,7 +32,7 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
         control,
         handleSubmit,
         reset,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: yupResolver(IngredientShema),
     });
@@ -103,7 +103,8 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
                                     control={control}
                                     label="Name"
                                     placeholder="Enter ingredient name"
-                                    error={errors.name}
+                                    error={!!errors.name}
+                                    helperText={errors.name?.message}
                                 />
                             </Col>
                             <Col span={12}>
@@ -112,7 +113,8 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
                                     control={control}
                                     label="Unit"
                                     options={units}
-                                    error={errors.unit}
+                                    error={!!errors.unit}
+                                    helperText={errors.unit?.message}
                                 />
                             </Col>
                             <Col span={12}>
@@ -121,7 +123,8 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
                                     control={control}
                                     label="Low Threshold"
                                     placeholder="e.g., 10"
-                                    error={errors.low_threshold}
+                                    error={!!errors.low_threshold}
+                                    helperText={errors.low_threshold?.message}
                                 />
                             </Col>
                         </Row>
@@ -132,6 +135,7 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
                                 onClick={handleSubmit(onSubmit)}
                                 type="primary"
                                 className="bg-blue-500 hover:bg-blue-600"
+                                disabled={isSubmitting}
                             >
                                 {variant === 'add' ? 'Add Ingredient' : 'Update Ingredient'}
                             </Button>
