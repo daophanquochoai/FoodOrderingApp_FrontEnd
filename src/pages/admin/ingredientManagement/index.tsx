@@ -126,7 +126,13 @@ const IngredientManagement: React.FC = () => {
     });
 
     const columns: TableColumnsType<Ingredient> = [
-        { title: 'Name', dataIndex: 'name', key: 'name', ...getColumnSearchProps('name') },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.localeCompare(b.name),
+        },
         {
             title: 'Unit',
             dataIndex: 'unit',
@@ -141,11 +147,13 @@ const IngredientManagement: React.FC = () => {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
+            sorter: (a, b) => a.quantity - b.quantity,
         },
         {
             title: 'Low threshold',
             dataIndex: 'low_threshold',
             key: 'low_threshold',
+            sorter: (a, b) => a.low_threshold - b.low_threshold,
         },
         {
             title: 'Status',
@@ -286,6 +294,7 @@ const IngredientManagement: React.FC = () => {
                     dataSource={dataSource}
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
+                    pagination={false}
                 />
             </div>
         </div>

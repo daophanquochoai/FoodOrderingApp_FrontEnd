@@ -49,7 +49,8 @@ export interface FormFloatingInputProps {
     label: string;
     placeholder?: string;
     type?: string;
-    error?: FieldError;
+    error: boolean;
+    helperText: string;
     small?: boolean;
 }
 
@@ -58,6 +59,7 @@ export interface FormFloatingSelectProps {
     control: Control<any>;
     label: string;
     options: { value: string; label: string }[];
-    error?: FieldError;
+    error: boolean;
+    helperText: string;
     small?: boolean;
 }

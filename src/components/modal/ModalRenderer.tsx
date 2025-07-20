@@ -6,6 +6,8 @@ import ModalAddress from './ModalAddress';
 import ModalCategory from './ModalCategory';
 import ModalReview from './ModalReview';
 import ModalIngredient from './ModalIngredient';
+import ModalProductManagementView from './ModalProductManagementViewDelete';
+import ModalProductManagementAddEdit from './ModalProductManagementViewDelete';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -22,6 +24,9 @@ export const ModalRenderer = () => {
                 return <ModalReview key={modal.type} {...modal} />;
             case ModalType.INGREDIENT:
                 return <ModalIngredient key={modal.type} {...modal} />;
+            case ModalType.PRODUCT_MANAGEMENT:
+                if (modal.variant == 'view' || modal.variant == 'delete')
+                    return <ModalProductManagementView key={modal.type} {...modal} />;
             default:
                 return null;
         }

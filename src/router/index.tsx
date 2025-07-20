@@ -34,6 +34,10 @@ const UserOrder = lazy(() => import('../pages/client/account/UserOrder'));
 const UserVoucher = lazy(() => import('../pages/client/account/UserVoucher'));
 const UserPoint = lazy(() => import('../pages/client/account/UserPoint'));
 const IngredientManagement = lazy(() => import('../pages/admin/ingredientManagement'));
+const ProductManagement = lazy(() => import('../pages/admin/productManagement'));
+const AddAndEditProductManagement = lazy(
+    () => import('../pages/admin/productManagement/AddEditProductManagement')
+);
 
 const AppRoutes = () => {
     return (
@@ -98,6 +102,15 @@ const AppRoutes = () => {
                     <Route path="settings" element={<Setting />} />
                     <Route path="category-management" element={<CategoryManagement />} />
                     <Route path="ingredient-management" element={<IngredientManagement />} />
+                    <Route path="product-management" element={<ProductManagement />} />
+                    <Route
+                        path="product-management/add"
+                        element={<AddAndEditProductManagement />}
+                    />
+                    <Route
+                        path="product-management/edit/:id"
+                        element={<AddAndEditProductManagement />}
+                    />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />

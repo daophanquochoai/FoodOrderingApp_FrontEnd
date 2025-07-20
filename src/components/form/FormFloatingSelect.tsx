@@ -10,6 +10,7 @@ const FormFloatingSelect: React.FC<FormFloatingSelectProps> = ({
     label,
     options,
     error,
+    helperText,
     small,
 }) => {
     return (
@@ -25,11 +26,7 @@ const FormFloatingSelect: React.FC<FormFloatingSelectProps> = ({
                         options={options}
                         small={small}
                     />
-                    {(error || fieldState.error) && (
-                        <p className="text-xs text-red-500 mt-1">
-                            {(error || fieldState.error)?.message}
-                        </p>
-                    )}
+                    {error && <p className="text-xs text-red-500 mt-1">* {helperText}</p>}
                 </div>
             )}
         />
