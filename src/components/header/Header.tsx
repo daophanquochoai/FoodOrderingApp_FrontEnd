@@ -10,14 +10,26 @@ import { IoSearchOutline } from 'react-icons/io5';
 import { IoPersonOutline } from 'react-icons/io5';
 import CartDrawer from '../cart/CartDrawer';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuth } from '@/store/selector/auth/auth.selector';
+import { fetchFirst } from '@/store/action/client/cart/cart.action';
+import { selectCart } from '@/store/selector/client/cart/cart.selector';
 
 const Header: React.FC = () => {
+    //selector
+    const auth = useSelector(selectAuth);
+    const cart = useSelector(selectCart);
+
+    //hook
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    // event
     const isScrolled = useScrollEffect({ threshold: 50 });
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [isOpenCartDraw, setIsOpenCartDraw] = useState(false);
     const cartItemCount = 5;
-    const navigate = useNavigate();
     const { handleDropdownClick, closeDropdown, isOpen, dropdownRef } = useDropdown();
     const locationHome = useLocation();
 
@@ -33,6 +45,20 @@ const Header: React.FC = () => {
             window.removeEventListener('resize', checkWidth);
         };
     }, [isMobile]);
+
+    useEffect(() => {
+        if (auth.token && auth.user) {
+            dispatch(fetchFirst());
+        }
+    }, [auth]);
+
+    const handleClickUserIcon = () => {
+        if (auth?.user && auth?.token) {
+            navigate('/account/customer');
+        } else {
+            handleDropdownClick('user');
+        }
+    };
 
     return (
         <>
@@ -71,12 +97,28 @@ const Header: React.FC = () => {
                     <div ref={dropdownRef} className=" p-7 flex items-center space-x-8 text-2xl">
                         <IoSearchOutline className="hover:text-orange-500 lg:size-6 size-5 hover:cursor-pointer" />
 
+                        {auth?.user && auth?.token && (
+                            <div className="relative">
+                                <BsBasket
+                                    className="hover:text-orange-500 hover:cursor-pointer lg:size-6 size-5"
+                                    onClick={() => setIsOpenCartDraw(true)}
+                                />
+                                {cart?.cartItems && (
+                                    <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full lg:h-5 lg:w-5 h-4 w-4 flex justify-center">
+                                        {cart?.cartItems?.length > 99
+                                            ? '99+'
+                                            : cart?.cartItems?.length}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+
                         <IoPersonOutline
                             className="hover:text-orange-500 hover:cursor-pointer lg:size-6 size-5"
-                            onClick={() => handleDropdownClick('user')}
+                            onClick={handleClickUserIcon}
                         />
                         {isOpen('user') && (
-                            <div className="absolute top-full right-20 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-3">
+                            <div className="absolute top-full right-5 w-36 bg-white text-black shadow-lg border border-gray-200 z-50 px-4 py-3">
                                 <ul>
                                     <li onClick={closeDropdown}>
                                         <Link
@@ -97,18 +139,6 @@ const Header: React.FC = () => {
                                 </ul>
                             </div>
                         )}
-
-                        <div className="relative">
-                            <BsBasket
-                                className="hover:text-orange-500 hover:cursor-pointer lg:size-6 size-5"
-                                onClick={() => setIsOpenCartDraw(true)}
-                            />
-                            {cartItemCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full lg:h-5 lg:w-5 h-4 w-4 flex justify-center">
-                                    {cartItemCount > 99 ? '99+' : cartItemCount}
-                                </span>
-                            )}
-                        </div>
                     </div>
                 </div>
             </header>
@@ -116,10 +146,6 @@ const Header: React.FC = () => {
             <CartDrawer isOpen={isOpenCartDraw} onClose={() => setIsOpenCartDraw(false)} />
 
             <MobileNav isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
-            <div className="flex gap-[40px]">
-                <Link to={'/login'}>Dang nhap</Link>
-                <button>Dang ky</button>
-            </div>
         </>
     );
 };

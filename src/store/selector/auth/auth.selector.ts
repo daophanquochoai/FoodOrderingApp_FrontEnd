@@ -11,16 +11,6 @@ export const selectState = (state: any) => state[name];
 export const selectAuth = createSelector(selectState, (state: AuthState) => state);
 
 /**
- * get username
- */
-export const selectUsername = createSelector(selectState, (state: AuthState) => state.username);
-
-/**
- * get password
- */
-export const selectPassword = createSelector(selectState, (state: AuthState) => state.password);
-
-/**
  * get loading
  */
 export const selectLoading = createSelector(selectState, (state: AuthState) => state.loading);

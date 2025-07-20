@@ -4,6 +4,7 @@ import { authApi } from '@/api/auth/authApi';
 import { auth, common } from '@/store/reducer';
 import { User } from '@/type/store/auth/authSlide';
 import { userApi } from '@/api/client/user/user.api';
+import { setCookies } from '@/utils/cookies/cookies';
 
 function* handleLogin({ payload }) {
     const { username, password } = payload;
@@ -13,7 +14,6 @@ function* handleLogin({ payload }) {
 
         const { data } = yield* call(authApi.login, { username, password });
 
-        console.log(data);
         const user: User = data.data;
         yield* put(
             auth.actions.setAccount({
@@ -21,8 +21,15 @@ function* handleLogin({ payload }) {
                 token: data.access_token,
             })
         );
+
+        console.log(data);
+        setCookies('refresh_token', JSON.stringify(data?.refresh_token), 30);
+        setCookies('access_token', JSON.stringify(data?.access_token), 7);
+        setCookies('user', JSON.stringify(user), 7);
+
+        window.location.href = '/';
     } catch (e) {
-        yield* put(auth.actions.setError(e.message));
+        yield* put(common.actions.setErrorMessage(e?.message));
     } finally {
         yield* put(auth.actions.setLoading(false));
     }
@@ -38,7 +45,6 @@ function* handleCreateUser({ payload }) {
         yield call(userApi.createUser, payload);
 
         yield put(common.actions.setSuccessMessage('Create account successful'));
-        console.log(123);
         setTimeout(() => {
             window.location.href = '/login';
         }, 1000);

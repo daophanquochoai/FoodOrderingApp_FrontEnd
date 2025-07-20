@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
-import QuantitySelector from '../../components/product/QuantitySelector';
+import QuantitySelector, { Type } from '../../components/product/QuantitySelector';
 import { FoodSize } from '@/type/store/client/collection/food.style';
 import { formatMoney } from '@/utils/formatRender';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectFoodDetail } from '@/store/selector/client/collection/food.selector';
+import { common } from '@/store/reducer';
+import { addToCart } from '@/store/action/client/cart/cart.action';
+import { Spin } from 'antd';
 
 const ProductInfo = () => {
     //selector
     const foodDetail = useSelector(selectFoodDetail);
     //state
     const [selectedSize, setSelectedSize] = useState<FoodSize>(null);
-
-    //state
     const [quantity, setQuantity] = useState<number>(1);
+    const [loading, setLoading] = useState(false);
+
+    //hook
+    const dispatch = useDispatch();
 
     //useEffect
     useEffect(() => {
@@ -21,8 +26,28 @@ const ProductInfo = () => {
         }
     }, [foodDetail]);
 
+    //event handling
+    const handleAddToCart = () => {
+        setLoading(true);
+        if (selectedSize == null || selectedSize?.id == null) {
+            dispatch(common.actions.setErrorMessage('Please choose item'));
+            return;
+        }
+        const cartItem = {
+            foodId: {
+                id: selectedSize?.id,
+            },
+            quantity: quantity,
+            priceAtTime: selectedSize?.discount * selectedSize?.price,
+            isActive: true,
+        };
+
+        dispatch(addToCart(cartItem));
+        setLoading(false);
+    };
+
     return (
-        <>
+        <Spin spinning={loading}>
             <div className="flex flex-col gap-4 border-b border-gray-400 pb-4 mb-4">
                 <strong className="text-2xl">{foodDetail?.name}</strong>
                 <div className="flex gap-4">
@@ -75,12 +100,14 @@ const ProductInfo = () => {
                 <div className="-ml-2 flex items-center space-x-3">
                     <QuantitySelector
                         quantity={quantity}
-                        onQuantityChange={setQuantity}
-                        min={1}
-                        max={10}
+                        type={Type.PRODUCT}
+                        setQuantity={setQuantity}
                     />
-                    <button className="text-white font-bold bg-orange-600 py-3 px-16 rounded-full hover:bg-black duration-300">
-                        ORDER NOW
+                    <button
+                        onClick={handleAddToCart}
+                        className="text-white font-bold bg-orange-600 py-3 px-16 rounded-full hover:bg-black duration-300"
+                    >
+                        CART NOW
                     </button>
                 </div>
                 {foodDetail?.category && (
@@ -98,7 +125,7 @@ const ProductInfo = () => {
                     </>
                 )}
             </div>
-        </>
+        </Spin>
     );
 };
 

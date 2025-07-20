@@ -1,10 +1,8 @@
 export interface AuthState {
-    user: any | null;
+    user: User;
     token: string | null;
     loading: boolean;
     error: string | null;
-    username: string | null;
-    password: string | null;
 }
 
 export interface User {
@@ -23,4 +21,20 @@ export interface createUser {
     role?: {
         roleName?: string;
     };
+}
+
+export interface User {
+    id: number;
+    name: string;
+    phoneNumber: string;
+    image: string;
+    email: string;
+    isActive: boolean;
+    lastLogin: string;
+    role: Role;
+}
+
+export interface Role {
+    id: number;
+    roleName: string;
 }

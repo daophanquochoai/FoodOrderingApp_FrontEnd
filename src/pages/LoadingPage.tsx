@@ -2,7 +2,7 @@ import React from 'react';
 
 const LoadingPage: React.FC = () => {
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fffbe6] to-[#ffe0b2] overflow-hidden absolute w-screen top-0 left-0 h-screen">
+        <div className="z-[1000] min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fffbe6] to-[#ffe0b2] overflow-hidden absolute w-screen top-0 left-0 h-screen">
             <div>
                 {/* Logo nhà hàng lắc nhẹ */}
                 <div className="food-icon-tech animate-shake">

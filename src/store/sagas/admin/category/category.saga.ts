@@ -31,7 +31,6 @@ function* handleFetchFirst() {
 
 // fetch data table
 function* handleFetchCategoryTable() {
-    yield put(category.actions.setLoading(true));
     try {
         const { fitler } = yield all({
             fitler: select(selectFilter),
@@ -42,8 +41,6 @@ function* handleFetchCategoryTable() {
         yield put(category.actions.setCategory(data?.data));
     } catch (e) {
         console.error(e);
-    } finally {
-        yield put(category.actions.setLoading(false));
     }
 }
 
@@ -54,11 +51,7 @@ function* handleDeleteCategory({ payload }) {
             ...payload,
             status: 'DELETE',
         });
-
-        console.log({
-            ...payload,
-            status: 'DELETE',
-        });
+        yield put(category.actions.setLoading(true));
         //fetch category
         yield handleFetchCategoryTable();
 
@@ -67,6 +60,8 @@ function* handleDeleteCategory({ payload }) {
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(category.actions.setLoading(false));
     }
 }
 
@@ -74,7 +69,7 @@ function* handleDeleteCategory({ payload }) {
 function* handleUpdateCategory({ payload }) {
     try {
         yield call(categoryApi.updateCategory, payload);
-
+        yield put(category.actions.setLoading(true));
         //fetch category
         yield handleFetchCategoryTable();
 
@@ -83,6 +78,8 @@ function* handleUpdateCategory({ payload }) {
     } catch (e) {
         yield put(common.actions.setErrorMessage(e?.message));
         console.error(e);
+    } finally {
+        yield put(category.actions.setLoading(false));
     }
 }
 
@@ -90,7 +87,7 @@ function* handleUpdateCategory({ payload }) {
 function* handleCreateCategory({ payload }) {
     try {
         yield call(categoryApi.createCategory, payload);
-
+        yield put(category.actions.setLoading(true));
         //fetch category
         yield handleFetchCategoryTable();
 
@@ -99,6 +96,8 @@ function* handleCreateCategory({ payload }) {
     } catch (e) {
         yield put(common.actions.setErrorMessage(e?.message));
         console.error(e);
+    } finally {
+        yield put(category.actions.setLoading(false));
     }
 }
 

@@ -1,4 +1,5 @@
 // src/services/HttpService.ts
+import { getCookies } from '@/utils/cookies/cookies';
 import axios, { AxiosInstance } from 'axios';
 import { parseCookies, setCookie } from 'nookies';
 
@@ -25,9 +26,11 @@ class HttpService {
             switch (status) {
                 case 401:
                     if (!isServer) {
-                        const cookies = parseCookies();
-                        const refresh_token = cookies['refresh_token'];
+                        const refresh_token = getCookies('refresh_token');
 
+                        if (refresh_token == null || refresh_token == undefined) {
+                            throw new Error('Unauthorized');
+                        }
                         try {
                             const response = await axios.post(
                                 `${import.meta.env.VITE_BACKEND_URL}/auth/refreshToken`,
