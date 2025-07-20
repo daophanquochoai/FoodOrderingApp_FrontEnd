@@ -1,30 +1,46 @@
+import { cart } from '@/store/reducer';
 import React from 'react';
 import { GrSubtract, GrAdd } from 'react-icons/gr';
+import { useDispatch } from 'react-redux';
+
+export enum Type {
+    CART,
+    PRODUCT,
+}
 
 interface QuantitySelectorProps {
     quantity: number;
-    onQuantityChange: (quantity: number) => void;
-    min?: number;
-    max?: number;
+    id?: number;
     small?: boolean;
+    type: Type;
+    setQuantity?: (any) => void;
 }
 
 const QuantitySelector: React.FC<QuantitySelectorProps> = ({
     quantity,
-    onQuantityChange,
-    min = 1,
-    max = 99,
+    id,
     small = false,
+    type = Type.CART,
+    setQuantity,
 }) => {
+    // hook
+    const dispatch = useDispatch();
+
     const handleDecrease = () => {
-        if (quantity > min) {
-            onQuantityChange(quantity - 1);
+        if (type == Type.CART) {
+            dispatch(cart.actions.setRiseCart({ id, type: 'DOWN' }));
+        } else {
+            if (quantity > 1) {
+                setQuantity(quantity - 1);
+            }
         }
     };
 
     const handleIncrease = () => {
-        if (quantity < max) {
-            onQuantityChange(quantity + 1);
+        if (type == Type.CART) {
+            dispatch(cart.actions.setRiseCart({ id, type: 'RISE' }));
+        } else {
+            setQuantity(quantity + 1);
         }
     };
 
@@ -35,12 +51,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
                     small ? 'py-1 px-2' : 'py-2 px-4'
                 }`}
             >
-                <button
-                    onClick={handleDecrease}
-                    disabled={quantity <= min}
-                    className={`${quantity <= min ? 'cursor-not-allowed' : 'hover:text-orange-500'}
-                `}
-                >
+                <button onClick={handleDecrease} className={'hover:text-orange-500'}>
                     <GrSubtract className={`${small ? 'text-sm' : 'text-lg'}`} />
                 </button>
 
@@ -52,12 +63,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({
                     {quantity}
                 </span>
 
-                <button
-                    onClick={handleIncrease}
-                    disabled={quantity >= max}
-                    className={`${quantity >= max ? 'cursor-not-allowed' : 'hover:text-orange-500'}
-                `}
-                >
+                <button onClick={handleIncrease} className={'hover:text-orange-500'}>
                     <GrAdd className={`${small ? 'text-sm' : 'text-lg'}`} />
                 </button>
             </div>

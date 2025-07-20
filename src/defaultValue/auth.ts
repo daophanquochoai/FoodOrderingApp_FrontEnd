@@ -5,6 +5,4 @@ export const initAutDefault: AuthState = {
     token: null,
     loading: false,
     error: null,
-    username: '',
-    password: '',
 };

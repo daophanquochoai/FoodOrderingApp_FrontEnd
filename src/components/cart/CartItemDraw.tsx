@@ -1,13 +1,20 @@
 import { Col, Row } from 'antd';
-import React, { useState } from 'react';
-import { CartItemProps } from '../../type';
-import QuantitySelector from '../product/QuantitySelector';
+import React from 'react';
+import QuantitySelector, { Type } from '../product/QuantitySelector';
 import { IoTrashOutline } from 'react-icons/io5';
+import { CartItem } from '@/type/store/client/cart/cart.style';
+import { formatMoney } from '@/utils/formatRender';
+import burger from '../../assets/burger.jpg';
+import { useDispatch } from 'react-redux';
+import { deleteCartItem } from '@/store/action/client/cart/cart.action';
 
-const CartItemDraw: React.FC<CartItemProps> = (cartItem) => {
-    const { name, image, price, quantity } = cartItem;
+const CartItemDraw: React.FC<CartItem> = (cartItem) => {
+    // hook
+    const dispatch = useDispatch();
 
-    const [quantityState, setQuantity] = useState(quantity);
+    const handleDelete = () => {
+        dispatch(deleteCartItem(cartItem?.id));
+    };
 
     return (
         <div>
@@ -15,22 +22,35 @@ const CartItemDraw: React.FC<CartItemProps> = (cartItem) => {
                 <Col span={18}>
                     <div className="flex gap-2 items-center justify-start">
                         <div className="w-[80px] h-[80px]">
-                            <img src={image} alt="" className="w-full h-auto object-contain" />
+                            <img
+                                src={cartItem?.foodId?.foodId?.image || burger}
+                                alt=""
+                                className="w-full h-auto object-contain"
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null; // tránh loop vô hạn
+                                    e.currentTarget.src = burger;
+                                }}
+                            />
                         </div>
 
                         <div className="flex flex-col gap-1">
-                            <h2 className="text-base font-medium">{name}</h2>
-                            <p className="text-sm font-semibold text-gray-500">${price}</p>
+                            <h2 className="text-base font-medium">
+                                {cartItem?.foodId?.foodId?.name +
+                                    ' - ' +
+                                    cartItem?.foodId?.sizeId?.name || ''}
+                            </h2>
+                            <p className="text-sm font-semibold text-gray-500">
+                                ${formatMoney(cartItem?.priceAtTime) || 0}
+                            </p>
                             <div className="flex gap-4 items-center justify-center">
                                 <QuantitySelector
-                                    quantity={quantityState}
-                                    onQuantityChange={setQuantity}
-                                    min={1}
-                                    max={10}
+                                    id={cartItem.id}
+                                    quantity={cartItem?.quantity}
+                                    type={Type.CART}
                                     small={true}
                                 />
                                 <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center text-white bg-orange-primary hover:bg-black cursor-pointer transition-all duration-200">
-                                    <IoTrashOutline className="size-4" />
+                                    <IoTrashOutline className="size-4" onClick={handleDelete} />
                                 </div>
                             </div>
                         </div>
@@ -38,7 +58,9 @@ const CartItemDraw: React.FC<CartItemProps> = (cartItem) => {
                 </Col>
 
                 <Col span={6} className="flex justify-end">
-                    <p className="text-base font-semibold uppercase  text-orange-primary">$35</p>
+                    <p className="text-base font-semibold uppercase  text-orange-primary">
+                        ${formatMoney(cartItem?.quantity * cartItem?.priceAtTime)}
+                    </p>
                 </Col>
             </Row>
         </div>

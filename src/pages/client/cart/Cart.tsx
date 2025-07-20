@@ -4,30 +4,16 @@ import { CartItemProps } from '../../../type';
 import { Col, Row } from 'antd';
 import CartItemPage from '../../../components/cart/CartItemPage';
 import { useNavigate } from 'react-router-dom';
-
-const cartItems: CartItemProps[] = [
-    {
-        image: 'https://media.istockphoto.com/id/1168754685/photo/pizza-margarita-with-cheese-top-view-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=psLRwd-hX9R-S_iYU-sihB4Jx2aUlUr26fkVrxGDfNg=',
-        name: 'Pizza Cheese',
-        price: 20,
-        quantity: 2,
-    },
-    {
-        image: 'https://media.istockphoto.com/id/1168754685/photo/pizza-margarita-with-cheese-top-view-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=psLRwd-hX9R-S_iYU-sihB4Jx2aUlUr26fkVrxGDfNg=',
-        name: 'Pizza Cheese',
-        price: 20,
-        quantity: 2,
-    },
-    {
-        image: 'https://media.istockphoto.com/id/1168754685/photo/pizza-margarita-with-cheese-top-view-isolated-on-white-background.jpg?s=612x612&w=0&k=20&c=psLRwd-hX9R-S_iYU-sihB4Jx2aUlUr26fkVrxGDfNg=',
-        name: 'Pizza Cheese',
-        price: 20,
-        quantity: 2,
-    },
-];
+import { useSelector } from 'react-redux';
+import { selectCart } from '@/store/selector/client/cart/cart.selector';
+import { formatMoney } from '@/utils/formatRender';
 
 const Cart = () => {
+    // hook
     const navigate = useNavigate();
+
+    // selector
+    const cart = useSelector(selectCart);
 
     return (
         <div>
@@ -47,8 +33,10 @@ const Cart = () => {
                     </Col>
                 </Row>
 
-                {cartItems.length > 0 &&
-                    cartItems.map((item, index) => (
+                {cart &&
+                    cart?.cartItems &&
+                    cart?.cartItems.length > 0 &&
+                    cart?.cartItems.map((item, index) => (
                         <div key={index} className="py-2">
                             <CartItemPage {...item} />
                         </div>
@@ -59,7 +47,14 @@ const Cart = () => {
                         <div className="">
                             <div className="flex items-center justify-end gap-3 mr-1">
                                 <p className="text-base font-medium">Subtotal</p>
-                                <p className="text-lg font-medium text-orange-primary">$570</p>
+                                <p className="text-lg font-medium text-orange-primary">
+                                    $
+                                    {formatMoney(
+                                        cart?.cartItems?.reduce((sum, c) => {
+                                            return (sum += c.priceAtTime * c.quantity);
+                                        }, 0) || 0
+                                    )}
+                                </p>
                             </div>
                             <div className="w-[200px]">
                                 <button

@@ -69,7 +69,6 @@ function* handleFetchFood() {
 
         //get food by api
         const responseFood = yield* call(foodApi.getFoodByFilter, filterFood);
-        console.log(responseFood?.data);
         yield put(food.actions.setFood(responseFood?.data?.data));
     } catch (e) {
         console.error(e);

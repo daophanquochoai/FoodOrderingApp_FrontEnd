@@ -126,7 +126,6 @@ const CategoryManagement = () => {
             ),
         },
     ];
-    console.log(category?.data);
 
     return (
         <>

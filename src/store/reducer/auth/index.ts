@@ -11,16 +11,10 @@ const authSlicer = createSlice({
             state.user = payload;
         },
         setAccount(state, { payload }: PayloadAction<any>) {
-            state = {
+            return {
                 ...state,
                 ...payload,
             };
-        },
-        setUsername(state, { payload }: PayloadAction<string>) {
-            state.username = payload;
-        },
-        setPassword(state, { payload }: PayloadAction<string>) {
-            state.password = payload;
         },
         setLoading(state, { payload }: PayloadAction<boolean>) {
             state.loading = payload;
