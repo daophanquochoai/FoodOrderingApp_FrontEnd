@@ -82,7 +82,6 @@ const Register = () => {
                 roleName: 'USER',
             },
         };
-        console.log('call');
         dispatch(createUserAction(user));
     };
 

@@ -1,3 +1,5 @@
+import { Food } from '@/type/product/product';
+
 export enum EStatusCategory {
     DELETE,
     EXPIRED,
@@ -11,6 +13,7 @@ export interface Category {
     desc: string;
     status: EStatusCategory;
     parent: Category;
+    foods?: Food[];
 }
 
 export interface FilterCategory {

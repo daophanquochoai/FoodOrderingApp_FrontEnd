@@ -4,7 +4,7 @@ export type FloatingInputProps = {
     id: string;
     type?: string;
     error: boolean;
-    helperText: string;
+    helperText: any;
     small?: boolean;
 } & React.InputHTMLAttributes<HTMLInputElement> &
     React.TextareaHTMLAttributes<HTMLTextAreaElement>;
