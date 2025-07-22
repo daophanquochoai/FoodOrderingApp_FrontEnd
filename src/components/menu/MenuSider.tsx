@@ -4,7 +4,7 @@ import { IoStorefrontOutline } from 'react-icons/io5';
 import { VscSourceControl } from 'react-icons/vsc';
 import { BiFoodMenu } from 'react-icons/bi';
 import { IoFastFoodOutline } from 'react-icons/io5';
-import { MdOutlineCategory, MdOutlineManageAccounts } from 'react-icons/md';
+import { MdOutlineCategory, MdOutlineManageAccounts, MdOutlineReport } from 'react-icons/md';
 import { CiDiscount1 } from 'react-icons/ci';
 import { LuNotebookPen } from 'react-icons/lu';
 import { CgSmartHomeRefrigerator } from 'react-icons/cg';
@@ -79,6 +79,13 @@ const MenuSider = () => {
                         <Link to={`${baseAdmin}/ingredient-management`}>Ingredient Management</Link>
                     ),
                     icon: <CgSmartHomeRefrigerator />,
+                    children: [
+                        {
+                            key: '/spoil-ingredient',
+                            label: <Link to={`${baseAdmin}/spoil-ingredient`}>Spoil Ingredient</Link>,
+                            icon: <MdOutlineReport />,
+                        },
+                    ],
                 },
                 {
                     key: '/source-management',

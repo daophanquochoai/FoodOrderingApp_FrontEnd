@@ -38,6 +38,8 @@ const ProductManagement = lazy(() => import('../pages/admin/productManagement'))
 const AddAndEditProductManagement = lazy(
     () => import('../pages/admin/productManagement/AddEditProductManagement')
 );
+const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
+const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
 
 const AppRoutes = () => {
     return (
@@ -102,6 +104,9 @@ const AppRoutes = () => {
                     <Route path="settings" element={<Setting />} />
                     <Route path="category-management" element={<CategoryManagement />} />
                     <Route path="ingredient-management" element={<IngredientManagement />} />
+                    <Route path="ingredient-management/:id" element={<ViewIngredient />} />
+                    <Route path="spoil-ingredient" element={<SpoilIngredient />} />
+                    
                     <Route path="product-management" element={<ProductManagement />} />
                     <Route
                         path="product-management/add"

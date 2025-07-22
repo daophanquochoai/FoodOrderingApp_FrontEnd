@@ -1,5 +1,6 @@
 import {
     Button,
+    DatePicker,
     Input,
     InputRef,
     Space,
@@ -18,11 +19,12 @@ import { ModalType } from '@/type/store/common';
 import { common } from '@/store/reducer';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
 
 type DataIndex = keyof any;
 
-const IngredientManagement: React.FC = () => {
-    const dispatch = useDispatch();
+const SpoilIngredient = () => {
+  const dispatch = useDispatch();
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -133,6 +135,14 @@ const IngredientManagement: React.FC = () => {
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
+            title: 'Import History ID',
+            dataIndex: 'importHistoryId',
+            key: 'name',
+            width: "200px",
+            ...getColumnSearchProps('name'),
+            sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
             title: 'Unit',
             dataIndex: 'unit',
             key: 'unit',
@@ -143,72 +153,56 @@ const IngredientManagement: React.FC = () => {
             onFilter: (value, record) => record.unit == value,
         },
         {
-            title: 'Avg Price',
-            dataIndex: 'avg_price',
-            key: 'avg_price',
-            sorter: (a, b) => a.avg_price - b.avg_price,
-            render: (text) => <p>${text}</p>,
-        },
-        {
             title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
             sorter: (a, b) => a.quantity - b.quantity,
         },
         {
-            title: 'Low threshold',
-            dataIndex: 'low_threshold',
-            key: 'low_threshold',
-            sorter: (a, b) => a.low_threshold - b.low_threshold,
+            title: 'Reason',
+            dataIndex: 'reason',
+            key: 'reason',
+            width: "150px",
+            render: (reason) => <p style={{
+                width: '150px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+            }}>{reason}</p>
         },
         {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            filters: [
-                { text: 'Stock', value: 'in_stock' },
-                { text: 'Low stock', value: 'low_stock' },
-                { text: 'Out of stock', value: 'out_of_stock' },
-            ],
-            onFilter: (value, record) => record.status == value,
-            render: (status) => {
-                if (status == 'in_stock') return <Tag color="green">Còn</Tag>;
-                if (status == 'low_stock') return <Tag color="orange">Còn ít</Tag>;
-                return <Tag color="red">Hết</Tag>;
-            },
+            title: 'Created Time',
+            dataIndex: 'create_at',
+            key: 'create_at',
+            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+                <div style={{ padding: 8 }}>
+                    <DatePicker
+                        onChange={(date, dateString) =>
+                            setSelectedKeys(dateString ? [dateString as string] : [])
+                        }
+                        style={{ marginBottom: 8, display: 'block' }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={() => confirm()}
+                        size="small"
+                        style={{ width: '100%' }}
+                    >
+                        Apply
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && clearFilters()}
+                        size="small"
+                        style={{ width: '100%' }}
+                    >
+                        Delete
+                    </Button>
+                </div>
+            ),
+            onFilter: (value, record) =>
+                record.create_at?.startsWith(value as string) || false,
+            render: (date) => dayjs(date).format("DD/MM/YYYY")
         },
-        // {
-        //     title: 'Updated Time',
-        //     dataIndex: 'late_update_time',
-        //     key: 'late_update_time',
-        //     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        //         <div style={{ padding: 8 }}>
-        //             <DatePicker
-        //                 onChange={(date, dateString) =>
-        //                     setSelectedKeys(dateString ? [dateString as string] : [])
-        //                 }
-        //                 style={{ marginBottom: 8, display: 'block' }}
-        //             />
-        //             <Button
-        //                 type="primary"
-        //                 onClick={() => confirm()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Apply
-        //             </Button>
-        //             <Button
-        //                 onClick={() => clearFilters && clearFilters()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Delete
-        //             </Button>
-        //         </div>
-        //     ),
-        //     onFilter: (value, record) =>
-        //         record.late_update_time?.startsWith(value as string) || false,
-        // },
         {
             title: 'Actions',
             key: 'actions',
@@ -219,21 +213,21 @@ const IngredientManagement: React.FC = () => {
                         color="primary"
                         variant="filled"
                         icon={<EyeOutlined />}
-                        onClick={() => navigate(`/admin/ingredient-management/${record.id}`)}
+                        onClick={() => handleOpenViewSpoilIngredientModal(record)}
                         className=""
                         size="small"
                     />
                     <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => handleOpenEditIngredientModal(record)}
+                        onClick={() => handleOpenEditSpoilIngredientModal(record)}
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
                     />
                     <Button
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteIngredientModal(record)}
+                        onClick={() => handleOpenDeleteSpoilIngredientModal(record)}
                         size="small"
                     />
                 </Space>
@@ -241,58 +235,52 @@ const IngredientManagement: React.FC = () => {
         },
     ];
 
-    const rawData = [
+    const dataSource = [
         {
-            id: '1',
-            name: 'Gạo',
-            unit: 'kg',
-            low_threshold: 10,
-            late_update_time: '2025-07-13',
-            avg_price: 15,
+            name: "Dầu ăn",
+            importHistoryId: 1,
+            unit: "liter",
+            quantity: 3,
+            reason: "Dầu ăn bảo quản hỏng aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             create_at: '2024-09-03T10:00:00Z',
-            history: [
-                { quantity: 50, used_unit: 40, avg_price: 15 }, // còn 10
-                { quantity: 20, used_unit: 20, avg_price: 10 }, // còn 0
-            ],
-        },
-        {
-            id: '2',
-            name: 'Dầu ăn',
-            unit: 'lít',
-            low_threshold: 5,
-            late_update_time: '2025-07-12',
-            avg_price: 8,
-            create_at: '2024-09-03T10:00:00Z',
-            history: [{ quantity: 10, used_unit: 10, avg_price: 8 }],
+            late_update_time: ""
         },
     ];
 
-    const dataSource = mapIngredients(rawData);
-
-    const handleOpenAddIngredientModal = () => {
+    const handleOpenViewSpoilIngredientModal = (data) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SPOIL_INGREDIENT,
+                variant: 'view',
+                data: data,
+            })
+        );
+    };
+
+    const handleOpenAddSpoilIngredientModal = () => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.SPOIL_INGREDIENT,
                 variant: 'add',
                 data: null,
             })
         );
     };
 
-    const handleOpenEditIngredientModal = (ingredient) => {
+    const handleOpenEditSpoilIngredientModal = (spoil) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SPOIL_INGREDIENT,
                 variant: 'edit',
-                data: ingredient,
+                data: spoil,
             })
         );
     };
 
-    const handleOpenDeleteIngredientModal = (ingredient) => {
+    const handleOpenDeleteSpoilIngredientModal = (ingredient) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SPOIL_INGREDIENT,
                 variant: 'delete',
                 data: ingredient,
             })
@@ -301,10 +289,10 @@ const IngredientManagement: React.FC = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold">Ingredient Management</h1>
+            <h1 className="text-2xl font-bold">Spoil Ingredient Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
-                <Button type="primary" onClick={handleOpenAddIngredientModal}>
-                    + New Ingredient
+                <Button type="primary" onClick={handleOpenAddSpoilIngredientModal}>
+                    + New Report
                 </Button>
 
                 <Table
@@ -317,6 +305,6 @@ const IngredientManagement: React.FC = () => {
             </div>
         </div>
     );
-};
+}
 
-export default IngredientManagement;
+export default SpoilIngredient

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
-import { Button, Col, Input, Row, Space, Spin, Table } from 'antd';
+import { Button, Col, Input, Popconfirm, Row, Space, Table, Spin } from 'antd';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
@@ -16,6 +16,8 @@ import {
 } from '@/store/selector/admin/food/food_manager.selector';
 import { common } from '@/store/reducer';
 import { addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
+import FormSelectAnt from '@/components/form/FormSelectAnt';
+import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 
 const sizeFromDB = [
     { id: 1, name: 'S' },
@@ -87,6 +89,15 @@ const AddEditProductManagement = () => {
         dispatch(addSize(newSize));
     };
 
+    const optionsStatus = [
+        { value: true, label: 'Active' },
+        { value: false, label: 'Inactive' },
+    ]
+
+    const handleDeleteSize = (record) => {
+        console.log(record);
+    }
+
     return (
         <Spin spinning={loadingComponent}>
             <div className="relative">
@@ -141,6 +152,15 @@ const AddEditProductManagement = () => {
                                     />
 
                                     <FormFoodSize name="sizes" />
+
+                                    <div className='w-[22%]'>
+                                        <FormSelectAnt
+                                            name="status"
+                                            control={control}
+                                            label="Status"
+                                            options={optionsStatus}
+                                        />
+                                    </div>
 
                                     {/* Action Buttons */}
                                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">

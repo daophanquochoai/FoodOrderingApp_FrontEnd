@@ -37,7 +37,7 @@ const ModalIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
         resolver: yupResolver(IngredientShema),
     });
 
-    const onSubmit = (data: Ingredient) => {
+    const onSubmit = (data: any) => {
         console.log('New values:', {
             ...data,
         });
