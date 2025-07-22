@@ -108,7 +108,7 @@ const AppRoutes = () => {
                         element={<AddAndEditProductManagement />}
                     />
                     <Route
-                        path="product-management/edit/:id"
+                        path="product-management/edit"
                         element={<AddAndEditProductManagement />}
                     />
                 </Route>

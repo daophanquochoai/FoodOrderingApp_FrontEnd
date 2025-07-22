@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { auth, cart, category, collection, common, food } from '.';
+import { auth, cart, category, collection, common, food, foodManager } from '.';
 
 const rootReducers = combineReducers({
     [auth.name]: auth.default.reducer,
@@ -8,6 +8,7 @@ const rootReducers = combineReducers({
     [food.name]: food.default.reducer,
     [category.name]: category.default.reducer,
     [cart.name]: cart.default.reducer,
+    [foodManager.name]: foodManager.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
