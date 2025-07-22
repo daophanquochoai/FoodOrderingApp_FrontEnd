@@ -8,7 +8,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { userSchema } from '@/validation/auth.validation';
 import { Spin } from 'antd';
-import { selectAuth } from '@/store/selector/auth/auth.selector';
+import { selectAuth, selectLoading } from '@/store/selector/auth/auth.selector';
 
 const Login = () => {
     // hook
@@ -16,10 +16,9 @@ const Login = () => {
     const navigate = useNavigate();
 
     //selector
-    const auth = useSelector(selectAuth);
+    const loading = useSelector(selectLoading);
 
     //state
-    const [loading, setLoading] = useState(false);
 
     // yup
     const {
@@ -35,9 +34,7 @@ const Login = () => {
     });
     // event handling
     const onSubmit = (data) => {
-        setLoading(true);
         dispatch(loginAction({ username: data.userName, password: data.password }));
-        setLoading(false);
     };
 
     return (

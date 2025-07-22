@@ -1,8 +1,8 @@
 import HttpService from '@/config/httpService';
 
 class FilterApi extends HttpService {
-    getFilter = (data: any) => {
-        return this.post(data, 'all');
+    getFilter = (data: any, state = 'user') => {
+        return this.post(data, `all/${state}`);
     };
 }
 

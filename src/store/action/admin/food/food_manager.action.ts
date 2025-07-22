@@ -1,0 +1,31 @@
+import { name } from '@/store/reducer/admin/food/food_manager.reducer';
+import { getCommonActionsTypeByName } from '../../actionType/actionType';
+import { createAction } from '@reduxjs/toolkit';
+
+const foodManageraction = getCommonActionsTypeByName(name);
+
+// fetch first
+export const fetchFirst = createAction(foodManageraction.firstFetch);
+
+// add size
+export const addSize = createAction(foodManageraction.create + '/SIZE', (state) => ({
+    payload: state,
+}));
+
+// remove food size
+export const removeFoodSize = createAction(foodManageraction.delete + '/FOOD_SIZE', (state) => ({
+    payload: state,
+}));
+
+// fetch food
+export const fetchFood = createAction(`${name}/FETCH_FOOD`);
+
+// create foodSize
+export const createFoodSize = createAction(`${name}/CREATE_FOOD_SIZE`, (state) => ({
+    payload: state,
+}));
+
+//update food
+export const updateFood = createAction(foodManageraction.update, (state) => ({
+    payload: state,
+}));
