@@ -46,5 +46,13 @@ export const selectFitlerOption = createSelector(
  */
 export const selectLoadingComponent = createSelector(
     selectState,
-    (state : FoodManagerType) => state.loadingComponent
-)
+    (state: FoodManagerType) => state.loadingComponent
+);
+
+/**
+ * get total page
+ */
+export const selectTotalPage = createSelector(
+    selectState,
+    (state: FoodManagerType) => state.totalPage
+);

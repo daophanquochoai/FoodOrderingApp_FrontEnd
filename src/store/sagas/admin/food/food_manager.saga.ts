@@ -3,7 +3,9 @@ import { foodSizeApi } from '@/api/client/collection/food_size.api';
 import { sizeApi } from '@/api/client/collection/size.api';
 import { filterApi } from '@/api/filter/fitler.api';
 import {
+    addFood,
     addSize,
+    changePage,
     createFoodSize,
     fetchFirst,
     fetchFood,
@@ -38,7 +40,8 @@ function* handleFetchFood() {
 
     const { data } = yield call(foodApi.getFoodByFilter, filter);
 
-    yield put(FoodManagerSlice.actions.setFood(data?.data));
+    yield put(FoodManagerSlice.actions.setFood(data?.data?.data));
+    yield put(FoodManagerSlice.actions.setTotalPage(data?.data?.totalPage));
 }
 
 // fetch filter size
@@ -60,6 +63,7 @@ function* handleFetchSize() {
 
 //add food size
 function* handleAddFoodSize({ payload }) {
+    console.log(payload);
     yield put(foodManager.actions.setLoadingComponent(true));
     try {
         const { data } = yield call(foodSizeApi.createFoodSize, payload.data);
@@ -67,7 +71,6 @@ function* handleAddFoodSize({ payload }) {
         const { foodSelected } = yield all({
             foodSelected: select(selectFoodSelected),
         });
-        console.log(data);
         yield put(
             foodManager.actions.setFoodSelected({
                 ...foodSelected,
@@ -77,7 +80,6 @@ function* handleAddFoodSize({ payload }) {
         yield put(common.actions.setSuccessMessage('Create food size successul'));
         payload.resetYup();
     } catch (e) {
-        console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
     } finally {
         yield put(foodManager.actions.setLoadingComponent(false));
@@ -145,6 +147,42 @@ function* handleAddSize({ payload }) {
     }
 }
 
+/**
+ * add food
+ */
+function* handleAddFood({ payload }) {
+    yield put(foodManager.actions.setLoadingComponent(true));
+    try {
+        yield call(foodApi.addFood, payload?.data);
+
+        yield put(common.actions.setSuccessMessage('Add food successful'));
+
+        payload.navigate();
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(foodManager.actions.setLoadingComponent(false));
+    }
+}
+
+/**
+ * change page
+ */
+function* handleChangePage({ payload }) {
+    const { filter } = yield all({
+        filter: select(selectFilter),
+    });
+
+    yield put(
+        FoodManagerSlice.actions.setFilter({
+            ...filter,
+            pageNo: payload,
+        })
+    );
+    yield* handleFetchFirst();
+}
+
 // watch fetch first
 function* watchFetchFirst() {
     yield takeEvery(fetchFirst, handleFetchFirst);
@@ -175,6 +213,16 @@ function* watchUpdateFood() {
     yield* takeEvery(updateFood, handleUpdateFood);
 }
 
+//watch add food
+function* watchAddFood() {
+    yield* takeEvery(addFood, handleAddFood);
+}
+
+// watch change
+function* watchChangePage() {
+    yield* takeEvery(changePage, handleChangePage);
+}
+
 export function* watchFoodManager() {
     yield all([
         fork(watchFetchFood),
@@ -183,5 +231,7 @@ export function* watchFoodManager() {
         fork(watchFetchFirst),
         fork(watchCreateFoodSize),
         fork(watchUpdateFood),
+        fork(watchAddFood),
+        fork(watchChangePage),
     ]);
 }
