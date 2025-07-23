@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
-import { Button, Col, Input, Popconfirm, Row, Space, Table, Spin } from 'antd';
+import { Button, Col, GetProp, Input, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
 import FormFloatingInput from '@/components/form/FormFloatingInput';
-import { FormImageUpload } from '@/components/form';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import FormFoodSize from '@/components/form/FormSizeProduct';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,15 +15,10 @@ import {
     selectLoadingComponent,
 } from '@/store/selector/admin/food/food_manager.selector';
 import { common } from '@/store/reducer';
-import { addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
+import { addFood, addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
 import FormSelectAnt from '@/components/form/FormSelectAnt';
-import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 
-const sizeFromDB = [
-    { id: 1, name: 'S' },
-    { id: 2, name: 'M' },
-    { id: 3, name: 'L' },
-];
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const AddEditProductManagement = () => {
     // hook
@@ -37,6 +32,8 @@ const AddEditProductManagement = () => {
 
     //state
     const [newSizeName, setNewSizeName] = useState('');
+    const [image, setImage] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const {
         control,
@@ -47,11 +44,15 @@ const AddEditProductManagement = () => {
         resolver: yupResolver(ProductSchema),
         defaultValues: {
             name: selectedFood?.name,
-            image: selectedFood?.image || '',
-            status: selectedFood?.status + '' || 'true',
+            status: 'ACTIVE',
             desc: selectedFood?.desc,
         },
     });
+    useEffect(() => {
+        if (errors.desc || errors?.name || errors?.status) {
+            dispatch(common.actions.setErrorMessage('Please fill in all feild'));
+        }
+    }, [errors]);
 
     // Khi edit thì reset theo dữ liệu
     useEffect(() => {
@@ -59,23 +60,37 @@ const AddEditProductManagement = () => {
             reset({
                 name: selectedFood?.name,
                 desc: selectedFood?.desc,
-                image: selectedFood?.image,
                 sizes: selectedFood?.foodSizes,
             });
+            setImage(selectedFood?.image);
         }
     }, [selectedFood]);
 
     // event handling
     const onSubmit = (data: any) => {
-        console.log('New values:', {
-            ...data,
-        });
-        dispatch(
-            updateFood({
-                id: selectedFood?.id,
-                data: data,
-            })
-        );
+        console.log(data);
+        if (selectedFood) {
+            dispatch(
+                updateFood({
+                    id: selectedFood?.id,
+                    data: {
+                        ...data,
+                        image: image,
+                    },
+                })
+            );
+        } else {
+            dispatch(
+                addFood({
+                    data: {
+                        ...data,
+                        image: image,
+                        id: 0,
+                    },
+                    navigate: () => navigate('/admin/product-management'),
+                })
+            );
+        }
     };
 
     const handleCreateNewSize = () => {
@@ -88,6 +103,17 @@ const AddEditProductManagement = () => {
         };
         dispatch(addSize(newSize));
     };
+    const beforeUpload = (file: FileType) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            dispatch(common.actions.setErrorMessage('You can only upload JPG/PNG file!'));
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            dispatch(common.actions.setErrorMessage('Image must smaller than 2MB!'));
+        }
+        return isJpgOrPng && isLt2M;
+    };
 
     const optionsStatus = [
         { value: true, label: 'Active' },
@@ -98,6 +124,25 @@ const AddEditProductManagement = () => {
         console.log(record);
     }
 
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    // event handling
+    const handleChangeImage: UploadProps['onChange'] = (info) => {
+        if (info.file.status === 'uploading') {
+            setLoading(true);
+            setImage('');
+            return;
+        }
+        if (info.file.status === 'done') {
+            setLoading(false);
+            setImage(info?.file?.response);
+        }
+    };
     return (
         <Spin spinning={loadingComponent}>
             <div className="relative">
@@ -145,13 +190,27 @@ const AddEditProductManagement = () => {
                                         helperText={errors.desc?.message}
                                     />
 
-                                    <FormImageUpload
+                                    <Upload
                                         name="image"
-                                        control={control}
-                                        defaultImage={selectedFood?.image} // only if isEdit
-                                    />
+                                        listType="picture-card"
+                                        className="avatar-uploader overflow-hidden"
+                                        showUploadList={false}
+                                        action={`${import.meta.env.VITE_BACKEND_URL}/upload`}
+                                        beforeUpload={beforeUpload}
+                                        onChange={handleChangeImage}
+                                    >
+                                        {image ? (
+                                            <img
+                                                src={image}
+                                                alt="avatar"
+                                                style={{ width: '100%' }}
+                                            />
+                                        ) : (
+                                            uploadButton
+                                        )}
+                                    </Upload>
 
-                                    <FormFoodSize name="sizes" />
+                                    {selectedFood && <FormFoodSize name="sizes" />}
 
                                     <div className='w-[22%]'>
                                         <FormSelectAnt
