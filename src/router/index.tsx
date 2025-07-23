@@ -40,6 +40,7 @@ const AddAndEditProductManagement = lazy(
 );
 const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
 const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
+const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 
 const AppRoutes = () => {
     return (
@@ -108,14 +109,10 @@ const AppRoutes = () => {
                     <Route path="spoil-ingredient" element={<SpoilIngredient />} />
                     
                     <Route path="product-management" element={<ProductManagement />} />
-                    <Route
-                        path="product-management/add"
-                        element={<AddAndEditProductManagement />}
-                    />
-                    <Route
-                        path="product-management/edit"
-                        element={<AddAndEditProductManagement />}
-                    />
+                    <Route path="product-management/add" element={<AddAndEditProductManagement />}/>
+                    <Route path="product-management/edit" element={<AddAndEditProductManagement />}/>
+
+                    <Route path="source-management" element={<SourceManagement />}/>
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
