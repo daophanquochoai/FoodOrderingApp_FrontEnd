@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
-import { Button, Col, GetProp, Input, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+
+import { Button, Col, GetProp, Input, Popconfirm, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
@@ -16,6 +18,7 @@ import {
 } from '@/store/selector/admin/food/food_manager.selector';
 import { common } from '@/store/reducer';
 import { addFood, addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
+import FormSelectAnt from '@/components/form/FormSelectAnt';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -114,6 +117,15 @@ const AddEditProductManagement = () => {
         return isJpgOrPng && isLt2M;
     };
 
+    const optionsStatus = [
+        { value: true, label: 'Active' },
+        { value: false, label: 'Inactive' },
+    ]
+
+    const handleDeleteSize = (record) => {
+        console.log(record);
+    }
+
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
             {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -202,6 +214,17 @@ const AddEditProductManagement = () => {
 
                                     {selectedFood && <FormFoodSize name="sizes" />}
 
+
+                                    <div className='w-[22%]'>
+                                        <FormSelectAnt
+                                            name="status"
+                                            control={control}
+                                            label="Status"
+                                            options={optionsStatus}
+                                        />
+                                    </div>
+                                  
+
                                     {/* Action Buttons */}
                                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
                                         <Button
@@ -226,8 +249,24 @@ const AddEditProductManagement = () => {
                                 <Table
                                     size="small"
                                     columns={[
-                                        { title: 'ID', dataIndex: 'id', key: 'id' },
-                                        { title: 'Tên Size', dataIndex: 'name', key: 'name' },
+                                        { title: 'ID', dataIndex: 'id', key: 'id'},
+                                        { title: 'Tên Size', dataIndex: 'name', key: 'name', align: "center" },
+                                        {
+                                            title: 'Actions',
+                                            key: 'actions',
+                                             align: "center",
+                                            render: (_, record) => (
+                                                <Space size="small">
+                                                    <Popconfirm
+                                                        title={`Remove size ${record.name} ?`}
+                                                        onConfirm={() =>  handleDeleteSize(record)}
+                                                    >
+                                                        <Button danger size="small">Delete</Button>
+                                                    </Popconfirm>
+                                                    
+                                                </Space>
+                                            ),
+                                        },
                                     ]}
                                     dataSource={filterOption?.size.map((s) => ({
                                         ...s,
