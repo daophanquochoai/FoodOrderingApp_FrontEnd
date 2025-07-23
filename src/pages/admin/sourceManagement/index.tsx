@@ -246,7 +246,7 @@ const SourceManagement: React.FC = () => {
     const handleOpenAddIngredientModal = () => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SOURCE_MANAGEMENT,
                 variant: 'add',
                 data: null,
             })
@@ -256,7 +256,7 @@ const SourceManagement: React.FC = () => {
     const handleOpenEditIngredientModal = (data) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SOURCE_MANAGEMENT,
                 variant: 'edit',
                 data: data,
             })

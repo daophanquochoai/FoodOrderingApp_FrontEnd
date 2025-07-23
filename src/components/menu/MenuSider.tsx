@@ -89,7 +89,7 @@ const MenuSider = () => {
                 },
                 {
                     key: '/source-management',
-                    label: <Link to={`${baseAdmin}`}>Source Management</Link>,
+                    label: <Link to={`${baseAdmin}/source-management`}>Source Management</Link>,
                     icon: <VscSourceControl />,
                 },
             ],
