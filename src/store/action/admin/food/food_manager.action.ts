@@ -29,3 +29,13 @@ export const createFoodSize = createAction(`${name}/CREATE_FOOD_SIZE`, (state) =
 export const updateFood = createAction(foodManageraction.update, (state) => ({
     payload: state,
 }));
+
+// create food
+export const addFood = createAction(foodManageraction.create, (state) => ({
+    payload: state,
+}));
+
+// change
+export const changePage = createAction(`${name}/CHANGE_PAGE`, (state) => ({
+    payload: state,
+}));
