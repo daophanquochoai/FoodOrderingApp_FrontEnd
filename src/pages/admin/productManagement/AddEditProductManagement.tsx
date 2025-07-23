@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
+
 import { Button, Col, GetProp, Input, Popconfirm, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
@@ -212,6 +214,7 @@ const AddEditProductManagement = () => {
 
                                     {selectedFood && <FormFoodSize name="sizes" />}
 
+
                                     <div className='w-[22%]'>
                                         <FormSelectAnt
                                             name="status"
@@ -220,6 +223,7 @@ const AddEditProductManagement = () => {
                                             options={optionsStatus}
                                         />
                                     </div>
+                                  
 
                                     {/* Action Buttons */}
                                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
