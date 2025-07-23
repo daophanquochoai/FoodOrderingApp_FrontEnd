@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
-import { Button, Col, GetProp, Input, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+import { Button, Col, GetProp, Input, Popconfirm, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
@@ -245,8 +245,24 @@ const AddEditProductManagement = () => {
                                 <Table
                                     size="small"
                                     columns={[
-                                        { title: 'ID', dataIndex: 'id', key: 'id' },
-                                        { title: 'Tên Size', dataIndex: 'name', key: 'name' },
+                                        { title: 'ID', dataIndex: 'id', key: 'id'},
+                                        { title: 'Tên Size', dataIndex: 'name', key: 'name', align: "center" },
+                                        {
+                                            title: 'Actions',
+                                            key: 'actions',
+                                             align: "center",
+                                            render: (_, record) => (
+                                                <Space size="small">
+                                                    <Popconfirm
+                                                        title={`Remove size ${record.name} ?`}
+                                                        onConfirm={() =>  handleDeleteSize(record)}
+                                                    >
+                                                        <Button danger size="small">Delete</Button>
+                                                    </Popconfirm>
+                                                    
+                                                </Space>
+                                            ),
+                                        },
                                     ]}
                                     dataSource={filterOption?.size.map((s) => ({
                                         ...s,

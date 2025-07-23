@@ -2,7 +2,6 @@
 import React from 'react';
 import { Controller } from 'react-hook-form';
 import { Select } from 'antd';
-import { FormFloatingSelectProps } from '../../type';
 
 const FormSelectAnt: React.FC<any> = ({
     name,
