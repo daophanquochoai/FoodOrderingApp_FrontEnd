@@ -28,6 +28,9 @@ const FoodManagerSlice = createSlice({
         setLoadingComponent(state, { payload }: PayloadAction<any>) {
             state.loadingComponent = payload;
         },
+        setTotalPage(state, { payload }: PayloadAction<any>) {
+            state.totalPage = payload;
+        },
     },
 });
 

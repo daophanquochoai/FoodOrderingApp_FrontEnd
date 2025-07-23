@@ -3,6 +3,7 @@ import {
     Image,
     Input,
     InputRef,
+    Pagination,
     Space,
     Spin,
     Table,
@@ -29,11 +30,14 @@ import { common, foodManager } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { useNavigate } from 'react-router-dom';
 import {
+    selectFilter,
     selectFoodManager,
     selectLoadingPage,
+    selectTotalPage,
 } from '@/store/selector/admin/food/food_manager.selector';
-import { fetchFirst } from '@/store/action/admin/food/food_manager.action';
+import { changePage, fetchFirst } from '@/store/action/admin/food/food_manager.action';
 import { Food } from '@/type/store/client/collection/food.style';
+import FoodManagerSlice from '@/store/reducer/admin/food/food_manager.reducer';
 
 type DataIndex = keyof Food;
 
@@ -44,6 +48,8 @@ const ProductManagement = () => {
     //selector
     const foods = useSelector(selectFoodManager);
     const loading = useSelector(selectLoadingPage);
+    const filter = useSelector(selectFilter);
+    const totalPage = useSelector(selectTotalPage);
 
     //useEffect
     useEffect(() => {
@@ -95,6 +101,11 @@ const ProductManagement = () => {
                 data: data,
             })
         );
+    };
+
+    const handleAddFood = () => {
+        dispatch(foodManager.actions.setFoodSelected(null));
+        navigate('/admin/product-management/add');
     };
 
     const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Food> => ({
@@ -176,6 +187,11 @@ const ProductManagement = () => {
             ),
     });
 
+    const handleChangePage = (e) => {
+        dispatch(changePage(e - 1));
+    };
+
+    // declare
     const columns: TableColumnsType<any> = [
         {
             title: 'Name',
@@ -275,11 +291,7 @@ const ProductManagement = () => {
             <h1 className="text-2xl font-bold">Product Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
-                    <Button
-                        type="primary"
-                        // onClick={handleOpenAddProductModal}
-                        onClick={() => navigate('/admin/product-management/add')}
-                    >
+                    <Button type="primary" onClick={handleAddFood}>
                         + New Product
                     </Button>
 
@@ -298,6 +310,12 @@ const ProductManagement = () => {
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
+                />
+                <Pagination
+                    current={filter?.pageNo + 1 || 0}
+                    pageSize={10}
+                    onChange={handleChangePage}
+                    total={totalPage}
                 />
             </div>
         </Spin>

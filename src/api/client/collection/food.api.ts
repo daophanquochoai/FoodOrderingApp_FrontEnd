@@ -11,6 +11,9 @@ class FoodApi extends HttpService {
     updateFoodById = (id: any, data: any) => {
         return this.instance.put(`/food/update/${id}`, data);
     };
+    addFood = (data: any) => {
+        return this.post(data, 'add');
+    };
 }
 
 export const foodApi = new FoodApi('food');

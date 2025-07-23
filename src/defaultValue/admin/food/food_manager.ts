@@ -18,11 +18,12 @@ export const filterFoodManager: FilterFood = {
 
 export const foodManager: FoodManagerType = {
     foods: [],
+    totalPage: 0,
     filter: filterFoodManager,
     loadngPage: false,
     foodSelected: null,
     filterOption: {
         size: [],
     },
-    loadingComponent : false
+    loadingComponent: false,
 };
