@@ -48,7 +48,7 @@ const MenuSider = () => {
                 },
                 {
                     key: '/voucher-management',
-                    label: <Link to={`${baseAdmin}`}>Voucher Management</Link>,
+                    label: <Link to={`${baseAdmin}/voucher-management`}>Voucher Management</Link>,
                     icon: <CiDiscount1 />,
                 },
             ],
@@ -60,7 +60,7 @@ const MenuSider = () => {
             children: [
                 {
                     key: '/category-management',
-                    label: <Link to="/admin/category-management">Category Management</Link>,
+                    label: <Link to={`${baseAdmin}/category-management`}>Category Management</Link>,
                     icon: <MdOutlineCategory />,
                 },
                 {

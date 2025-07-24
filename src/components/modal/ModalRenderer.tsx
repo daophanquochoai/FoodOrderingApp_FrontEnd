@@ -9,7 +9,7 @@ import ModalIngredient from './ModalIngredient';
 import ModalProductManagementView from './ModalProductManagementViewDelete';
 import ModalSpoilIngredient from './ModalSpoilIngredient';
 import ModalSourceManagement from './ModalSourceManagement';
-
+import ModalVoucher from './ModalVoucher';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -33,6 +33,8 @@ export const ModalRenderer = () => {
             case ModalType.PRODUCT_MANAGEMENT:
                 if (modal.variant == 'view' || modal.variant == 'delete')
                     return <ModalProductManagementView key={modal.type} {...modal} />;
+            case ModalType.VOUCHER:
+                return <ModalVoucher key={modal.type} {...modal} />;
             default:
                 return null;
         }
