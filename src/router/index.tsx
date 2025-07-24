@@ -38,6 +38,8 @@ const ProductManagement = lazy(() => import('../pages/admin/productManagement'))
 const AddAndEditProductManagement = lazy(
     () => import('../pages/admin/productManagement/AddEditProductManagement')
 );
+const VoucherManagement = lazy(() => import('../pages/admin/voucher/VoucherManagement'));
+const ExportVoucher = lazy(() => import('../pages/admin/voucher/ExportVoucher'));
 
 const AppRoutes = () => {
     return (
@@ -111,6 +113,8 @@ const AppRoutes = () => {
                         path="product-management/edit/:id"
                         element={<AddAndEditProductManagement />}
                     />
+                    <Route path="voucher-management" element={<VoucherManagement />} />
+                    <Route path="voucher-management/export" element={<ExportVoucher />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
