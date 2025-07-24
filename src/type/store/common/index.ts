@@ -11,7 +11,7 @@ export type MessageType = {
     hasShow: boolean;
 };
 
-export interface Filter {
+export class Filter {
     pageNo?: number;
     pageSize?: number;
     search?: string;

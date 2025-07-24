@@ -1,313 +1,178 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { Button, DatePicker, Descriptions, DescriptionsProps, Input, InputRef, Space, Table, TableColumnsType, TableColumnType, Tag } from 'antd';
+import {
+    Button,
+    DatePicker,
+    Descriptions,
+    DescriptionsProps,
+    Input,
+    InputRef,
+    Space,
+    Spin,
+    Table,
+    TableColumnsType,
+    TableColumnType,
+    Tag,
+} from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { SearchOutlined } from '@mui/icons-material';
 import Highlighter from 'react-highlight-words';
 import { IoMdArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectHistory,
+    selectIngredientsSelected,
+    selectLoadingHistory,
+} from '@/store/selector/admin/ingredients/ingredients.selector';
+import { fetchHistory } from '@/store/action/admin/ingredients/ingredient.action';
+import { HistoryImportOrExportDto } from '@/type/store/admin/history/history.style';
+
+type DataIndex = keyof any;
 
 const ViewIngredient = () => {
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
+    // selector
+    const selectedFood = useSelector(selectIngredientsSelected);
+    const loadingHistory = useSelector(selectLoadingHistory);
+    const historyList = useSelector(selectHistory);
+
+    // hook
     const searchInput = useRef<InputRef>(null);
-
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    type DataIndex = keyof any;
+    // useEffect
+    useEffect(() => {
+        dispatch(fetchHistory());
+    }, []);
 
-    const dataFakeHistory = [
-        {
-            history_id: 2,
-            source_name: 'Công ty A',
-            quantity: 50,
-            used_unit: 40,
-            avg_price: 15,
-            price_per_unit: 16,
-            create_at: '2025-07-03T10:00:00Z',
-            expired_time: '2025-08-03T10:00:00Z',
-            is_active: true,
-        },
-        {
-            history_id: 1,
-            source_name: 'Công ty A',
-            quantity: 20,
-            used_unit: 20,
-            avg_price: 14,
-            price_per_unit: 14,
-            create_at: '2025-05-03T10:00:00Z',
-            expired_time: '2025-06-03T10:00:00Z',
-            is_active: false,
-        },
-    ];
-
-    const getStatusTag = (status: string) => {
+    const getStatusTag = (status: boolean) => {
         switch (status) {
-            case 'in_stock':
+            case true:
                 return <Tag color="green">Còn</Tag>;
-            case 'low_stock':
-                return <Tag color="orange">Còn ít</Tag>;
             default:
                 return <Tag color="red">Hết</Tag>;
         }
-    };
-
-    const data = {
-        id: '1',
-        name: 'Gạo',
-        unit: 'kg',
-        low_threshold: 10,
-        late_update_time: '2025-07-13',
-        avg_price: 15,
-        create_at: '2024-09-03T10:00:00Z',
-        quantity: 10,
-        status: 'in_stock',
     };
 
     const foodInfo: DescriptionsProps['items'] = [
         {
             key: 'name',
             label: 'Tên nguyên liệu',
-            children: data.name,
+            children: selectedFood?.name,
         },
         {
             key: 'unit',
             label: 'Đơn vị',
-            children: data.unit,
-        },
-        {
-            key: 'avg_price',
-            label: 'Giá trung bình',
-            children: <p>${data.avg_price}</p>,
-        },
-        {
-            key: 'quantity',
-            label: 'Số lượng còn',
-            children: data.quantity,
+            children: selectedFood?.unit,
         },
         {
             key: 'low_threshold',
             label: 'Ngưỡng cảnh báo',
-            children: data.low_threshold,
-        },
-        {
-            key: 'create_at',
-            label: 'Ngày tạo',
-            children: dayjs(data.create_at).format('DD/MM/YYYY'),
+            children: selectedFood?.lowThreshold,
         },
         {
             key: 'status',
             label: 'Trạng thái',
-            children: getStatusTag(data.status),
+            children: getStatusTag(selectedFood?.isActive),
         },
     ];
 
-    const handleSearch = (
-        selectedKeys: string[],
-        confirm: FilterDropdownProps['confirm'],
-        dataIndex: DataIndex
-    ) => {
-        confirm();
-        setSearchText(selectedKeys[0]);
-        setSearchedColumn(String(dataIndex));
-    };
-
-    const handleReset = (clearFilters: () => void) => {
-        clearFilters();
-        setSearchText('');
-    };
-
-    const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-                <Input
-                    ref={searchInput}
-                    placeholder={`Search ${String(dataIndex)}`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                    style={{ marginBottom: 8, display: 'block' }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{ width: 90 }}
-                    >
-                        Search
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{ width: 90 }}
-                    >
-                        Reset
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            confirm({ closeDropdown: false });
-                            setSearchText((selectedKeys as string[])[0]);
-                            setSearchedColumn(String(dataIndex));
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            close();
-                        }}
-                    >
-                        close
-                    </Button>
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-        ),
-        onFilter: (value, record) =>
-            record[dataIndex]
-                ?.toString()
-                .toLowerCase()
-                .includes((value as string).toLowerCase()) || false,
-        filterDropdownProps: {
-            onOpenChange(open) {
-                if (open) {
-                    setTimeout(() => searchInput.current?.select(), 100);
-                }
-            },
-        },
-        render: (text) =>
-            searchedColumn === dataIndex ? (
-                <Highlighter
-                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                    searchWords={[searchText]}
-                    autoEscape
-                    textToHighlight={text ? text.toString() : ''}
-                />
-            ) : (
-                text
-            ),
-    });
-
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<HistoryImportOrExportDto> = [
         {
             title: 'Lô nhập',
-            dataIndex: 'history_id',
-            key: 'history_id',
-            sorter: (a, b) => a.history_id - b.history_id,
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id,
         },
         {
             title: 'Nhà cung cấp',
-            dataIndex: 'source_name',
-            key: 'source_name',
-            ...getColumnSearchProps('source_name'),
+            dataIndex: 'source',
+            key: 'source',
         },
         {
             title: 'Số lượng nhập',
-            dataIndex: 'quantity',
             key: 'quantity',
-            sorter: (a, b) => a.quantity - b.quantity,
+            sorter: (a, b) => {
+                const aTotal =
+                    a.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                const bTotal =
+                    b.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                return aTotal - bTotal;
+            },
+            render: (record) => (
+                <p>{record?.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0)}</p>
+            ),
         },
         {
             title: 'Số lượng dùng',
-            dataIndex: 'used_unit',
             key: 'used_unit',
-            sorter: (a, b) => a.used_unit - b.used_unit,
+            sorter: (a, b) => {
+                const aTotal =
+                    a.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0) || 0;
+                const bTotal =
+                    b.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0) || 0;
+                return aTotal - bTotal;
+            },
+            render: (record) => {
+                return (
+                    <p>
+                        {record?.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0)}
+                    </p>
+                );
+            },
         },
         {
-            title: 'Giá/đơn vị',
-            dataIndex: 'price_per_unit',
-            key: 'price_per_unit',
-            sorter: (a, b) => a.price_per_unit - b.price_per_unit,
-            render: (text) => <p>${text}</p>,
-        },
-        {
-            title: 'Giá trung bình',
-            dataIndex: 'avg_price',
-            key: 'avg_price',
-            sorter: (a, b) => a.avg_price - b.avg_price,
-            render: (text) => <p>${text}</p>,
+            title: 'BathCode',
+            dataIndex: 'bathCode',
+            key: 'bathCode',
+            sorter: (a, b) => a.bathCode.localeCompare(b.bathCode),
         },
         {
             title: 'Ngày nhập',
-            dataIndex: 'create_at',
-            key: 'create_at',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
                 <div style={{ padding: 8 }}>
                     <DatePicker
                         onChange={(date, dateString) =>
-                            setSelectedKeys(dateString ? [dateString as string] : [])
+                            setSelectedKeys(dateString ? ([dateString] as string[]) : [])
                         }
                         style={{ marginBottom: 8, display: 'block' }}
+                        placeholder="Chọn ngày"
+                        value={selectedKeys.length ? dayjs(selectedKeys[0] as string) : null}
                     />
                     <Button
                         type="primary"
                         onClick={() => confirm()}
                         size="small"
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', marginBottom: 4 }}
                     >
-                        Apply
+                        Áp dụng
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && clearFilters()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Delete
+                    <Button onClick={() => clearFilters?.()} size="small" style={{ width: '100%' }}>
+                        Xoá
                     </Button>
                 </div>
             ),
-            onFilter: (value, record) => record.create_at?.startsWith(value as string) || false,
-            render: (date) => dayjs(date).format('DD/MM/YYYY'),
-        },
-        {
-            title: 'Ngày hết hạn',
-            dataIndex: 'expired_time',
-            key: 'expired_time',
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <DatePicker
-                        onChange={(date, dateString) =>
-                            setSelectedKeys(dateString ? [dateString as string] : [])
-                        }
-                        style={{ marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => confirm()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Apply
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearFilters()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            ),
-            onFilter: (value, record) => record.expired_time?.startsWith(value as string) || false,
-            render: (date) => dayjs(date).format('DD/MM/YYYY'),
+            onFilter: (value, record) => {
+                const recordDate = dayjs(record.createdAt).format('YYYY-MM-DD');
+                return recordDate === value;
+            },
+            render: (date) => {
+                const parsed = typeof date === 'bigint' ? Number(date) : date;
+                return dayjs(parsed).format('DD/MM/YYYY');
+            },
         },
         {
             title: 'Trạng thái',
-            dataIndex: 'is_active',
+            dataIndex: 'isActive',
             key: 'status',
             filters: [
                 { text: 'Active', value: true },
                 { text: 'Inactive', value: false },
             ],
-            onFilter: (value, record) => record.is_active == value,
+            onFilter: (value, record) => record.isActive == value,
             render: (status) => {
                 if (status == true) return <Tag color="green">Active</Tag>;
                 return <Tag color="red">Inactive</Tag>;
@@ -325,7 +190,7 @@ const ViewIngredient = () => {
                     <IoMdArrowBack /> Back
                 </button>
             </div>
-            <div className='pt-12'>
+            <div className="pt-12">
                 <div className="bg-white px-2 py-2 rounded-md">
                     <Descriptions
                         title="Thông tin nguyên liệu"
@@ -335,19 +200,21 @@ const ViewIngredient = () => {
                     />
                 </div>
 
-                <div className="bg-white px-2 py-2 rounded-md mt-6 ">
-                    <h2 className="text-[14px] mb-6 font-semibold">Lịch sử nhập nguyên liệu</h2>
-                    <Table
-                        columns={columns}
-                        dataSource={dataFakeHistory}
-                        rowKey="key"
-                        scroll={{ x: 'max-content' }}
-                        pagination={false}
-                    />
-                </div>
+                <Spin spinning={loadingHistory}>
+                    <div className="bg-white px-2 py-2 rounded-md mt-6 ">
+                        <h2 className="text-[14px] mb-6 font-semibold">Lịch sử nhập nguyên liệu</h2>
+                        <Table
+                            columns={columns}
+                            dataSource={historyList?.history}
+                            rowKey="key"
+                            scroll={{ x: 'max-content' }}
+                            pagination={false}
+                        />
+                    </div>
+                </Spin>
             </div>
         </div>
     );
 };
 
-export default ViewIngredient
+export default ViewIngredient;
