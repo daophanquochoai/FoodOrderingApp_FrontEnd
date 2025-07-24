@@ -40,6 +40,9 @@ const AddAndEditProductManagement = lazy(
 );
 const VoucherManagement = lazy(() => import('../pages/admin/voucher/VoucherManagement'));
 const ExportVoucher = lazy(() => import('../pages/admin/voucher/ExportVoucher'));
+const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
+const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
+const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 
 const AppRoutes = () => {
     return (
@@ -104,17 +107,16 @@ const AppRoutes = () => {
                     <Route path="settings" element={<Setting />} />
                     <Route path="category-management" element={<CategoryManagement />} />
                     <Route path="ingredient-management" element={<IngredientManagement />} />
+                    <Route path="ingredient-management/:id" element={<ViewIngredient />} />
+                    <Route path="spoil-ingredient" element={<SpoilIngredient />} />
+                    
                     <Route path="product-management" element={<ProductManagement />} />
-                    <Route
-                        path="product-management/add"
-                        element={<AddAndEditProductManagement />}
-                    />
-                    <Route
-                        path="product-management/edit/:id"
-                        element={<AddAndEditProductManagement />}
-                    />
                     <Route path="voucher-management" element={<VoucherManagement />} />
                     <Route path="voucher-management/export" element={<ExportVoucher />} />
+                    <Route path="product-management/add" element={<AddAndEditProductManagement />}/>
+                    <Route path="product-management/edit" element={<AddAndEditProductManagement />}/>
+
+                    <Route path="source-management" element={<SourceManagement />}/>
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />

@@ -22,7 +22,6 @@ function* handleLogin({ payload }) {
             })
         );
 
-        console.log(data);
         setCookies('refresh_token', JSON.stringify(data?.refresh_token), 30);
         setCookies('access_token', JSON.stringify(data?.access_token), 7);
         setCookies('user', JSON.stringify(user), 7);

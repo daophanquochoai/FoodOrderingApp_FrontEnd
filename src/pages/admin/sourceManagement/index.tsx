@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 
 type DataIndex = keyof any;
 
-const IngredientManagement: React.FC = () => {
+const SourceManagement: React.FC = () => {
     const dispatch = useDispatch();
 
     const [searchText, setSearchText] = useState('');
@@ -126,6 +126,12 @@ const IngredientManagement: React.FC = () => {
 
     const columns: TableColumnsType = [
         {
+            title: 'ID',
+            dataIndex: 'id',
+            key: 'id',
+            sorter: (a, b) => a.id - b.id,
+        },
+        {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
@@ -133,82 +139,29 @@ const IngredientManagement: React.FC = () => {
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: 'Unit',
-            dataIndex: 'unit',
-            key: 'unit',
-            filters: [
-                { text: 'kg', value: 'kg' },
-                { text: 'liter', value: 'liter' },
-            ],
-            onFilter: (value, record) => record.unit == value,
+            title: 'Address',
+            dataIndex: 'address',
+            key: 'address',
+            ...getColumnSearchProps('address'),
         },
         {
-            title: 'Avg Price',
-            dataIndex: 'avg_price',
-            key: 'avg_price',
-            sorter: (a, b) => a.avg_price - b.avg_price,
-            render: (text) => <p>${text}</p>,
+            title: 'Phone number',
+            dataIndex: 'phoneNumber',
+            key: 'phoneNumber',
+            ...getColumnSearchProps('phoneNumber'),
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-            sorter: (a, b) => a.quantity - b.quantity,
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+            ...getColumnSearchProps('email'),
         },
         {
-            title: 'Low threshold',
-            dataIndex: 'low_threshold',
-            key: 'low_threshold',
-            sorter: (a, b) => a.low_threshold - b.low_threshold,
+            title: 'Tax Code',
+            dataIndex: 'taxCode',
+            key: 'taxCode',
+            ...getColumnSearchProps('taxCode'),
         },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            filters: [
-                { text: 'Stock', value: 'in_stock' },
-                { text: 'Low stock', value: 'low_stock' },
-                { text: 'Out of stock', value: 'out_of_stock' },
-            ],
-            onFilter: (value, record) => record.status == value,
-            render: (status) => {
-                if (status == 'in_stock') return <Tag color="green">Còn</Tag>;
-                if (status == 'low_stock') return <Tag color="orange">Còn ít</Tag>;
-                return <Tag color="red">Hết</Tag>;
-            },
-        },
-        // {
-        //     title: 'Updated Time',
-        //     dataIndex: 'late_update_time',
-        //     key: 'late_update_time',
-        //     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        //         <div style={{ padding: 8 }}>
-        //             <DatePicker
-        //                 onChange={(date, dateString) =>
-        //                     setSelectedKeys(dateString ? [dateString as string] : [])
-        //                 }
-        //                 style={{ marginBottom: 8, display: 'block' }}
-        //             />
-        //             <Button
-        //                 type="primary"
-        //                 onClick={() => confirm()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Apply
-        //             </Button>
-        //             <Button
-        //                 onClick={() => clearFilters && clearFilters()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Delete
-        //             </Button>
-        //         </div>
-        //     ),
-        //     onFilter: (value, record) =>
-        //         record.late_update_time?.startsWith(value as string) || false,
-        // },
         {
             title: 'Actions',
             key: 'actions',
@@ -219,7 +172,7 @@ const IngredientManagement: React.FC = () => {
                         color="primary"
                         variant="filled"
                         icon={<EyeOutlined />}
-                        onClick={() => navigate(`/admin/ingredient-management/${record.id}`)}
+                        onClick={() => handleOpenViewSourceModal(record)}
                         className=""
                         size="small"
                     />
@@ -233,7 +186,7 @@ const IngredientManagement: React.FC = () => {
                     <Button
                         danger
                         icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteIngredientModal(record)}
+                        onClick={() => handleOpenDeleteSourceModal(record)}
                         size="small"
                     />
                 </Space>
@@ -241,70 +194,91 @@ const IngredientManagement: React.FC = () => {
         },
     ];
 
-    const rawData = [
+    const dataSource = [
         {
-            id: '1',
-            name: 'Gạo',
-            unit: 'kg',
-            low_threshold: 10,
-            late_update_time: '2025-07-13',
-            avg_price: 15,
-            create_at: '2024-09-03T10:00:00Z',
-            history: [
-                { quantity: 50, used_unit: 40, avg_price: 15 }, // còn 10
-                { quantity: 20, used_unit: 20, avg_price: 10 }, // còn 0
-            ],
+            "id": 1,
+            "name": "Công ty TNHH Nguyên Liệu Sài Gòn",
+            "address": "123 Đường Số 7, Quận Bình Tân, TP.HCM",
+            "phoneNumber": "0912345678",
+            "email": "lienhe@nguyenlieusaigon.vn",
+            "link": "http://nguyenlieusaigon.vn",
+            "taxCode": "0300012345",
+            "create_at": "2023-04-01T08:00:00",
+            "late_update_time": "2024-05-20T10:30:00",
+            "is_active": true
         },
         {
-            id: '2',
-            name: 'Dầu ăn',
-            unit: 'lít',
-            low_threshold: 5,
-            late_update_time: '2025-07-12',
-            avg_price: 8,
-            create_at: '2024-09-03T10:00:00Z',
-            history: [{ quantity: 10, used_unit: 10, avg_price: 8 }],
+            "id": 2,
+            "name": "Công ty CP Thực Phẩm Nhanh Việt",
+            "address": "45A Nguyễn Thị Minh Khai, Quận 1, TP.HCM",
+            "phoneNumber": "0923456789",
+            "email": "info@tpnhanhviet.vn",
+            "link": "http://tpnhanhviet.vn",
+            "taxCode": "0300023456",
+            "create_at": "2022-12-15T09:15:00",
+            "late_update_time": "2024-06-10T14:45:00",
+            "is_active": true
         },
-    ];
+        {
+            "id": 3,
+            "name": "Nhà Cung Cấp Rau Củ GreenFarm",
+            "address": "67 Đường Láng, Đống Đa, Hà Nội",
+            "phoneNumber": "0934567890",
+            "email": "support@greenfarm.vn",
+            "link": "http://greenfarm.vn",
+            "taxCode": "0100034567",
+            "create_at": "2021-08-20T07:30:00",
+            "late_update_time": "2023-11-05T16:10:00",
+            "is_active": false
+        }
+    ]
 
-    const dataSource = mapIngredients(rawData);
+    const handleOpenViewSourceModal = (data) => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.SOURCE_MANAGEMENT,
+                variant: 'view',
+                data: data,
+            })
+        );
+    };
 
     const handleOpenAddIngredientModal = () => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SOURCE_MANAGEMENT,
                 variant: 'add',
                 data: null,
             })
         );
     };
 
-    const handleOpenEditIngredientModal = (ingredient) => {
+    const handleOpenEditIngredientModal = (data) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SOURCE_MANAGEMENT,
                 variant: 'edit',
-                data: ingredient,
+                data: data,
             })
         );
     };
 
-    const handleOpenDeleteIngredientModal = (ingredient) => {
+    const handleOpenDeleteSourceModal = (data) => {
         dispatch(
             common.actions.showModal({
-                type: ModalType.INGREDIENT,
+                type: ModalType.SOURCE_MANAGEMENT,
                 variant: 'delete',
-                data: ingredient,
+                data: data,
             })
         );
     };
 
     return (
         <div>
-            <h1 className="text-2xl font-bold">Ingredient Management</h1>
+            <h1 className="text-2xl font-bold">Source Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button type="primary" onClick={handleOpenAddIngredientModal}>
-                    + New Ingredient
+                    + New Source
                 </Button>
 
                 <Table
@@ -319,4 +293,4 @@ const IngredientManagement: React.FC = () => {
     );
 };
 
-export default IngredientManagement;
+export default SourceManagement;

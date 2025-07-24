@@ -1,29 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
-import { Button, Col, Input, Row, Space, Table } from 'antd';
+
+import { Button, Col, GetProp, Input, Popconfirm, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ProductSchema } from '@/validation/food.validation';
-import { Food } from '@/type';
 import FormFloatingInput from '@/components/form/FormFloatingInput';
-import { FormImageUpload } from '@/components/form';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import FormFoodSize from '@/components/form/FormSizeProduct';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectFitlerOption,
+    selectFoodSelected,
+    selectLoadingComponent,
+} from '@/store/selector/admin/food/food_manager.selector';
+import { common } from '@/store/reducer';
+import { addFood, addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
+import FormSelectAnt from '@/components/form/FormSelectAnt';
 
-const sizeFromDB = [
-    { id: 1, name: 'S' },
-    { id: 2, name: 'M' },
-    { id: 3, name: 'L' },
-];
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const AddEditProductManagement = () => {
+    // hook
     const navigate = useNavigate();
-    const { id } = useParams(); // id exists => editing
-    const isEdit = Boolean(id);
-    const [foodData, setFoodData] = useState(null); // Loaded data if edit
+    const dispatch = useDispatch();
+
+    //select
+    const selectedFood = useSelector(selectFoodSelected);
+    const filterOption = useSelector(selectFitlerOption);
+    const loadingComponent = useSelector(selectLoadingComponent);
+
+    //state
     const [newSizeName, setNewSizeName] = useState('');
-    const [allSizes, setAllSizes] = useState<any[]>([]);
-    const [foodSizes, setFoodSizes] = useState([]);
+    const [image, setImage] = useState<string>('');
+    const [loading, setLoading] = useState<boolean>(false);
 
     const {
         control,
@@ -32,190 +44,257 @@ const AddEditProductManagement = () => {
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: yupResolver(ProductSchema),
+        defaultValues: {
+            name: selectedFood?.name,
+            status: 'ACTIVE',
+            desc: selectedFood?.desc,
+        },
     });
-
     useEffect(() => {
-        if (isEdit) {
-            const data = {
-                id: 1,
-                name: 'Hamburger Bò',
-                desc: 'Bánh hamburger bò nướng với rau xà lách, cà chua và sốt đặc biệt.',
-                image: 'https://img.freepik.com/premium-photo/humber-barger_1019272-1536.jpg',
-                status: true,
-                create_date: '2024-09-01T08:00:00Z',
-                last_update_time: '2024-09-10T10:30:00Z',
-                food_code: 'HB001',
-                category_id: 1, // Đồ ăn nhanh
-                sizes: [
-                    { id: 1, size: 'S', price: 25000 },
-                    { id: 2, size: 'M', price: 32000 },
-                ],
-                rate: 4.5,
-            };
-
-            setFoodData(data);
-
-            setFoodSizes(data.sizes);
+        if (errors.desc || errors?.name || errors?.status) {
+            dispatch(common.actions.setErrorMessage('Please fill in all feild'));
         }
-
-        setAllSizes(sizeFromDB);
-    }, [id]);
+    }, [errors]);
 
     // Khi edit thì reset theo dữ liệu
     useEffect(() => {
-        if (isEdit && foodData) {
+        if (selectedFood) {
             reset({
-                name: foodData.name,
-                desc: foodData.desc,
-                image: foodData.image,
-                sizes: foodData.sizes,
+                name: selectedFood?.name,
+                desc: selectedFood?.desc,
+                sizes: selectedFood?.foodSizes,
             });
+            setImage(selectedFood?.image);
         }
-    }, [isEdit, foodData]);
+    }, [selectedFood]);
 
-    // Khi tạo mới thì reset rỗng ngay từ đầu
-    useEffect(() => {
-        if (!isEdit) {
-            reset({
-                name: '',
-                desc: '',
-                image: '',
-                sizes: [],
-            });
-        }
-    }, []);
-
+    // event handling
     const onSubmit = (data: any) => {
-        data.sizes = foodSizes;
-
-        console.log('New values:', {
-            ...data,
-        });
+        console.log(data);
+        if (selectedFood) {
+            dispatch(
+                updateFood({
+                    id: selectedFood?.id,
+                    data: {
+                        ...data,
+                        image: image,
+                    },
+                })
+            );
+        } else {
+            dispatch(
+                addFood({
+                    data: {
+                        ...data,
+                        image: image,
+                        id: 0,
+                    },
+                    navigate: () => navigate('/admin/product-management'),
+                })
+            );
+        }
     };
 
     const handleCreateNewSize = () => {
-        if (!newSizeName.trim()) return;
-
-        // check and save...
-        if (sizeFromDB.find((s) => s.name.toLowerCase() == newSizeName.toLowerCase())) {
-            console.log('Size existed!!');
+        if (!newSizeName.trim()) {
+            dispatch(common.actions.setErrorMessage('Name Size is required'));
             return;
         }
-
         const newSize = {
-            id: Date.now(),
             name: newSizeName.trim(),
         };
-
-        setAllSizes([...allSizes, newSize]);
-        setNewSizeName('');
+        dispatch(addSize(newSize));
+    };
+    const beforeUpload = (file: FileType) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            dispatch(common.actions.setErrorMessage('You can only upload JPG/PNG file!'));
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            dispatch(common.actions.setErrorMessage('Image must smaller than 2MB!'));
+        }
+        return isJpgOrPng && isLt2M;
     };
 
+    const optionsStatus = [
+        { value: true, label: 'Active' },
+        { value: false, label: 'Inactive' },
+    ]
+
+    const handleDeleteSize = (record) => {
+        console.log(record);
+    }
+
+    const uploadButton = (
+        <button style={{ border: 0, background: 'none' }} type="button">
+            {loading ? <LoadingOutlined /> : <PlusOutlined />}
+            <div style={{ marginTop: 8 }}>Upload</div>
+        </button>
+    );
+
+    // event handling
+    const handleChangeImage: UploadProps['onChange'] = (info) => {
+        if (info.file.status === 'uploading') {
+            setLoading(true);
+            setImage('');
+            return;
+        }
+        if (info.file.status === 'done') {
+            setLoading(false);
+            setImage(info?.file?.response);
+        }
+    };
     return (
-        <div className="relative">
-            <div className="absolute top-0 left-0">
-                <button
-                    onClick={() => navigate(`/admin/product-management`)}
-                    className="flex items-center justify-center gap-1 px-3 py-2 bg-white hover:bg-gray-50 rounded shadow"
-                >
-                    <IoMdArrowBack /> Back
-                </button>
-            </div>
+        <Spin spinning={loadingComponent}>
+            <div className="relative">
+                <div className="absolute top-0 left-0">
+                    <button
+                        onClick={() => navigate(`/admin/product-management`)}
+                        className="flex items-center justify-center gap-1 px-3 py-2 bg-white hover:bg-gray-50 rounded shadow"
+                    >
+                        <IoMdArrowBack /> Back
+                    </button>
+                </div>
 
-            <div className="pt-12">
-                <Row gutter={[10, 10]}>
-                    <Col span={16} className="">
-                        <div className="bg-white rounded-md p-4">
-                            <h2 className="text-lg font-semibold mb-4 text-center">
-                                {isEdit ? (
-                                    <>
-                                        Update <b>"{foodData?.name}"</b>
-                                    </>
-                                ) : (
-                                    <>Create A Food</>
-                                )}
-                            </h2>
-                            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                                {/* Form Grid */}
+                <div className="pt-12">
+                    <Row gutter={[10, 10]}>
+                        <Col span={16} className="">
+                            <div className="bg-white rounded-md p-4">
+                                <h2 className="text-lg font-semibold mb-4 text-center">
+                                    {selectedFood ? (
+                                        <>
+                                            Update <b>"{selectedFood?.name}"</b>
+                                        </>
+                                    ) : (
+                                        <>Create A Food</>
+                                    )}
+                                </h2>
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                                    {/* Form Grid */}
 
-                                <FormFloatingInput
-                                    name="name"
-                                    control={control}
-                                    label="Name"
-                                    placeholder="Enter food name"
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
-                                />
+                                    <FormFloatingInput
+                                        name="name"
+                                        control={control}
+                                        label="Name"
+                                        placeholder="Enter food name"
+                                        error={!!errors.name}
+                                        helperText={errors.name?.message}
+                                    />
 
-                                <FormFloatingInput
-                                    name="desc"
-                                    control={control}
-                                    label="Description"
-                                    placeholder="Enter description"
-                                    type="textarea"
-                                    error={!!errors.desc}
-                                    helperText={errors.desc?.message}
-                                />
+                                    <FormFloatingInput
+                                        name="desc"
+                                        control={control}
+                                        label="Description"
+                                        placeholder="Enter description"
+                                        type="textarea"
+                                        error={!!errors.desc}
+                                        helperText={errors.desc?.message}
+                                    />
 
-                                <FormImageUpload
-                                    name="image"
-                                    control={control}
-                                    defaultImage={foodData?.image} // only if isEdit
-                                />
-
-                                <FormFoodSize
-                                    isEdit={isEdit}
-                                    name="sizes"
-                                    control={control}
-                                    allSizes={allSizes}
-                                    foodSizes={foodSizes}
-                                    setFoodSizes={setFoodSizes}
-                                />
-
-                                {/* Action Buttons */}
-                                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
-                                    <Button
-                                        onClick={handleSubmit(onSubmit)}
-                                        type="primary"
-                                        className="bg-blue-500 hover:bg-blue-600"
-                                        disabled={isSubmitting}
-                                        block
+                                    <Upload
+                                        name="image"
+                                        listType="picture-card"
+                                        className="avatar-uploader overflow-hidden"
+                                        showUploadList={false}
+                                        action={`${import.meta.env.VITE_BACKEND_URL}/upload`}
+                                        beforeUpload={beforeUpload}
+                                        onChange={handleChangeImage}
                                     >
-                                        {isEdit ? 'Update Food' : 'Create New Food'}
-                                    </Button>
-                                </div>
-                            </form>
-                        </div>
-                    </Col>
-                    <Col span={8} className="">
-                        <div className="bg-white rounded-md p-4">
-                            <h2 className="text-lg font-semibold mb-4">Danh sách Size hiện có</h2>
+                                        {image ? (
+                                            <img
+                                                src={image}
+                                                alt="avatar"
+                                                style={{ width: '100%' }}
+                                            />
+                                        ) : (
+                                            uploadButton
+                                        )}
+                                    </Upload>
 
-                            <Table
-                                size="small"
-                                columns={[
-                                    { title: 'ID', dataIndex: 'id', key: 'id' },
-                                    { title: 'Tên Size', dataIndex: 'name', key: 'name' },
-                                ]}
-                                dataSource={allSizes.map((s) => ({ ...s, key: s.id }))}
-                                pagination={false}
-                            />
+                                    {selectedFood && <FormFoodSize name="sizes" />}
 
-                            <Space className="mt-4" direction="vertical" style={{ width: '100%' }}>
-                                <Input
-                                    placeholder="Tên size mới"
-                                    value={newSizeName}
-                                    onChange={(e) => setNewSizeName(e.target.value)}
+
+                                    <div className='w-[22%]'>
+                                        <FormSelectAnt
+                                            name="status"
+                                            control={control}
+                                            label="Status"
+                                            options={optionsStatus}
+                                        />
+                                    </div>
+                                  
+
+                                    {/* Action Buttons */}
+                                    <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                                        <Button
+                                            onClick={handleSubmit(onSubmit)}
+                                            type="primary"
+                                            className="bg-blue-500 hover:bg-blue-600"
+                                            disabled={isSubmitting}
+                                            block
+                                        >
+                                            {selectedFood ? 'Update Food' : 'Create New Food'}
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
+                        </Col>
+                        <Col span={8} className="">
+                            <div className="bg-white rounded-md p-4">
+                                <h2 className="text-lg font-semibold mb-4">
+                                    Danh sách Size hiện có
+                                </h2>
+
+                                <Table
+                                    size="small"
+                                    columns={[
+                                        { title: 'ID', dataIndex: 'id', key: 'id'},
+                                        { title: 'Tên Size', dataIndex: 'name', key: 'name', align: "center" },
+                                        {
+                                            title: 'Actions',
+                                            key: 'actions',
+                                             align: "center",
+                                            render: (_, record) => (
+                                                <Space size="small">
+                                                    <Popconfirm
+                                                        title={`Remove size ${record.name} ?`}
+                                                        onConfirm={() =>  handleDeleteSize(record)}
+                                                    >
+                                                        <Button danger size="small">Delete</Button>
+                                                    </Popconfirm>
+                                                    
+                                                </Space>
+                                            ),
+                                        },
+                                    ]}
+                                    dataSource={filterOption?.size.map((s) => ({
+                                        ...s,
+                                        key: s?.name,
+                                    }))}
+                                    pagination={false}
                                 />
-                                <Button onClick={handleCreateNewSize} block>
-                                    Thêm size mới
-                                </Button>
-                            </Space>
-                        </div>
-                    </Col>
-                </Row>
+
+                                <Space
+                                    className="mt-4"
+                                    direction="vertical"
+                                    style={{ width: '100%' }}
+                                >
+                                    <Input
+                                        placeholder="Tên size mới"
+                                        value={newSizeName}
+                                        onChange={(e) => setNewSizeName(e.target.value)}
+                                    />
+                                    <Button onClick={handleCreateNewSize} block>
+                                        Thêm size mới
+                                    </Button>
+                                </Space>
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
             </div>
-        </div>
+        </Spin>
     );
 };
 

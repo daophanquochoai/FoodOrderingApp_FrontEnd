@@ -1,5 +1,5 @@
 import React from 'react';
-import { Controller, Control, FieldError } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { FormFloatingInputProps } from '../../type';
 import { FloatingInput } from '../input';
 

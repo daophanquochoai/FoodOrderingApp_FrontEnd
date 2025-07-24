@@ -1,16 +1,18 @@
 import {
     Button,
-    DatePicker,
     Image,
     Input,
     InputRef,
+    Pagination,
     Space,
+    Spin,
     Table,
     TableColumnsType,
     TableColumnType,
     Tag,
 } from 'antd';
 import {
+    BorderOuterOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
     DeleteOutlined,
@@ -19,78 +21,51 @@ import {
     SearchOutlined,
 } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { Food } from '@/type';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { CiFilter } from 'react-icons/ci';
 import { FormFilter } from '@/components/category';
-import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
-import { common } from '@/store/reducer';
+import { useDispatch, useSelector } from 'react-redux';
+import { common, foodManager } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { useNavigate } from 'react-router-dom';
+import {
+    selectFilter,
+    selectFoodManager,
+    selectLoadingPage,
+    selectTotalPage,
+} from '@/store/selector/admin/food/food_manager.selector';
+import { changePage, fetchFirst } from '@/store/action/admin/food/food_manager.action';
+import { Food } from '@/type/store/client/collection/food.style';
+import FoodManagerSlice from '@/store/reducer/admin/food/food_manager.reducer';
 
 type DataIndex = keyof Food;
 
-const productsData = [
-    {
-        id: 1,
-        name: 'Hamburger Bò',
-        desc: 'Bánh hamburger bò nướng với rau xà lách, cà chua và sốt đặc biệt.',
-        image: 'https://img.freepik.com/premium-photo/humber-barger_1019272-1536.jpg',
-        status: true,
-        create_date: '2024-09-01T08:00:00Z',
-        last_update_time: '2024-09-10T10:30:00Z',
-        food_code: 'HB001',
-        category_id: 1, // Đồ ăn nhanh
-        sizes: [
-            { size: 'S', price: 25000 },
-            { size: 'M', price: 32000 },
-            { size: 'L', price: 39000 },
-        ],
-        rate: 4.5,
-    },
-    {
-        id: 2,
-        name: 'Gà Rán Giòn Cay',
-        desc: 'Miếng gà rán giòn tan, vị cay nhẹ, phù hợp khẩu vị người Việt.',
-        image: 'https://bonchon.com.vn/sites/default/files/media/user-946/lam-ga-chien-cay-khong-the-bo-qua-cac-buoc-nay-03.jpg',
-        status: true,
-        create_date: '2024-09-02T09:00:00Z',
-        last_update_time: '2024-09-12T11:00:00Z',
-        food_code: 'CH002',
-        category_id: 1,
-        sizes: [
-            { size: 'Nhỏ', price: 18000 },
-            { size: 'Lớn', price: 35000 },
-        ],
-        rate: 4.7,
-    },
-    {
-        id: 3,
-        name: 'Khoai Tây Chiên',
-        desc: 'Khoai tây chiên giòn rụm, dùng kèm tương cà/chili.',
-        image: 'https://bizweb.dktcdn.net/100/440/789/products/4-cach-lam-khoai-tay-chien-gion-ngon-tai-nha-ai-cung-thich-cach-lam-khoai-tay-chien-3-1558678701-603-width600height367.jpg?v=1638268383250',
-        status: false,
-        create_date: '2024-09-03T10:00:00Z',
-        last_update_time: '2024-09-11T14:00:00Z',
-        food_code: 'PT003',
-        category_id: 2, // Món phụ
-        sizes: [
-            { size: 'Nhỏ', price: 12000 },
-            { size: 'Vừa', price: 18000 },
-            { size: 'Lớn', price: 25000 },
-        ],
-        rate: 4.2,
-    },
-];
-
 const ProductManagement = () => {
+    // hook
+    const dispatch = useDispatch();
+
+    //selector
+    const foods = useSelector(selectFoodManager);
+    const loading = useSelector(selectLoadingPage);
+    const filter = useSelector(selectFilter);
+    const totalPage = useSelector(selectTotalPage);
+
+    //useEffect
+    useEffect(() => {
+        dispatch(fetchFirst());
+    }, []);
+
+    // event handling
+    const handleEdit = (e) => {
+        dispatch(foodManager.actions.setFoodSelected(e));
+        navigate('/admin/product-management/edit');
+    };
+
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
     const [showFilter, setShowFilter] = useState(false);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleSearch = (
@@ -118,26 +93,6 @@ const ProductManagement = () => {
         );
     };
 
-    const handleOpenEditProductModal = (data) => {
-        dispatch(
-            common.actions.showModal({
-                type: ModalType.PRODUCT_MANAGEMENT,
-                variant: 'edit',
-                data: data,
-            })
-        );
-    };
-
-    const handleOpenAddProductModal = () => {
-        dispatch(
-            common.actions.showModal({
-                type: ModalType.PRODUCT_MANAGEMENT,
-                variant: 'add',
-                data: null,
-            })
-        );
-    };
-
     const handleOpenDeleteProductModal = (data) => {
         dispatch(
             common.actions.showModal({
@@ -146,6 +101,11 @@ const ProductManagement = () => {
                 data: data,
             })
         );
+    };
+
+    const handleAddFood = () => {
+        dispatch(foodManager.actions.setFoodSelected(null));
+        navigate('/admin/product-management/add');
     };
 
     const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType<Food> => ({
@@ -227,6 +187,11 @@ const ProductManagement = () => {
             ),
     });
 
+    const handleChangePage = (e) => {
+        dispatch(changePage(e - 1));
+    };
+
+    // declare
     const columns: TableColumnsType<any> = [
         {
             title: 'Name',
@@ -242,7 +207,7 @@ const ProductManagement = () => {
             align: 'center',
             render: (image) => (
                 <div className="flex items-center justify-center">
-                    <Image width={150} height={100} className="object-contain" src={image} />
+                    <Image width={120} height={80} className="object-contain" src={image} />
                 </div>
             ),
         },
@@ -255,85 +220,39 @@ const ProductManagement = () => {
                 { text: 'Inactive', value: false },
             ],
             onFilter: (value, record) => record.status === value,
-            render: (status) =>
-                status ? (
+            render: (status) => {
+                if (status == 'ACTIVE') {
+                    return (
+                        <>
+                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                Active
+                            </Tag>
+                        </>
+                    );
+                } else if (status == 'OUT_STOCK') {
+                    return;
                     <>
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                            Active
+                        <Tag icon={<BorderOuterOutlined />} color="error">
+                            Out Stock
                         </Tag>
-                    </>
-                ) : (
-                    <>
-                        <Tag icon={<CloseCircleOutlined />} color="error">
-                            Inactive
-                        </Tag>
-                    </>
-                ),
+                    </>;
+                } else {
+                    return (
+                        <>
+                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                Inactive
+                            </Tag>
+                        </>
+                    );
+                }
+            },
         },
         {
-            title: 'Created Time',
-            dataIndex: 'create_date',
-            key: 'create_date',
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <DatePicker
-                        onChange={(date, dateString) =>
-                            setSelectedKeys(dateString ? [dateString as string] : [])
-                        }
-                        style={{ marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => confirm()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Apply
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearFilters()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            ),
-            onFilter: (value, record) => record.create_date?.startsWith(value as string) || false,
-            render: (date) => dayjs(date).format('DD/MM/YYYY'),
-        },
-        {
-            title: 'Updated Time',
-            dataIndex: 'late_update_time',
-            key: 'last_update_time',
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <DatePicker
-                        onChange={(date, dateString) =>
-                            setSelectedKeys(dateString ? [dateString as string] : [])
-                        }
-                        style={{ marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => confirm()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Apply
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearFilters()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            ),
-            onFilter: (value, record) =>
-                record.last_update_time?.startsWith(value as string) || false,
-            render: (date) => (date ? dayjs(date).format('DD/MM/YYYY') : 'No date'),
+            title: 'Description',
+            dataIndex: 'desc',
+            key: 'desc',
+            ...getColumnSearchProps('desc'),
+            sorter: (a, b) => a.desc.localeCompare(b.desc),
         },
         {
             title: 'Actions',
@@ -352,7 +271,7 @@ const ProductManagement = () => {
                     <Button
                         type="primary"
                         icon={<EditOutlined />}
-                        onClick={() => navigate('/admin/product-management/edit/1')}
+                        onClick={() => handleEdit(record)}
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
                     />
@@ -368,15 +287,11 @@ const ProductManagement = () => {
     ];
 
     return (
-        <div>
+        <Spin spinning={loading}>
             <h1 className="text-2xl font-bold">Product Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
-                    <Button
-                        type="primary"
-                        // onClick={handleOpenAddProductModal}
-                        onClick={() => navigate('/admin/product-management/add')}
-                    >
+                    <Button type="primary" onClick={handleAddFood}>
                         + New Product
                     </Button>
 
@@ -391,13 +306,19 @@ const ProductManagement = () => {
 
                 <Table
                     columns={columns}
-                    dataSource={productsData}
+                    dataSource={foods}
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
                 />
+                <Pagination
+                    current={filter?.pageNo + 1 || 0}
+                    pageSize={10}
+                    onChange={handleChangePage}
+                    total={totalPage}
+                />
             </div>
-        </div>
+        </Spin>
     );
 };
 
