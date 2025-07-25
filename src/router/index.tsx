@@ -6,6 +6,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import LoadingPage from '@/pages/LoadingPage';
 import ServerError500 from '@/pages/500';
 import ScrollToTop from '../components/common/ScrollToTop';
+import OrderManagement from '@/pages/admin/orderManagement';
 
 const Home = lazy(() => import('../pages/client/home/Home'));
 const About = lazy(() => import('../pages/client/about/About'));
@@ -119,6 +120,8 @@ const AppRoutes = () => {
                     <Route path="product-management/edit" element={<AddAndEditProductManagement />}/>
 
                     <Route path="source-management" element={<SourceManagement />}/>
+
+                    <Route path="order-management" element={<OrderManagement />}/>
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
