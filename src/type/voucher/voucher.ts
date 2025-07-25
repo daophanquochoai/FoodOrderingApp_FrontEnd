@@ -5,6 +5,10 @@ export type Voucher = {
     type: string;
     value: number;
     maxDiscount: number;
+    maxUsage?: number;
+    usedCount?: number;
+    startDate?: string;
     endDate: string;
     isActive: boolean;
+    createdAt?: string;
 }

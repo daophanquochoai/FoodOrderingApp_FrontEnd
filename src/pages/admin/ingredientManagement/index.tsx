@@ -2,34 +2,53 @@ import {
     Button,
     Input,
     InputRef,
+    Pagination,
     Space,
+    Spin,
     Table,
     TableColumnsType,
     TableColumnType,
     Tag,
 } from 'antd';
-import React, { useRef, useState } from 'react';
-
+import React, { useEffect, useRef, useState } from 'react';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { mapIngredients } from '../../../utils/mapIngredients';
 import { ModalType } from '@/type/store/common';
-import { common } from '@/store/reducer';
-import { useDispatch } from 'react-redux';
+import { common, ingredients } from '@/store/reducer';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePage, fetchFirst } from '@/store/action/admin/ingredients/ingredient.action';
+import {
+    selectFilter,
+    selectIngredients,
+    selectLoading,
+    selectTotalPage,
+} from '@/store/selector/admin/ingredients/ingredients.selector';
 
 type DataIndex = keyof any;
 
 const IngredientManagement: React.FC = () => {
+    // hook
     const dispatch = useDispatch();
 
+    // state
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
-
     const navigate = useNavigate();
+    // selector
+    const loading = useSelector(selectLoading);
+    const ingredientsList = useSelector(selectIngredients);
+    const filter = useSelector(selectFilter);
+    const totalPage = useSelector(selectTotalPage);
 
+    //useEffect
+    useEffect(() => {
+        dispatch(fetchFirst());
+    }, []);
+
+    // event handling
     const handleSearch = (
         selectedKeys: string[],
         confirm: FilterDropdownProps['confirm'],
@@ -124,6 +143,11 @@ const IngredientManagement: React.FC = () => {
             ),
     });
 
+    const handleEye = (data) => {
+        dispatch(ingredients.actions.setIngredientsSelected(data));
+        navigate(`/admin/ingredient-management/${data?.id}`);
+    };
+
     const columns: TableColumnsType = [
         {
             title: 'Name',
@@ -143,28 +167,15 @@ const IngredientManagement: React.FC = () => {
             onFilter: (value, record) => record.unit == value,
         },
         {
-            title: 'Avg Price',
-            dataIndex: 'avg_price',
-            key: 'avg_price',
-            sorter: (a, b) => a.avg_price - b.avg_price,
-            render: (text) => <p>${text}</p>,
-        },
-        {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            key: 'quantity',
-            sorter: (a, b) => a.quantity - b.quantity,
-        },
-        {
             title: 'Low threshold',
-            dataIndex: 'low_threshold',
+            dataIndex: 'lowThreshold',
             key: 'low_threshold',
             sorter: (a, b) => a.low_threshold - b.low_threshold,
         },
         {
             title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
+            dataIndex: 'isActive',
+            key: 'isActive',
             filters: [
                 { text: 'Stock', value: 'in_stock' },
                 { text: 'Low stock', value: 'low_stock' },
@@ -172,43 +183,10 @@ const IngredientManagement: React.FC = () => {
             ],
             onFilter: (value, record) => record.status == value,
             render: (status) => {
-                if (status == 'in_stock') return <Tag color="green">Còn</Tag>;
-                if (status == 'low_stock') return <Tag color="orange">Còn ít</Tag>;
+                if (status) return <Tag color="green">Còn</Tag>;
                 return <Tag color="red">Hết</Tag>;
             },
         },
-        // {
-        //     title: 'Updated Time',
-        //     dataIndex: 'late_update_time',
-        //     key: 'late_update_time',
-        //     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-        //         <div style={{ padding: 8 }}>
-        //             <DatePicker
-        //                 onChange={(date, dateString) =>
-        //                     setSelectedKeys(dateString ? [dateString as string] : [])
-        //                 }
-        //                 style={{ marginBottom: 8, display: 'block' }}
-        //             />
-        //             <Button
-        //                 type="primary"
-        //                 onClick={() => confirm()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Apply
-        //             </Button>
-        //             <Button
-        //                 onClick={() => clearFilters && clearFilters()}
-        //                 size="small"
-        //                 style={{ width: '100%' }}
-        //             >
-        //                 Delete
-        //             </Button>
-        //         </div>
-        //     ),
-        //     onFilter: (value, record) =>
-        //         record.late_update_time?.startsWith(value as string) || false,
-        // },
         {
             title: 'Actions',
             key: 'actions',
@@ -219,57 +197,34 @@ const IngredientManagement: React.FC = () => {
                         color="primary"
                         variant="filled"
                         icon={<EyeOutlined />}
-                        onClick={() => navigate(`/admin/ingredient-management/${record.id}`)}
+                        onClick={() => handleEye(record)}
                         className=""
                         size="small"
                     />
-                    <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        onClick={() => handleOpenEditIngredientModal(record)}
-                        className="bg-blue-500 hover:bg-blue-600"
-                        size="small"
-                    />
-                    <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteIngredientModal(record)}
-                        size="small"
-                    />
+                    {record?.isActive && (
+                        <>
+                            <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={() => handleOpenEditIngredientModal(record)}
+                                className="bg-blue-500 hover:bg-blue-600"
+                                size="small"
+                            />
+                            <Button
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleOpenDeleteIngredientModal(record)}
+                                size="small"
+                            />
+                        </>
+                    )}
                 </Space>
             ),
         },
     ];
 
-    const rawData = [
-        {
-            id: '1',
-            name: 'Gạo',
-            unit: 'kg',
-            low_threshold: 10,
-            late_update_time: '2025-07-13',
-            avg_price: 15,
-            create_at: '2024-09-03T10:00:00Z',
-            history: [
-                { quantity: 50, used_unit: 40, avg_price: 15 }, // còn 10
-                { quantity: 20, used_unit: 20, avg_price: 10 }, // còn 0
-            ],
-        },
-        {
-            id: '2',
-            name: 'Dầu ăn',
-            unit: 'lít',
-            low_threshold: 5,
-            late_update_time: '2025-07-12',
-            avg_price: 8,
-            create_at: '2024-09-03T10:00:00Z',
-            history: [{ quantity: 10, used_unit: 10, avg_price: 8 }],
-        },
-    ];
-
-    const dataSource = mapIngredients(rawData);
-
     const handleOpenAddIngredientModal = () => {
+        dispatch(ingredients.actions.setIngredientsSelected(null));
         dispatch(
             common.actions.showModal({
                 type: ModalType.INGREDIENT,
@@ -280,6 +235,7 @@ const IngredientManagement: React.FC = () => {
     };
 
     const handleOpenEditIngredientModal = (ingredient) => {
+        dispatch(ingredients.actions.setIngredientsSelected(ingredient));
         dispatch(
             common.actions.showModal({
                 type: ModalType.INGREDIENT,
@@ -290,6 +246,7 @@ const IngredientManagement: React.FC = () => {
     };
 
     const handleOpenDeleteIngredientModal = (ingredient) => {
+        dispatch(ingredients.actions.setIngredientsSelected(ingredient));
         dispatch(
             common.actions.showModal({
                 type: ModalType.INGREDIENT,
@@ -298,24 +255,34 @@ const IngredientManagement: React.FC = () => {
             })
         );
     };
-
+    const handleChangePage = (e) => {
+        dispatch(changePage(e - 1));
+    };
     return (
-        <div className=''>
-            <h1 className="text-2xl font-bold">Ingredient Management</h1>
-            <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
-                <Button type="primary" onClick={handleOpenAddIngredientModal}>
-                    + New Ingredient
-                </Button>
+        <Spin spinning={loading}>
+            <div>
+                <h1 className="text-2xl font-bold">Ingredient Management</h1>
+                <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
+                    <Button type="primary" onClick={handleOpenAddIngredientModal}>
+                        + New Ingredient
+                    </Button>
 
-                <Table
-                    columns={columns}
-                    dataSource={dataSource}
-                    rowKey="key"
-                    scroll={{ x: 'max-content' }}
-                    pagination={false}
-                />
+                    <Table
+                        columns={columns}
+                        dataSource={ingredientsList}
+                        rowKey="key"
+                        scroll={{ x: 'max-content' }}
+                        pagination={false}
+                    />
+                    <Pagination
+                        current={filter?.pageNo + 1 || 0}
+                        pageSize={10}
+                        total={totalPage}
+                        onChange={handleChangePage}
+                    />
+                </div>
             </div>
-        </div>
+        </Spin>
     );
 };
 

@@ -25,7 +25,8 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
     onChange,
     options,
     required = false,
-    placeholder = "Select an option"
+    placeholder = "Select an option",
+    disabled
 }) => {
     const selectName = name || id;
     return (
@@ -36,6 +37,7 @@ const FloatingSelect: React.FC<FloatingSelectProps> = ({
                 name={selectName}
                 onChange={onChange}
                 required={required}
+                disabled={disabled}
                 className="peer w-full px-4 py-3 pt-6 pb-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none"
             >
                 <option value="" disabled>{placeholder}</option>

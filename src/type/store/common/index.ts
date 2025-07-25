@@ -11,7 +11,7 @@ export type MessageType = {
     hasShow: boolean;
 };
 
-export interface Filter {
+export class Filter {
     pageNo?: number;
     pageSize?: number;
     search?: string;
@@ -35,6 +35,7 @@ export enum ModalType {
     INGREDIENT = 'INGREDIENT',
     SPOIL_INGREDIENT = 'SPOIL_INGREDIENT',
     PRODUCT_MANAGEMENT = 'PRODUCT_MANAGEMENT',
+    VOUCHER = 'VOUCHER',
     SOURCE_MANAGEMENT = 'SOURCE_MANAGEMENT',
     ORDER_MANAGEMENT = 'ORDER_MANAGEMENT',
 }

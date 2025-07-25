@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
                 <NavLink to={"/contact"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Contact</NavLink>
               </li>
               <li className="my-2">
-                <NavLink to={"/"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Order Tracking</NavLink>
+                <NavLink to={"/account/orders"} className={({ isActive }) => isActive ? "text-orange-500" : "hover:text-orange-500"}>Order Tracking</NavLink>
               </li>
             </ul>
           </div>

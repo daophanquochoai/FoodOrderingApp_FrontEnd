@@ -32,6 +32,7 @@ const Account = lazy(() => import('../pages/client/account/Account'));
 const UserInfo = lazy(() => import('../pages/client/account/UserInfo'));
 const UserAddress = lazy(() => import('../pages/client/account/UserAddress'));
 const UserOrder = lazy(() => import('../pages/client/account/UserOrder'));
+const UserOrderDetail = lazy(() => import('../pages/client/account/UserOrderDetail'));
 const UserVoucher = lazy(() => import('../pages/client/account/UserVoucher'));
 const UserPoint = lazy(() => import('../pages/client/account/UserPoint'));
 const IngredientManagement = lazy(() => import('../pages/admin/ingredientManagement'));
@@ -39,6 +40,8 @@ const ProductManagement = lazy(() => import('../pages/admin/productManagement'))
 const AddAndEditProductManagement = lazy(
     () => import('../pages/admin/productManagement/AddEditProductManagement')
 );
+const VoucherManagement = lazy(() => import('../pages/admin/voucher/VoucherManagement'));
+const ExportVoucher = lazy(() => import('../pages/admin/voucher/ExportVoucher'));
 const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
 const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
 const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
@@ -82,6 +85,7 @@ const AppRoutes = () => {
                         <Route path="customer" element={<UserInfo />} />
                         <Route path="addresses" element={<UserAddress />} />
                         <Route path="orders" element={<UserOrder />} />
+                        <Route path="orders/order-detail" element={<UserOrderDetail />} />
                         <Route path="vouchers" element={<UserVoucher />} />
                         <Route path="points" element={<UserPoint />} />
                     </Route>
@@ -110,6 +114,8 @@ const AppRoutes = () => {
                     <Route path="spoil-ingredient" element={<SpoilIngredient />} />
                     
                     <Route path="product-management" element={<ProductManagement />} />
+                    <Route path="voucher-management" element={<VoucherManagement />} />
+                    <Route path="voucher-management/export" element={<ExportVoucher />} />
                     <Route path="product-management/add" element={<AddAndEditProductManagement />}/>
                     <Route path="product-management/edit" element={<AddAndEditProductManagement />}/>
 
