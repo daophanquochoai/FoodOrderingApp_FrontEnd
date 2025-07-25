@@ -333,3 +333,7 @@ ol {
 .custom-collapse .ant-collapse-content {
     background: transparent !important;
 }
+
+.ant-modal-root {
+  z-index: 9999 !important;
+}

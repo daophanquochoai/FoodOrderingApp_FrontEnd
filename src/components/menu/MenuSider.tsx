@@ -24,6 +24,7 @@ const MenuSider = () => {
                 {
                     key: '/',
                     label: <Link to={`${baseAdmin}`}>Dashboard</Link>,
+                    icon: <AiOutlineDashboard />,
                 },
                 {
                     key: '/account-management',
@@ -38,12 +39,8 @@ const MenuSider = () => {
             icon: <IoStorefrontOutline />,
             children: [
                 {
-                    key: '2',
-                    label: 'Store Info',
-                },
-                {
                     key: '/order-management',
-                    label: <Link to={`${baseAdmin}`}>Order Management</Link>,
+                    label: <Link to={`${baseAdmin}/order-management`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
                 },
                 {
@@ -74,12 +71,15 @@ const MenuSider = () => {
                     icon: <BiFoodMenu />,
                 },
                 {
-                    key: '/ingredient-management',
-                    label: (
-                        <Link to={`${baseAdmin}/ingredient-management`}>Ingredient Management</Link>
-                    ),
+                    key: '/ingredient',
+                    label: "Ingredient Management",
                     icon: <CgSmartHomeRefrigerator />,
                     children: [
+                        {
+                            key: '/ingredient-management',
+                            label: ( <Link to={`${baseAdmin}/ingredient-management`}>Ingredient Management</Link> ),
+                            icon: <CgSmartHomeRefrigerator />,
+                        },
                         {
                             key: '/spoil-ingredient',
                             label: <Link to={`${baseAdmin}/spoil-ingredient`}>Spoil Ingredient</Link>,

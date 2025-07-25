@@ -300,7 +300,7 @@ const IngredientManagement: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className=''>
             <h1 className="text-2xl font-bold">Ingredient Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button type="primary" onClick={handleOpenAddIngredientModal}>
