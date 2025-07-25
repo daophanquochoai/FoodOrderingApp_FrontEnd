@@ -31,6 +31,7 @@ const Account = lazy(() => import('../pages/client/account/Account'));
 const UserInfo = lazy(() => import('../pages/client/account/UserInfo'));
 const UserAddress = lazy(() => import('../pages/client/account/UserAddress'));
 const UserOrder = lazy(() => import('../pages/client/account/UserOrder'));
+const UserOrderDetail = lazy(() => import('../pages/client/account/UserOrderDetail'));
 const UserVoucher = lazy(() => import('../pages/client/account/UserVoucher'));
 const UserPoint = lazy(() => import('../pages/client/account/UserPoint'));
 const IngredientManagement = lazy(() => import('../pages/admin/ingredientManagement'));
@@ -83,6 +84,7 @@ const AppRoutes = () => {
                         <Route path="customer" element={<UserInfo />} />
                         <Route path="addresses" element={<UserAddress />} />
                         <Route path="orders" element={<UserOrder />} />
+                        <Route path="orders/order-detail" element={<UserOrderDetail />} />
                         <Route path="vouchers" element={<UserVoucher />} />
                         <Route path="points" element={<UserPoint />} />
                     </Route>
