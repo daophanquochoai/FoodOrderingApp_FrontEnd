@@ -7,3 +7,4 @@ export * as cart from './client/cart/cart.reducer';
 export * as foodManager from './admin/food/food_manager.reducer';
 export * as ingredients from './admin/ingredients/ingredients.reducer';
 export * as sources from './admin/source/source.reducer';
+export * as account from './client/account/account.reducer';

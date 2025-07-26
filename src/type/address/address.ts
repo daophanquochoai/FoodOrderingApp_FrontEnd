@@ -2,6 +2,6 @@ export type Address = {
     id: string;
     fullAddress: string;
     province: string;
-    ward: string;
+    commune: string;
     isDefault?: boolean;
-}
+};

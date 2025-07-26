@@ -15,7 +15,7 @@ function* handleFetchFirst({ payload }) {
         const userParse = JSON.parse(user);
         const access_tokenParse = JSON.parse(access_token);
 
-        if (userParse?.authorities[0]?.authority == 'ADMIN') {
+        if (userParse?.authorities[0]?.authority == 'ROLE_ADMIN') {
             payload('admin');
         }
 

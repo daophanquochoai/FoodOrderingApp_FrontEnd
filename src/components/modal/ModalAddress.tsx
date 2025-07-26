@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from "react";
-import ModalBase from "./ModalBase";
-import { ModalAddressProps } from "@/type/modal/modal";
-import { Address } from "../../type";
-import { useProvinces } from "../../hooks/address/useProvinces";
-import { useWards } from "../../hooks/address/useWards";
-import { FloatingSelect } from "../input";
-import { Button, Checkbox } from "antd";
+import React, { useState, useEffect } from 'react';
+import ModalBase from './ModalBase';
+import { ModalAddressProps } from '@/type/modal/modal';
+import { Address } from '../../type';
+import { useProvinces } from '../../hooks/address/useProvinces';
+import { useWards } from '../../hooks/address/useWards';
+import { FloatingSelect } from '../input';
+import { Button, Checkbox } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useDispatch } from 'react-redux';
-import { common } from "@/store/reducer";
-import { ModalType } from "@/type/store/common";
+import { common } from '@/store/reducer';
+import { ModalType } from '@/type/store/common';
 
 const ModalAddress: React.FC<any> = (props) => {
     const { data, type, variant } = props;
     const isEditing = data !== undefined && data !== null;
-    const title = isEditing ? "Edit Address" : "Add New Address";
+    const title = isEditing ? 'Edit Address' : 'Add New Address';
     const [formData, setFormData] = useState({
-        fullAddress: "",
-        province: "",
-        ward: "",
+        fullAddress: '',
+        province: '',
+        ward: '',
         isDefault: false,
     });
     const [errors, setErrors] = useState({
-        fullAddress: "",
-        province: "",
-        ward: "",
+        fullAddress: '',
+        province: '',
+        ward: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -43,16 +43,16 @@ const ModalAddress: React.FC<any> = (props) => {
             });
         } else {
             setFormData({
-                fullAddress: "",
-                province: "",
-                ward: "",
+                fullAddress: '',
+                province: '',
+                ward: '',
                 isDefault: false,
             });
         }
         setErrors({
-            fullAddress: "",
-            province: "",
-            ward: "",
+            fullAddress: '',
+            province: '',
+            ward: '',
         });
     }, [isEditing, data]);
 
@@ -60,12 +60,12 @@ const ModalAddress: React.FC<any> = (props) => {
         const { name, value, type, checked } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: type === 'checkbox' ? checked : value,
         }));
         if (name in errors) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ""
+                [name]: '',
             }));
         }
     };
@@ -75,20 +75,20 @@ const ModalAddress: React.FC<any> = (props) => {
         setFormData((prev) => ({
             ...prev,
             [name]: value,
-            ...(name === "province" ? { ward: "" } : {}), // Reset ward when province changes
+            ...(name === 'province' ? { ward: '' } : {}), // Reset ward when province changes
         }));
         if (name in errors) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: ""
+                [name]: '',
             }));
         }
     };
 
     const handleCheckboxChange = (e: CheckboxChangeEvent) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            isDefault: e.target.checked
+            isDefault: e.target.checked,
         }));
     };
 
@@ -97,17 +97,17 @@ const ModalAddress: React.FC<any> = (props) => {
         const newErrors = { ...errors };
 
         if (!formData.fullAddress.trim()) {
-            newErrors.fullAddress = "Address is required";
+            newErrors.fullAddress = 'Address is required';
             isValid = false;
         }
 
         if (!formData.province) {
-            newErrors.province = "Province is required";
+            newErrors.province = 'Province is required';
             isValid = false;
         }
 
         if (!formData.ward) {
-            newErrors.ward = "Ward is required";
+            newErrors.ward = 'Ward is required';
             isValid = false;
         }
 
@@ -117,27 +117,27 @@ const ModalAddress: React.FC<any> = (props) => {
 
     const onClose = () => {
         dispatch(common.actions.setHiddenModal(type));
-    }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
 
         setIsSubmitting(true);
-        
+
         try {
             const addressData: Address = {
                 id: isEditing ? data.id : Date.now().toString(), // Generate new ID for new address
                 fullAddress: formData.fullAddress,
-                province: formData.province,
-                ward: formData.ward,
+                commune: formData.province,
+                province: formData.ward,
                 isDefault: formData.isDefault,
             };
             // Simulate API call
             await new Promise((resolve) => setTimeout(resolve, 1000));
             onClose();
         } catch (error) {
-            console.error("Error submitting address:", error);
+            console.error('Error submitting address:', error);
         } finally {
             setIsSubmitting(false);
         }
@@ -153,7 +153,7 @@ const ModalAddress: React.FC<any> = (props) => {
                             type="text"
                             id="address"
                             name="fullAddress"
-                            value={formData.fullAddress || ""}
+                            value={formData.fullAddress || ''}
                             onChange={handleInputChange}
                             placeholder="Street Address"
                             className={`peer inputBox px-5 py-2 pt-5 pb-1`}
@@ -175,7 +175,7 @@ const ModalAddress: React.FC<any> = (props) => {
                                 label="Province"
                                 id="province"
                                 name="province"
-                                value={formData.province || ""}
+                                value={formData.province || ''}
                                 onChange={handleSelectChange}
                                 options={provinces}
                                 placeholder="Select province"
@@ -189,10 +189,12 @@ const ModalAddress: React.FC<any> = (props) => {
                                 label="Ward"
                                 id="ward"
                                 name="ward"
-                                value={formData.ward || ""}
+                                value={formData.ward || ''}
                                 onChange={handleSelectChange}
                                 options={wards}
-                                placeholder={formData.province ? "Select ward" : "Select province first"}
+                                placeholder={
+                                    formData.province ? 'Select ward' : 'Select province first'
+                                }
                                 disabled={!formData.province}
                             />
                             {errors.ward && (
@@ -201,26 +203,19 @@ const ModalAddress: React.FC<any> = (props) => {
                         </div>
                     </div>
                     <div>
-                        <Checkbox
-                            checked={formData.isDefault}
-                            onChange={handleCheckboxChange}
-                        >
+                        <Checkbox checked={formData.isDefault} onChange={handleCheckboxChange}>
                             Set as default address
                         </Checkbox>
                     </div>
                     <div className="flex justify-end space-x-3 mt-6">
-                        <Button
-                            onClick={onClose}
-                        >
-                            Cancel
-                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
                         <Button
                             type="primary"
                             htmlType="submit"
                             loading={isSubmitting}
                             className="bg-blue-500 hover:bg-blue-600"
                         >
-                            {isEditing ? "Save Changes" : "Add Address"}
+                            {isEditing ? 'Save Changes' : 'Add Address'}
                         </Button>
                     </div>
                 </form>
