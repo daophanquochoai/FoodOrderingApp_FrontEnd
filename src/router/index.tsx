@@ -45,6 +45,9 @@ const ExportVoucher = lazy(() => import('../pages/admin/voucher/ExportVoucher'))
 const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
 const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
 const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
+const EmployeeAccountManagement = lazy(
+    () => import('@/pages/admin/accountManagement/EmployeeAccount')
+);
 
 const AppRoutes = () => {
     return (
@@ -112,16 +115,27 @@ const AppRoutes = () => {
                     <Route path="ingredient-management" element={<IngredientManagement />} />
                     <Route path="ingredient-management/:id" element={<ViewIngredient />} />
                     <Route path="spoil-ingredient" element={<SpoilIngredient />} />
-                    
+
                     <Route path="product-management" element={<ProductManagement />} />
                     <Route path="voucher-management" element={<VoucherManagement />} />
                     <Route path="voucher-management/export" element={<ExportVoucher />} />
-                    <Route path="product-management/add" element={<AddAndEditProductManagement />}/>
-                    <Route path="product-management/edit" element={<AddAndEditProductManagement />}/>
+                    <Route
+                        path="product-management/add"
+                        element={<AddAndEditProductManagement />}
+                    />
+                    <Route
+                        path="product-management/edit"
+                        element={<AddAndEditProductManagement />}
+                    />
 
-                    <Route path="source-management" element={<SourceManagement />}/>
+                    <Route path="source-management" element={<SourceManagement />} />
 
-                    <Route path="order-management" element={<OrderManagement />}/>
+                    <Route path="order-management" element={<OrderManagement />} />
+
+                    <Route
+                        path="employee-account-management"
+                        element={<EmployeeAccountManagement />}
+                    />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
