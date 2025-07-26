@@ -1,3 +1,4 @@
+import FilterBar from '@/components/filter/FilterBar';
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
@@ -27,6 +28,8 @@ const OrderManagement = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
+
+    const [filters, setFilters] = useState({});
 
     const navigate = useNavigate();
 
@@ -429,9 +432,45 @@ const OrderManagement = () => {
         );
     };
 
+    const orderFilterFields = [
+        { key: 'name', type: 'text', placeholder: 'Tên người mua' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        {
+            key: 'status',
+            type: 'select',
+            placeholder: 'Trạng thái',
+            options: [
+                { label: 'Chờ xử lý', value: 'pending' },
+                { label: 'Đang xử lý', value: 'processing' },
+                { label: 'Hoàn thành', value: 'completed' },
+                { label: 'Đang giao', value: 'shipping' },
+                { label: 'Đã nhận', value: 'received' },
+                { label: 'Đã hủy', value: 'cancel' },
+            ],
+        },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <div>
             <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
+
+            {/* filter */}
+            <div className="mb-3">
+                <FilterBar
+                    fields={orderFilterFields}
+                    values={filters}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                />
+            </div>
 
             <div className="bg-white p-2 rounded-md">
                 <Table

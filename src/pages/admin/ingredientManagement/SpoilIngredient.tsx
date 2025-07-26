@@ -20,17 +20,20 @@ import { common } from '@/store/reducer';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
+import FilterBar from '@/components/filter/FilterBar';
 
 type DataIndex = keyof any;
 
 const SpoilIngredient = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
 
     const navigate = useNavigate();
+
+    const [filters, setFilters] = useState({});
 
     const handleSearch = (
         selectedKeys: string[],
@@ -138,7 +141,7 @@ const SpoilIngredient = () => {
             title: 'Import History ID',
             dataIndex: 'importHistoryId',
             key: 'name',
-            width: "200px",
+            width: '200px',
             ...getColumnSearchProps('name'),
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
@@ -162,13 +165,19 @@ const SpoilIngredient = () => {
             title: 'Reason',
             dataIndex: 'reason',
             key: 'reason',
-            width: "150px",
-            render: (reason) => <p style={{
-                width: '150px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
-            }}>{reason}</p>
+            width: '150px',
+            render: (reason) => (
+                <p
+                    style={{
+                        width: '150px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
+                    {reason}
+                </p>
+            ),
         },
         {
             title: 'Created Time',
@@ -199,9 +208,8 @@ const SpoilIngredient = () => {
                     </Button>
                 </div>
             ),
-            onFilter: (value, record) =>
-                record.create_at?.startsWith(value as string) || false,
-            render: (date) => dayjs(date).format("DD/MM/YYYY")
+            onFilter: (value, record) => record.create_at?.startsWith(value as string) || false,
+            render: (date) => dayjs(date).format('DD/MM/YYYY'),
         },
         {
             title: 'Actions',
@@ -237,13 +245,13 @@ const SpoilIngredient = () => {
 
     const dataSource = [
         {
-            name: "Dầu ăn",
+            name: 'Dầu ăn',
             importHistoryId: 1,
-            unit: "liter",
+            unit: 'liter',
             quantity: 3,
-            reason: "Dầu ăn bảo quản hỏng aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            reason: 'Dầu ăn bảo quản hỏng aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             create_at: '2024-09-03T10:00:00Z',
-            late_update_time: ""
+            late_update_time: '',
         },
     ];
 
@@ -287,9 +295,33 @@ const SpoilIngredient = () => {
         );
     };
 
+    const spoilIngredientFilterFields = [
+        { key: 'name', type: 'text', placeholder: 'Tên nguyên liệu' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <div>
-            <h1 className="text-2xl font-bold">Spoil Ingredient Management</h1>
+            <h1 className="text-2xl font-bold mb-3">Spoil Ingredient Management</h1>
+
+            {/* filter */}
+            <div className="mb-3">
+                <FilterBar
+                    fields={spoilIngredientFilterFields}
+                    values={filters}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                />
+            </div>
+
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button type="primary" onClick={handleOpenAddSpoilIngredientModal}>
                     + New Report
@@ -305,6 +337,6 @@ const SpoilIngredient = () => {
             </div>
         </div>
     );
-}
+};
 
-export default SpoilIngredient
+export default SpoilIngredient;

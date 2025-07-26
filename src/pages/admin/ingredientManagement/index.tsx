@@ -25,10 +25,13 @@ import {
     selectLoading,
     selectTotalPage,
 } from '@/store/selector/admin/ingredients/ingredients.selector';
+import FilterBar from '@/components/filter/FilterBar';
 
 type DataIndex = keyof any;
 
 const IngredientManagement: React.FC = () => {
+    const [filters, setFilters] = useState({});
+
     // hook
     const dispatch = useDispatch();
 
@@ -258,10 +261,45 @@ const IngredientManagement: React.FC = () => {
     const handleChangePage = (e) => {
         dispatch(changePage(e - 1));
     };
+
+    const ingredientFilterFields = [
+        { key: 'name', type: 'text', placeholder: 'Tên nguyên liệu' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+        {
+            key: 'status',
+            type: 'select',
+            placeholder: 'Trạng thái',
+            options: [
+                { label: 'Còn hàng', value: 'in_stock' },
+                { label: 'Còn ít', value: 'low_stock' },
+                { label: 'Hết hàng', value: 'out_of_stock' },
+            ],
+        },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <Spin spinning={loading}>
             <div>
-                <h1 className="text-2xl font-bold">Ingredient Management</h1>
+                <h1 className="text-2xl font-bold mb-3">Ingredient Management</h1>
+
+                {/* filter */}
+                <div className="mb-3">
+                    <FilterBar
+                        fields={ingredientFilterFields}
+                        values={filters}
+                        onChange={handleFilterChange}
+                        onReset={handleResetFilter}
+                    />
+                </div>
+
                 <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                     <Button type="primary" onClick={handleOpenAddIngredientModal}>
                         + New Ingredient
