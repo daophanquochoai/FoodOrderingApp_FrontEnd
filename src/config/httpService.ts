@@ -2,6 +2,7 @@
 import { getCookies } from '@/utils/cookies/cookies';
 import axios, { AxiosInstance } from 'axios';
 import { parseCookies, setCookie } from 'nookies';
+import type { ResponseType as AxiosResponseType } from 'axios';
 
 class HttpService {
     protected entity: string;
@@ -90,18 +91,42 @@ class HttpService {
         return Promise.reject(formatError);
     }
 
-    get = <T = any>(endpoint = '') => this.instance.get<T>(`/${this.entity}/${endpoint}`);
+    get = <T = any>(
+        endpoint: string,
+        token?: string,
+        params: Record<string, any> = {},
+        responseType: AxiosResponseType = 'json'
+    ) => {
+        return this.instance.get<T>(endpoint, {
+            params,
+            responseType,
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+                'Content-Type': 'application/json',
+            },
+        });
+    };
 
     getOne = <T = any>(id: number) => this.instance.get<T>(`/${this.entity}/${id}`);
 
     getList = <T = any>(params?: Record<string, any>) =>
         this.instance.get<T>(`/${this.entity}`, { params });
 
-    post = <T = any>(data: any, endpoint = '') =>
-        this.instance.post<T>(`/${this.entity}/${endpoint}`, data);
+    post = <T = any>(data: any, endpoint = '', token?: string) =>
+        this.instance.post<T>(`/${this.entity}/${endpoint}`, data, {
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+                'Content-Type': 'application/json',
+            },
+        });
 
-    put = <T = any>(id: string | number, data: any, path: string) =>
-        this.instance.put<T>(`/${this.entity}/${path}/${id}`, data);
+    put = <T = any>(id: string | number, data: any, path: string, token?: string) =>
+        this.instance.put<T>(`/${this.entity}/${path}/${id}`, data, {
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+                'Content-Type': 'application/json',
+            },
+        });
 
     patch = <T = any>(id: string | number, data: any) =>
         this.instance.patch<T>(`/${this.entity}/${id}`, data);

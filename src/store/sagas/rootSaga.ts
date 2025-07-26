@@ -7,6 +7,7 @@ import { watchCart } from './client/cart/cart.saga';
 import { watchFoodManager } from './admin/food/food_manager.saga';
 import { watchIngredients } from './admin/ingredients/ingredients.saga';
 import { watchSource } from './admin/source/source.saga';
+import { watchAccount } from './client/account/account.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -17,4 +18,5 @@ export default function* rootSaga() {
     yield* fork(watchFoodManager);
     yield* fork(watchIngredients);
     yield* fork(watchSource);
+    yield* fork(watchAccount);
 }

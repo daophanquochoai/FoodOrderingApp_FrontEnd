@@ -13,7 +13,7 @@ function* handleLogin({ payload }) {
         yield* put(auth.actions.setLoading(true));
 
         const { data } = yield* call(authApi.login, { username, password });
-
+        console.log(data);
         const user: User = data.data;
         yield* put(
             auth.actions.setAccount({

@@ -29,7 +29,6 @@ const Header: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [isOpenCartDraw, setIsOpenCartDraw] = useState(false);
-    const cartItemCount = 5;
     const { handleDropdownClick, closeDropdown, isOpen, dropdownRef } = useDropdown();
     const locationHome = useLocation();
 
