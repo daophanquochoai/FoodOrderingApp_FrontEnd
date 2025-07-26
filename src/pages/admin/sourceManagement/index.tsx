@@ -8,28 +8,39 @@ import {
     TableColumnType,
     Tag,
 } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { mapIngredients } from '../../../utils/mapIngredients';
 import { ModalType } from '@/type/store/common';
-import { common } from '@/store/reducer';
-import { useDispatch } from 'react-redux';
+import { common, sources } from '@/store/reducer';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { fetchFirst } from '@/store/action/admin/source/source.action';
+import { selectSource } from '@/store/selector/admin/source/source.selector';
+import { Source } from '@/type/store/admin/source/source.style';
 
 type DataIndex = keyof any;
 
 const SourceManagement: React.FC = () => {
+    // hook
     const dispatch = useDispatch();
 
+    //state
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
 
-    const navigate = useNavigate();
+    // selector
+    const sourcesList = useSelector(selectSource);
 
+    // useEffect
+    useEffect(() => {
+        dispatch(fetchFirst());
+    }, []);
+
+    // event handling
     const handleSearch = (
         selectedKeys: string[],
         confirm: FilterDropdownProps['confirm'],
@@ -124,7 +135,7 @@ const SourceManagement: React.FC = () => {
             ),
     });
 
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<any> = [
         {
             title: 'ID',
             dataIndex: 'id',
@@ -176,64 +187,30 @@ const SourceManagement: React.FC = () => {
                         className=""
                         size="small"
                     />
-                    <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        onClick={() => handleOpenEditIngredientModal(record)}
-                        className="bg-blue-500 hover:bg-blue-600"
-                        size="small"
-                    />
-                    <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteSourceModal(record)}
-                        size="small"
-                    />
+                    {record?.isActive && (
+                        <>
+                            <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={() => handleOpenEditIngredientModal(record)}
+                                className="bg-blue-500 hover:bg-blue-600"
+                                size="small"
+                            />
+                            <Button
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleOpenDeleteSourceModal(record)}
+                                size="small"
+                            />
+                        </>
+                    )}
                 </Space>
             ),
         },
     ];
 
-    const dataSource = [
-        {
-            "id": 1,
-            "name": "Công ty TNHH Nguyên Liệu Sài Gòn",
-            "address": "123 Đường Số 7, Quận Bình Tân, TP.HCM",
-            "phoneNumber": "0912345678",
-            "email": "lienhe@nguyenlieusaigon.vn",
-            "link": "http://nguyenlieusaigon.vn",
-            "taxCode": "0300012345",
-            "create_at": "2023-04-01T08:00:00",
-            "late_update_time": "2024-05-20T10:30:00",
-            "is_active": true
-        },
-        {
-            "id": 2,
-            "name": "Công ty CP Thực Phẩm Nhanh Việt",
-            "address": "45A Nguyễn Thị Minh Khai, Quận 1, TP.HCM",
-            "phoneNumber": "0923456789",
-            "email": "info@tpnhanhviet.vn",
-            "link": "http://tpnhanhviet.vn",
-            "taxCode": "0300023456",
-            "create_at": "2022-12-15T09:15:00",
-            "late_update_time": "2024-06-10T14:45:00",
-            "is_active": true
-        },
-        {
-            "id": 3,
-            "name": "Nhà Cung Cấp Rau Củ GreenFarm",
-            "address": "67 Đường Láng, Đống Đa, Hà Nội",
-            "phoneNumber": "0934567890",
-            "email": "support@greenfarm.vn",
-            "link": "http://greenfarm.vn",
-            "taxCode": "0100034567",
-            "create_at": "2021-08-20T07:30:00",
-            "late_update_time": "2023-11-05T16:10:00",
-            "is_active": false
-        }
-    ]
-
     const handleOpenViewSourceModal = (data) => {
+        dispatch(sources.actions.setSelectedSource(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.SOURCE_MANAGEMENT,
@@ -244,6 +221,7 @@ const SourceManagement: React.FC = () => {
     };
 
     const handleOpenAddIngredientModal = () => {
+        dispatch(sources.actions.setSelectedSource(null));
         dispatch(
             common.actions.showModal({
                 type: ModalType.SOURCE_MANAGEMENT,
@@ -254,6 +232,7 @@ const SourceManagement: React.FC = () => {
     };
 
     const handleOpenEditIngredientModal = (data) => {
+        dispatch(sources.actions.setSelectedSource(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.SOURCE_MANAGEMENT,
@@ -264,6 +243,7 @@ const SourceManagement: React.FC = () => {
     };
 
     const handleOpenDeleteSourceModal = (data) => {
+        dispatch(sources.actions.setSelectedSource(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.SOURCE_MANAGEMENT,
@@ -283,7 +263,7 @@ const SourceManagement: React.FC = () => {
 
                 <Table
                     columns={columns}
-                    dataSource={dataSource}
+                    dataSource={sourcesList?.data}
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
