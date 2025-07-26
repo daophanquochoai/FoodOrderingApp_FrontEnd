@@ -39,3 +39,9 @@ export enum ModalType {
     SOURCE_MANAGEMENT = 'SOURCE_MANAGEMENT',
     ORDER_MANAGEMENT = 'ORDER_MANAGEMENT',
 }
+
+export interface PageObject<T> {
+    data: T[];
+    totalPage: number;
+    loadingPage: boolean;
+}
