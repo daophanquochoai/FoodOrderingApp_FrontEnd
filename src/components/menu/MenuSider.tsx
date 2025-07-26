@@ -28,7 +28,11 @@ const MenuSider = () => {
                 },
                 {
                     key: '/account-management',
-                    label: <Link to={`${baseAdmin}`}>Account Management</Link>,
+                    label: (
+                        <Link to={`${baseAdmin}/employee-account-management`}>
+                            Employee Account
+                        </Link>
+                    ),
                     icon: <MdOutlineManageAccounts />,
                 },
             ],
@@ -72,17 +76,23 @@ const MenuSider = () => {
                 },
                 {
                     key: '/ingredient',
-                    label: "Ingredient Management",
+                    label: 'Ingredient Management',
                     icon: <CgSmartHomeRefrigerator />,
                     children: [
                         {
                             key: '/ingredient-management',
-                            label: ( <Link to={`${baseAdmin}/ingredient-management`}>Ingredient Management</Link> ),
+                            label: (
+                                <Link to={`${baseAdmin}/ingredient-management`}>
+                                    Ingredient Management
+                                </Link>
+                            ),
                             icon: <CgSmartHomeRefrigerator />,
                         },
                         {
                             key: '/spoil-ingredient',
-                            label: <Link to={`${baseAdmin}/spoil-ingredient`}>Spoil Ingredient</Link>,
+                            label: (
+                                <Link to={`${baseAdmin}/spoil-ingredient`}>Spoil Ingredient</Link>
+                            ),
                             icon: <MdOutlineReport />,
                         },
                     ],

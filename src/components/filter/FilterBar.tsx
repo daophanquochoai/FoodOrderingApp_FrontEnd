@@ -4,8 +4,13 @@ import FilterField from './FilterField';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CiFilter } from 'react-icons/ci';
 
-const FilterBar = ({ fields = [], values = {}, onChange, onReset }) => {
+const FilterBar = ({ fields = [], values = {}, onChange, onReset, type }) => {
     const [openFilter, setOpenFilter] = useState(false);
+
+    const handleFilter = () => {
+        console.log(type);
+        console.log(values);
+    };
 
     return (
         <div>
@@ -41,7 +46,7 @@ const FilterBar = ({ fields = [], values = {}, onChange, onReset }) => {
 
                     <div className="bg-gray-300 w-[1px] h-[25px] mx-2"></div>
 
-                    <Button type="primary" onClick={() => console.log(values)}>
+                    <Button type="primary" onClick={handleFilter}>
                         Lọc
                     </Button>
                     <Button onClick={onReset}>Đặt lại</Button>

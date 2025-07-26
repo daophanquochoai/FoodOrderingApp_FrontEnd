@@ -162,6 +162,7 @@ const CategoryManagement = () => {
                     values={filters}
                     onChange={handleFilterChange}
                     onReset={handleResetFilter}
+                    type={ModalType.CATEGORY}
                 />
             </div>
 
