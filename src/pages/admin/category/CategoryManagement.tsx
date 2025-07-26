@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Table, Space, Pagination } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -13,6 +13,7 @@ import {
 import { fetchCategoryFirst } from '@/store/action/admin/category/category.action';
 import { selectFilterCategory } from '@/store/selector/client/collection/collection.selector';
 import { Category } from '@/type/store/client/collection/collection.style';
+import FilterBar from '@/components/filter/FilterBar';
 
 const CategoryManagement = () => {
     // hook
@@ -23,6 +24,7 @@ const CategoryManagement = () => {
     const filter = useSelector(selectFilterCategory);
     const category = useSelector(selectCategoryAdmin);
     const loadingTable = useSelector(selectLoadingTable);
+    const [filters, setFilters] = useState({});
 
     // useEffect
     useEffect(() => {
@@ -127,9 +129,42 @@ const CategoryManagement = () => {
         },
     ];
 
+    const categoryFilterFields = [
+        { key: 'name', type: 'text', placeholder: 'Tên danh mục' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+        {
+            key: 'status',
+            type: 'select',
+            placeholder: 'Trạng thái',
+            options: [
+                { label: 'Hoạt động', value: 'active' },
+                { label: 'Dừng hoạt động', value: 'inactive' },
+            ],
+        },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <>
-            <h1 className="text-2xl font-bold">Category Management</h1>
+            <h1 className="text-2xl font-bold mb-3">Category Management</h1>
+
+            {/* filter */}
+            <div className="mb-3">
+                <FilterBar
+                    fields={categoryFilterFields}
+                    values={filters}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                />
+            </div>
+
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button
                     type="primary"
