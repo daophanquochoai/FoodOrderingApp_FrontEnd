@@ -11,8 +11,6 @@ const ProductItem: React.FC<Food> = (foodProps) => {
     //hook
     const dispatch = useDispatch();
 
-    const modal = useSelector(selectModal);
-
     // event handling
     const handleOpenModal = () => {
         dispatch(food.actions.setFoodDetail(foodProps));

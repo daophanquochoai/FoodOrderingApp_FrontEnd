@@ -6,12 +6,12 @@ export const initCommonValue: CommonType = {
     modal: [],
 };
 
-export const filter : Filter = {
-    pageNo : 0,
-    pageSize : 10,
-    search : '',
-    sort : 'asc',
-    order : 'id',
-    startDate : null,
-    endDate : null
-}
+export const filter: Filter = {
+    pageNo: 0,
+    pageSize: 10,
+    search: '',
+    sort: 'asc',
+    order: 'id',
+    startDate: null,
+    endDate: null,
+};

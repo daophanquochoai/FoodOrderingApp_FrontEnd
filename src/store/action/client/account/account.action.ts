@@ -15,3 +15,8 @@ export const updateAccount = createAction(accountAction.update, (state) => ({ pa
 
 //fetch address
 export const fetchAddress = createAction(`${name}/FETCH/ADDRESS`);
+
+// create address
+export const createAddress = createAction(`${name}/CREATE_ADDRESS`, (state) => ({
+    payload: state,
+}));
