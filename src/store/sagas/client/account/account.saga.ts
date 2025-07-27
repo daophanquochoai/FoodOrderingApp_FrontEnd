@@ -3,6 +3,7 @@ import { addressApi } from '@/api/client/address/address.api';
 import { userApi } from '@/api/client/user/user.api';
 import {
     actionLogout,
+    createAddress,
     fetchAddress,
     fetchFirst,
     updateAccount,
@@ -24,7 +25,7 @@ function* handleFetchFirst() {
     }
 }
 
-function* handleFetchInfo() {
+export function* handleFetchInfo() {
     try {
         const json = getCookies('user');
         const tokenRaw = getCookies('access_token');
@@ -96,7 +97,6 @@ function* handleFetchAddress() {
             },
             token
         );
-        console.log(data);
 
         yield put(account.actions.setAddress(data?.data?.data));
         yield put(account.actions.setTotalPageAddress(data?.data?.totalPage));
@@ -105,6 +105,29 @@ function* handleFetchAddress() {
         yield put(common.actions.setErrorMessage(e?.message));
     } finally {
         yield put(account.actions.setLoadingAddress(false));
+    }
+}
+
+function* handleCreateAddress({ payload }) {
+    try {
+        const { info } = yield all({
+            info: select(selectInfo),
+        });
+        const tokenRaw = getCookies('access_token');
+        const token = JSON.parse(tokenRaw);
+        payload = {
+            ...payload,
+            userId: {
+                id: info?.id,
+            },
+        };
+        console.log(payload);
+        const { data } = yield call(addressApi.createAddress, payload, token);
+        console.log(data);
+        yield handleFetchAddress();
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
     }
 }
 
@@ -124,11 +147,16 @@ function* watchFetchAddress() {
     yield takeEvery(fetchAddress, handleFetchAddress);
 }
 
+function* watchCreateAddress() {
+    yield takeEvery(createAddress, handleCreateAddress);
+}
+
 export function* watchAccount() {
     yield all([
         fork(watchFetchFirst),
         fork(watchLogout),
         fork(watchUpdateAccount),
         fork(watchFetchAddress),
+        fork(watchCreateAddress),
     ]);
 }

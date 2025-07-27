@@ -8,3 +8,6 @@ export * as foodManager from './admin/food/food_manager.reducer';
 export * as ingredients from './admin/ingredients/ingredients.reducer';
 export * as sources from './admin/source/source.reducer';
 export * as account from './client/account/account.reducer';
+export * as payment from './client/payment/payment.reducer';
+export * as voucher from './client/voucher/voucher.reducer';
+export * as checkout from './client/checkout/checkout.reducer';
