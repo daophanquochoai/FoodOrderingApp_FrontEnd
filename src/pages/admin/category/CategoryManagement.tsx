@@ -24,6 +24,7 @@ const CategoryManagement = () => {
     const filter = useSelector(selectFilterCategory);
     const category = useSelector(selectCategoryAdmin);
     const loadingTable = useSelector(selectLoadingTable);
+
     const [filters, setFilters] = useState({});
 
     // useEffect
