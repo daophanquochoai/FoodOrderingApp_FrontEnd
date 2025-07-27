@@ -48,6 +48,7 @@ function* handleCreateUser({ payload }) {
             window.location.href = '/login';
         }, 1000);
     } catch (e) {
+        console.error(e);
         yield put(common.actions.setErrorMessage(e.message));
     } finally {
         yield put(common.actions.setLoading(false));

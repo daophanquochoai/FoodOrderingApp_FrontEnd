@@ -4,12 +4,15 @@ import {
     auth,
     cart,
     category,
+    checkout,
     collection,
     common,
     food,
     foodManager,
     ingredients,
+    payment,
     sources,
+    voucher,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -23,6 +26,9 @@ const rootReducers = combineReducers({
     [ingredients.name]: ingredients.default.reducer,
     [sources.name]: sources.default.reducer,
     [account.name]: account.default.reducer,
+    [payment.name]: payment.default.reducer,
+    [voucher.name]: voucher.default.reducer,
+    [checkout.name]: checkout.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

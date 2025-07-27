@@ -1,5 +1,13 @@
-import React, { useState } from "react";
-import { validateCardNumber, validateCVV, validateCardholder, validateExpiry, formatCVV, formatCardNumber, formatExpiry } from "../../utils/validation/payment";
+import React, { useState } from 'react';
+import {
+    validateCardNumber,
+    validateCVV,
+    validateCardholder,
+    validateExpiry,
+    formatCVV,
+    formatCardNumber,
+    formatExpiry,
+} from '../../utils/validation/payment';
 
 interface PaymentMethodProps {
     selectedMethod?: string;
@@ -9,24 +17,24 @@ interface PaymentMethodProps {
 }
 
 interface CreditCardInfo {
-  cardholder: string;
-  cardNumber: string;
-  expiry: string;
-  cvv: string;
+    cardholder: string;
+    cardNumber: string;
+    expiry: string;
+    cvv: string;
 }
 
 interface ValidationErrors {
-  cardNumber?: string;
-  expiry?: string;
-  cvv?: string;
-  cardholder?: string;
+    cardNumber?: string;
+    expiry?: string;
+    cvv?: string;
+    cardholder?: string;
 }
 
-const PaymentMethod:React.FC<PaymentMethodProps> = ({
+const PaymentMethod: React.FC<PaymentMethodProps> = ({
     selectedMethod,
     onMethodSelect,
     creditCard,
-    onCreditCardChange
+    onCreditCardChange,
 }) => {
     const [errors, setErrors] = useState<ValidationErrors>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -53,10 +61,10 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
 
         onCreditCardChange({
             ...creditCard,
-            [name]: formattedValue
+            [name]: formattedValue,
         });
 
-        setTouched({...touched, [name]: true});
+        setTouched({ ...touched, [name]: true });
 
         let fieldError;
         switch (name) {
@@ -76,14 +84,14 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
 
         setErrors({
             ...errors,
-            [name]: fieldError
+            [name]: fieldError,
         });
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         const { name } = e.target;
-        setTouched({...touched, [name]: true});
-        
+        setTouched({ ...touched, [name]: true });
+
         // Validate on blur
         let fieldError;
         switch (name) {
@@ -100,11 +108,11 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                 fieldError = validateCardholder(creditCard.cardholder);
                 break;
         }
-        
+
         // Update error state
         setErrors({
             ...errors,
-            [name]: fieldError
+            [name]: fieldError,
         });
     };
 
@@ -118,19 +126,19 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
             <div className="space-y-4">
                 <div
                     className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                        selectedMethod === "cod"
-                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        selectedMethod === 'CASH'
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
-                    onClick={() => handleMethodSelect("cod")}
+                    onClick={() => handleMethodSelect('CASH')}
                 >
                     <div className="flex items-start space-x-3">
                         <input
                             type="radio"
                             name="method"
-                            value="cod"
-                            checked={selectedMethod === "cod"}
-                            onChange={() => handleMethodSelect("cod")}
+                            value="CASH"
+                            checked={selectedMethod === 'CASH'}
+                            onChange={() => handleMethodSelect('CASH')}
                             className="mt-1 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                         />
                         <div className="flex-1">
@@ -142,20 +150,20 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                 </div>
                 <div
                     className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                        selectedMethod === "card"
-                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+                        selectedMethod === 'CARD'
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}
-                    onClick={() => handleMethodSelect("card")}
+                    onClick={() => handleMethodSelect('CARD')}
                 >
                     <div className="flex flex-col gap-2">
                         <div className="flex items-start space-x-3">
                             <input
                                 type="radio"
                                 name="method"
-                                value="card"
-                                checked={selectedMethod === "card"}
-                                onChange={() => handleMethodSelect("card")}
+                                value="CARD"
+                                checked={selectedMethod === 'CARD'}
+                                onChange={() => handleMethodSelect('CARD')}
                                 className="mt-1 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                             />
                             <div className="flex-1">
@@ -164,7 +172,7 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                 </p>
                             </div>
                         </div>
-                        {selectedMethod === "card" && (
+                        {selectedMethod === 'CARD' && (
                             <div className="space-y-4">
                                 <div className="relative">
                                     <input
@@ -181,12 +189,22 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                     />
                                     <label
                                         htmlFor="cardnumber"
-                                        className={`absolute left-5 top-1 ${hasError('cardNumber') ? 'text-red-500' : 'text-gray-500'} text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${hasError('cardNumber') ? 'text-red-500' : 'text-blue-500'}`}
+                                        className={`absolute left-5 top-1 ${
+                                            hasError('cardNumber')
+                                                ? 'text-red-500'
+                                                : 'text-gray-500'
+                                        } text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${
+                                            hasError('cardNumber')
+                                                ? 'text-red-500'
+                                                : 'text-blue-500'
+                                        }`}
                                     >
                                         Card Number
                                     </label>
                                     {hasError('cardNumber') && (
-                                        <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>
+                                        <p className="mt-1 text-xs text-red-500">
+                                            {errors.cardNumber}
+                                        </p>
                                     )}
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4">
@@ -204,12 +222,22 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                         />
                                         <label
                                             htmlFor="expiry"
-                                            className={`absolute left-5 top-1 ${hasError('expiry') ? 'text-red-500' : 'text-gray-500'} text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${hasError('expiry') ? 'text-red-500' : 'text-blue-500'}`}
+                                            className={`absolute left-5 top-1 ${
+                                                hasError('expiry')
+                                                    ? 'text-red-500'
+                                                    : 'text-gray-500'
+                                            } text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${
+                                                hasError('expiry')
+                                                    ? 'text-red-500'
+                                                    : 'text-blue-500'
+                                            }`}
                                         >
                                             Expiration Date (MM/YY)
                                         </label>
                                         {hasError('expiry') && (
-                                            <p className="mt-1 text-xs text-red-500">{errors.expiry}</p>
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.expiry}
+                                            </p>
                                         )}
                                     </div>
                                     <div className="relative">
@@ -226,12 +254,18 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                         />
                                         <label
                                             htmlFor="cvv"
-                                            className={`absolute left-5 top-1 ${hasError('cvv') ? 'text-red-500' : 'text-gray-500'} text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${hasError('cvv') ? 'text-red-500' : 'text-blue-500'}`}
+                                            className={`absolute left-5 top-1 ${
+                                                hasError('cvv') ? 'text-red-500' : 'text-gray-500'
+                                            } text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${
+                                                hasError('cvv') ? 'text-red-500' : 'text-blue-500'
+                                            }`}
                                         >
                                             CVV
                                         </label>
                                         {hasError('cvv') && (
-                                            <p className="mt-1 text-xs text-red-500">{errors.cvv}</p>
+                                            <p className="mt-1 text-xs text-red-500">
+                                                {errors.cvv}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
@@ -249,7 +283,15 @@ const PaymentMethod:React.FC<PaymentMethodProps> = ({
                                     />
                                     <label
                                         htmlFor="cardholder"
-                                        className={`absolute left-5 top-1 ${hasError('cardholder') ? 'text-red-500' : 'text-gray-500'} text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${hasError('cardholder') ? 'text-red-500' : 'text-blue-500'}`}
+                                        className={`absolute left-5 top-1 ${
+                                            hasError('cardholder')
+                                                ? 'text-red-500'
+                                                : 'text-gray-500'
+                                        } text-xs transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:${
+                                            hasError('cardholder')
+                                                ? 'text-red-500'
+                                                : 'text-blue-500'
+                                        }`}
                                     >
                                         Name on card
                                     </label>

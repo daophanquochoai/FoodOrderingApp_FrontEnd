@@ -1,11 +1,20 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
-import AIAgent from '../components/ai/AIAgent';
 import { ConfigProvider } from 'antd';
 
+const CopilotKit = lazy(() =>
+    import('@copilotkit/react-core').then(module => ({ default: module.CopilotKit }))
+);
+
+const AIAgent = lazy(() => import('../components/ai/AIAgent'));
+
 const ClientLayout: React.FC = () => {
+
+    // API URL cho Chat Bot
+    const apiAIUrl = import.meta.env.VITE_API_AI_URL;
+    
     return (
         <ConfigProvider
             theme={{
@@ -22,7 +31,11 @@ const ClientLayout: React.FC = () => {
                     <Outlet />
                 </main>
                 <Footer />
-                <AIAgent />
+                <Suspense fallback={<div>Đang tải AI...</div>}>
+                    <CopilotKit runtimeUrl={apiAIUrl} properties={{ id: 'ai-agent' }}>
+                        <AIAgent />
+                    </CopilotKit>
+                </Suspense>
             </div>
         </ConfigProvider>
     );

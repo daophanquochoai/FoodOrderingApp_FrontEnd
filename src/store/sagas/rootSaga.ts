@@ -8,6 +8,9 @@ import { watchFoodManager } from './admin/food/food_manager.saga';
 import { watchIngredients } from './admin/ingredients/ingredients.saga';
 import { watchSource } from './admin/source/source.saga';
 import { watchAccount } from './client/account/account.saga';
+import { watchPayment } from './client/payment/payment.saga';
+import { watchVoucher } from './client/voucher/voucher.saga';
+import { watchCheckout } from './client/checkout/checkout.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -19,4 +22,7 @@ export default function* rootSaga() {
     yield* fork(watchIngredients);
     yield* fork(watchSource);
     yield* fork(watchAccount);
+    yield* fork(watchPayment);
+    yield* fork(watchVoucher);
+    yield* fork(watchCheckout);
 }

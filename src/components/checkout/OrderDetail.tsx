@@ -1,152 +1,156 @@
-import React from 'react';
+import { checkout } from '@/store/reducer';
+import { selectCart } from '@/store/selector/client/cart/cart.selector';
+import {
+    selectCheckout,
+    selectDiscountApply,
+    selectPoint,
+    selectShip,
+    selectSubTotal,
+    selectTotal,
+} from '@/store/selector/client/checkout/checkout.selector';
+import { selectVoucher } from '@/store/selector/client/voucher/voucher.selector';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface Voucher {
-    id: string;
-    code: string;
-    description: string;
-    type: string;
-    value: number;
-    maxDiscount: number;
-    endDate: string;
-    isActive: boolean;
-}
+const OrderDetail: React.FC<any> = () => {
+    // hook
+    const dispatch = useDispatch();
 
-interface OrderDetailProps {
-    selectedVoucher?: string | null;
-    point?: number;
-}
-const OrderDetail: React.FC<OrderDetailProps> = ({
-    selectedVoucher,
-    point = 0
-}) => {
-    const vouchers: Voucher[] = [
-        {
-            id: "1",
-            code: "BLACKFRIDAY",
-            description: "Black Friday 10% off",
-            type: "percentage",
-            value: 10,
-            maxDiscount: 4,
-            endDate: "2025-12-31",
-            isActive: true,
-        },
-        {
-            id: "2",
-            code: "WELCOME",
-            description: "Welcome voucher for new users",
-            type: "fixed",
-            value: 2,
-            maxDiscount: 2,
-            endDate: "2024-12-31",
-            isActive: true,
-        },
-        {
-            id: "3",
-            code: "ANNIVERSARY",
-            description: "Anniversary 10% off",
-            type: "percentage",
-            value: 10,
-            maxDiscount: 10,
-            endDate: "2025-12-31",
-            isActive: false,
+    // selector
+    const cart = useSelector(selectCart);
+    const checkoutData = useSelector(selectCheckout);
+    const discountApply = useSelector(selectDiscountApply);
+    const voucher = useSelector(selectVoucher);
+    const point = useSelector(selectPoint);
+    const total = useSelector(selectTotal);
+    const ship = useSelector(selectShip);
+    const subTotal = useSelector(selectSubTotal);
+
+    // state
+    const [discount, setDiscount] = useState<any>({
+        value: 0,
+        voucher: null,
+    });
+
+    useEffect(() => {
+        if (cart?.cartItems && cart?.cartItems.length > 0) {
+            dispatch(
+                checkout.actions.setSubTotal(
+                    cart?.cartItems.reduce(
+                        (sum, item) =>
+                            sum +
+                            item.quantity *
+                                ((item?.foodId?.price * (100 - item?.foodId?.discount)) / 100),
+                        0
+                    ) + 10000
+                )
+            );
+        } else {
+            dispatch(checkout.actions.setSubTotal(0));
         }
-    ];
-    
-    const items = [
-        {
-            id: 1,
-            name: "Cheese Italian Chicken Pizza",
-            image: "https://grillfood-demo.myshopify.com/cdn/shop/files/8_7db4be71-b67b-427f-96b4-5cdf4ddc491b.jpg?v=1746868484&width=416",
-            quantity: 2,
-            price: "$24.00",
-        },
-        {
-            id: 2,
-            name: "Big Spicy Mexican Tacos",
-            image: "https://grillfood-demo.myshopify.com/cdn/shop/files/21_689f8b55-c17e-4433-b851-23682f750073.jpg?v=1746868484&width=1206",
-            quantity: 1,
-            price: "$5.00",
-        },
-    ];
-
-    const calculateSubtotal = () => {
-        return items.reduce((sum, item) => {
-            // Remove $ and parse price
-            const price = parseFloat(item.price.replace('$', ''));
-            return sum + price * item.quantity;
-        }, 0);
-    };
-
-    const calculateDiscount = (subtotal: number) => {
-        if (!selectedVoucher) return 0;
-        
-        const voucher = vouchers.find(v => v.code === selectedVoucher);
-        if (!voucher) return 0;
-        
-        let discount = 0;
-        if (voucher.type === "percentage") {
-            discount = (subtotal * voucher.value) / 100;
-            if (discount > voucher.maxDiscount) {
-                discount = voucher.maxDiscount;
-            }
-        } else if (voucher.type === "fixed") {
-            discount = voucher.value;
-            if (discount > subtotal) {
-                discount = subtotal;
-            }
+        if (checkoutData) {
+            const ship =
+                checkoutData?.ship_fee?.baseFee +
+                checkoutData?.ship_fee?.feePerKm +
+                checkoutData?.ship_fee?.rushHourFee;
+            dispatch(checkout.actions.setFeeShip(ship > subTotal ? subTotal : ship));
+        } else {
+            dispatch(checkout.actions.setFeeShip(0));
         }
-        
-        return discount;
-    };
 
-    const subtotal = calculateSubtotal();
-    const discount = calculateDiscount(subtotal);
-    const pointsDiscount = point / 1000;
-    const total = subtotal - discount - pointsDiscount;
+        if (voucher != null && voucher?.data?.length > 0 && discountApply != null) {
+            const discountUsing = voucher?.data?.filter((i) => i.id === discountApply)[0];
+            const totalActual = subTotal - ship - point > 0 ? subTotal - ship - point : 0;
+            if (discountUsing) {
+                if (discountUsing.discountType.toString() == 'PERCENT') {
+                    let ability = (totalActual * discountUsing.discountValue) / 100;
+
+                    if (ability > discountUsing.discountValue) {
+                        ability = discountUsing.discountValue;
+                    }
+                    if (ability > totalActual) {
+                        ability = totalActual;
+                    }
+                    setDiscount({
+                        value: ability,
+                        voucher: discountUsing,
+                    });
+                } else {
+                    setDiscount({
+                        value:
+                            discountUsing.discountValue > totalActual
+                                ? totalActual
+                                : discountUsing.discountValue,
+                        voucher: discountUsing,
+                    });
+                }
+            }
+        } else {
+            setDiscount({
+                value: 0,
+                voucher: null,
+            });
+        }
+
+        dispatch(
+            checkout.actions.setTotal(
+                subTotal - ship - point - discount?.value > 0
+                    ? subTotal - ship - point - discount?.value
+                    : 0
+            )
+        );
+    }, [cart, checkoutData, point, discountApply]);
 
     return (
         <div className="xl:w-2/3">
             <ul className="space-y-4">
-            {items.map(item => (
-                <li key={item.id} className="flex items-center justify-between">
-                <div className="flex items-center">
-                    <div className="relative mr-4">
-                    <img
-                        src={item.image}
-                        alt={item.name}
-                        style={{ width: 60, height: 60, objectFit: 'cover' }}
-                        className="border border-gray-400 rounded-md"
-                    />
-                    <span
-                        className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
-                        style={{ fontSize: 12 }}
-                    >
-                        {item.quantity}
-                    </span>
-                    </div>
-                    <p>{item.name}</p>
-                </div>
-                <p>{item.price}</p>
-                </li>
-            ))}
+                {cart?.cartItems &&
+                    cart?.cartItems
+                        .filter((item) => item.isActive)
+                        .map((item) => (
+                            <li key={item.id} className="flex items-center justify-between">
+                                <div className="flex items-center">
+                                    <div className="relative mr-4">
+                                        <img
+                                            src={item?.foodId?.foodId?.image}
+                                            alt={item?.foodId?.foodId?.name}
+                                            style={{ width: 60, height: 60, objectFit: 'cover' }}
+                                            className="border border-gray-400 rounded-md"
+                                        />
+                                        <span
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                                            style={{ fontSize: 12 }}
+                                        >
+                                            {item.quantity}
+                                        </span>
+                                    </div>
+                                    <p>
+                                        {item?.foodId?.foodId?.name} - {item?.foodId?.sizeId?.name}
+                                    </p>
+                                </div>
+                                <p>
+                                    {(item?.foodId?.price * (100 - item?.foodId?.discount)) / 100}
+                                </p>
+                            </li>
+                        ))}
             </ul>
             <div className="flex items-center justify-between mt-8">
                 <p>
-                    Subtotal · {items.reduce((sum, item) => sum + item.quantity, 0)} items
+                    Subtotal · {cart?.cartItems.reduce((sum, item) => sum + item.quantity, 0)} items
                 </p>
-                <p>${subtotal.toFixed(2)}</p>
+                <p>${subTotal}</p>
             </div>
-            {discount > 0 && (
+            {discount?.voucher && (
                 <div className="flex items-center justify-between mt-2 text-green-600">
                     <div className="flex items-center">
                         <p>Voucher discount</p>
-                        {selectedVoucher && (
+                        {discount?.voucher && (
                             <span className="ml-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                {selectedVoucher}
+                                {discount?.voucher?.code}
                             </span>
                         )}
                     </div>
-                    <p>-${discount.toFixed(2)}</p>
+                    <p>-${discount?.value ? discount?.value?.toFixed(2) : 0}</p>
                 </div>
             )}
             {point > 0 && (
@@ -157,19 +161,23 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                             {point.toLocaleString()} points
                         </span>
                     </div>
-                    <p>-${pointsDiscount.toFixed(2)}</p>
+                    <p>-${point ? point.toFixed(2) : 0}</p>
                 </div>
             )}
             <div className="flex items-center justify-between mt-2">
                 <p>Shipping</p>
-                <p>FREE</p>
+                <p>${ship}</p>
             </div>
             <div className="flex items-center justify-between mt-8">
                 <strong className="text-lg">Total</strong>
                 <div className="flex gap-2 items-center">
                     <p className="text-sm pt-1">USD</p>
                     <strong className="text-lg">
-                        ${total.toFixed(2)}
+                        $
+                        {(total - ship - point - discount?.value > 0
+                            ? total - ship - point - discount?.value
+                            : 0
+                        ).toFixed(2)}
                     </strong>
                 </div>
             </div>

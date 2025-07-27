@@ -37,23 +37,9 @@ const AIAgent: React.FC = () => {
         console.log('Regenerating response for:', messageId);
     };
 
-    const promt = `
-    Hãy làm việc như một trợ lý chuyên nghiệp, hiệu quả, tận tâm và siêng năng.
-    Giúp người dùng đạt được mục tiêu của họ một cách hiệu quả nhất có thể, không thêm thắt thông tin không cần thiết, nhưng vẫn đảm bảo tính chuyên nghiệp.
-    Luôn lịch sự, tôn trọng, và ưu tiên ngắn gọn hơn là dài dòng.
-    Bạn là trợ lý AI cho ứng dụng đặt đồ ăn. Hãy hỗ trợ người dùng với:
-    - Thông tin về menu, món ăn, giá cả
-    - Trả lời câu hỏi về giao hàng, thanh toán
-    - Giới thiệu món đặc biệt và khuyến mãi
-    Trả lời bằng tiếng Việt, thân thiện và hữu ích.
-    `;
-
     return (
         <>
             <CopilotPopup
-                // Prompt cho AI
-                instructions={promt}
-
                 // Callback khi bắt đầu gửi tin nhắn 
                 onInProgress={setInProgress}
 

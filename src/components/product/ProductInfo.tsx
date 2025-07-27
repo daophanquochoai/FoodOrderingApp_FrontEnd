@@ -79,21 +79,23 @@ const ProductInfo = () => {
                 <div className="space-y-3">
                     <div className="flex space-x-3">
                         {foodDetail?.foodSizes &&
-                            foodDetail?.foodSizes.map((option) => (
-                                <div
-                                    key={option.id}
-                                    className={`block px-4 py-2 border-2 rounded-full w-auto cursor-pointer transition-all
+                            foodDetail?.foodSizes
+                                .filter((item) => item.isActive)
+                                .map((option) => (
+                                    <div
+                                        key={option.id}
+                                        className={`block px-4 py-2 border-2 rounded-full w-auto cursor-pointer transition-all
                             ${
                                 selectedSize?.id === option?.id
                                     ? 'border-orange-500'
                                     : 'border-gray-200 hover:border-orange-500'
                             }
                             `}
-                                    onClick={() => setSelectedSize(option)}
-                                >
-                                    <span className="font-medium">{option?.sizeId?.name}</span>
-                                </div>
-                            ))}
+                                        onClick={() => setSelectedSize(option)}
+                                    >
+                                        <span className="font-medium">{option?.sizeId?.name}</span>
+                                    </div>
+                                ))}
                     </div>
                 </div>
                 <strong className="my-2">Quantity</strong>
