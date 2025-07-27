@@ -19,7 +19,7 @@ function App() {
     const navigate = useNavigate();
 
     // Truyền API key ví dụ cho CopilotKit
-    const copilotApiKey = 'http://localhost:3000/api/chatbot';
+    const apiAIUrl = import.meta.env.VITE_API_AI_URL;
 
     // load cookie
     useEffect(() => {
@@ -32,7 +32,7 @@ function App() {
     };
 
     return (
-        <CopilotKit runtimeUrl={copilotApiKey} properties={{ id: 'ai-agent' }}>
+        <CopilotKit runtimeUrl={apiAIUrl} properties={{ id: 'ai-agent' }}>
             <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
                 {loadingPage && <LoadingPage />}
                 <AppRoutes />
