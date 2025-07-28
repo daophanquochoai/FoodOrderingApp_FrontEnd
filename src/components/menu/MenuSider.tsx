@@ -71,7 +71,7 @@ const MenuSider = () => {
                 },
                 {
                     key: '/recipe-management',
-                    label: <Link to={`${baseAdmin}/recipe-management`}>Recipe Management</Link>,
+                    label: <Link to={`${baseAdmin}`}>Recipe Management</Link>,
                     icon: <BiFoodMenu />,
                 },
                 {

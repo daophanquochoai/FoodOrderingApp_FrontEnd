@@ -297,7 +297,6 @@ const IngredientManagement: React.FC = () => {
                         values={filters}
                         onChange={handleFilterChange}
                         onReset={handleResetFilter}
-                        type={ModalType.INGREDIENT}
                     />
                 </div>
 

@@ -45,10 +45,6 @@ const ExportVoucher = lazy(() => import('../pages/admin/voucher/ExportVoucher'))
 const ViewIngredient = lazy(() => import('@/pages/admin/ingredientManagement/ViewIngredient'));
 const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/SpoilIngredient'));
 const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
-const RecipeManagement = lazy(() => import('@/pages/admin/recipeManagement'));
-const RecipeManagementProduct = lazy(
-    () => import('@/pages/admin/recipeManagement/ViewRecipeProduct')
-);
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
@@ -135,12 +131,6 @@ const AppRoutes = () => {
                     <Route path="source-management" element={<SourceManagement />} />
 
                     <Route path="order-management" element={<OrderManagement />} />
-
-                    <Route path="recipe-management" element={<RecipeManagement />} />
-                    <Route
-                        path="recipe-management/:productId"
-                        element={<RecipeManagementProduct />}
-                    />
 
                     <Route
                         path="employee-account-management"

@@ -325,30 +325,15 @@ ol {
 /* ---------end marquee------- */
 
 .custom-collapse .ant-collapse-header {
-  background: #fff !important;
-  border-bottom: 1px solid #f3f4f6;
-  border-radius: 0 !important;
+    background: #fff !important;
+    border-bottom: 1px solid #f3f4f6;
+    border-radius: 0 !important;
 }
 
 .custom-collapse .ant-collapse-content {
-  background: transparent !important;
+    background: transparent !important;
 }
 
 .ant-modal-root {
   z-index: 9999 !important;
-}
-
-
-
-.custom-readonly-select.ant-select-disabled {
-  background-color: white !important;
-  color: black !important;
-  opacity: 1 !important;
-  cursor: default !important;
-}
-
-.custom-readonly-select.ant-select-disabled .ant-select-selector {
-  background-color: #ffffff !important;
-  color: black !important;
-  opacity: 1 !important;
 }
