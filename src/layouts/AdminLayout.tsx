@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import { AiOutlineMenuUnfold, AiOutlineMenuFold } from 'react-icons/ai';
 import { MenuSider } from '../components/menu';
 import { Outlet } from 'react-router-dom';
+import AccountDropdown from '@/components/dropdown/accountDropdown';
 const { Sider, Content } = Layout;
 
 const AdminLayout = () => {
@@ -38,16 +39,7 @@ const AdminLayout = () => {
                             <div className="">{/* <SearchOutlined /> */}</div>
                         </div>
                         <div className="">
-                            <div
-                                className="rounded-full overflow-hidden"
-                                style={{ width: '35px', height: '35px' }}
-                            >
-                                <img
-                                    src="https://banobagi.vn/wp-content/uploads/2025/04/anh-avatar-dep-cho-con-trai-1.jpeg"
-                                    alt=""
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
+                            <AccountDropdown/>
                         </div>
                     </div>
                 </header>
