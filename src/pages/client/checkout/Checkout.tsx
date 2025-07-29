@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RiShoppingBag4Line } from 'react-icons/ri';
 import AddressSelector from '../../../components/checkout/AddressSelector';
 import OrderDetail from '../../../components/checkout/OrderDetail';
@@ -26,6 +26,7 @@ interface CreditCardInfo {
 const Checkout = () => {
     // hook
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // select
     const checkoutSlice = useSelector(selectCheckout);
@@ -98,6 +99,7 @@ const Checkout = () => {
                 address: {
                     address: addressList?.data?.filter((item) => item.id == selectedAddressId)[0],
                 },
+                action: () => navigate('/'),
             })
         );
     };

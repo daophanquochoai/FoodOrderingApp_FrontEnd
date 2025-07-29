@@ -113,12 +113,14 @@ function* handlePaymentAction({ payload }) {
                     isActive: true,
                 };
             }),
+            point: checkout?.point?.used || 0,
         };
         const tokenRaw = getCookies('access_token');
         const token = JSON.parse(tokenRaw);
-        console.log(data);
 
         yield call(orderApi.order, data, token);
+        yield put(common.actions.setSuccessMessage('Order Successfull'));
+        payload.action();
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
