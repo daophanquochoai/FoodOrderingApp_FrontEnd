@@ -9,3 +9,5 @@ export const firstFetch = createAction(collectionAction.firstFetch);
 export const fetchFoodById = createAction(`${name}/PRODUCT_BY_ID`, (id) => ({
     payload: id,
 }));
+
+export const fetchFood = createAction(`${name}/FETCH_FOOD`);

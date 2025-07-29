@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Rate } from 'antd';
 import { Food } from '@/type/store/client/collection/food.style';
 import chicken from '../../assets/chicken.jpg';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { common, food } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { selectModal } from '@/store/selector/common/common.selector';
 
 const ProductItem: React.FC<Food> = (foodProps) => {
     //hook
     const dispatch = useDispatch();
+
+    // state
+    const [foodSize, setFoodSize] = useState([]);
 
     // event handling
     const handleOpenModal = () => {
@@ -22,14 +24,20 @@ const ProductItem: React.FC<Food> = (foodProps) => {
         );
     };
 
+    //useEffect
+    useEffect(() => {
+        setFoodSize(foodProps.foodSizes?.filter((i) => i.isActive));
+    }, [foodProps]);
+
+
     return (
         <div
             onClick={handleOpenModal}
             className="relative px-2 py-4 group flex flex-col h-[330px] w-auto justify-center items-center cursor-pointer bg-white rounded-lg"
         >
-            {foodProps.foodSizes != null && (
+            {foodSize != null && foodSize?.length > 0 && (
                 <div className="absolute group-hover:opacity-0 transition-opacity duration-500 top-3 left-3 w-[40px] h-[40px] rounded-full bg-[#FC4D26] z-10 flex justify-center items-center text-white text-sm font-medium">
-                    -{foodProps.foodSizes[0].discount}%
+                    -{foodSize[0]?.discount || 0}%
                 </div>
             )}
 
@@ -52,16 +60,13 @@ const ProductItem: React.FC<Food> = (foodProps) => {
                 <Rate disabled allowHalf defaultValue={2.5} style={{ fontSize: '14px' }} />
 
                 <div className="flex items-center justify-center gap-2">
-                    {foodProps.foodSizes != null && (
+                    {foodSize != null && foodSize?.length > 0 && (
                         <>
                             <p className="text-gray-600 font-normal line-through text-[14px]">
-                                $
-                                {(foodProps.foodSizes[0].price *
-                                    (100 + foodProps.foodSizes[0].discount)) /
-                                    100}
+                                ${(foodSize[0]?.price * (100 + foodSize[0]?.discount)) / 100}
                             </p>
                             <p className="text-red-500 font-semibold text-[15px]">
-                                ${foodProps.foodSizes[0].price}
+                                ${foodSize[0]?.price}
                             </p>
                         </>
                     )}
