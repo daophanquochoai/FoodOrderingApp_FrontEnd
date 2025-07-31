@@ -14,7 +14,7 @@ const DesktopNav: React.FC = () => {
             </span>
 
             {/* Pizza Dropdown */}
-            <div className="relative">
+            {/* <div className="relative">
                 <div
                     className="flex items-center cursor-pointer hover:text-orange-500"
                     onClick={() => handleDropdownClick('pizza')}
@@ -49,13 +49,13 @@ const DesktopNav: React.FC = () => {
                         </div>
                     </div>
                 )}
-            </div>
+            </div> */}
 
             <NavLink to={'/collections'} className={'hover:text-orange-500'}>
                 COLLECTIONS
             </NavLink>
 
-            {/* Burger Dropdown */}
+            {/* Burger Dropdown
             <div className="relative">
                 <div
                     className="flex items-center cursor-pointer hover:text-orange-500"
@@ -91,7 +91,7 @@ const DesktopNav: React.FC = () => {
                         </div>
                     </div>
                 )}
-            </div>
+            </div> */}
 
             {/* More Dropdown */}
             <div className="relative">

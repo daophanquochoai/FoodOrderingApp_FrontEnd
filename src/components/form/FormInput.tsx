@@ -1,7 +1,6 @@
 import React from 'react';
-import { Controller, Control } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { Input } from 'antd';
-import { FormInputProps } from '../../type';
 
 const FormInput: React.FC<any> = ({
     name,
@@ -11,6 +10,7 @@ const FormInput: React.FC<any> = ({
     type = 'text',
     helperText,
     error,
+    disabled = false,
 }) => {
     return (
         <Controller
@@ -19,7 +19,7 @@ const FormInput: React.FC<any> = ({
             render={({ field }) => (
                 <div className="flex flex-col gap-1">
                     <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
-                    <Input {...field} placeholder={placeholder} type={type} />
+                    <Input {...field} placeholder={placeholder} type={type} disabled={disabled} />
                     {error && <p className="text-xs text-red-500 mt-1">* {helperText}</p>}
                 </div>
             )}
