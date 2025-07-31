@@ -1,5 +1,5 @@
 // src/services/HttpService.ts
-import { deleteAllCookies, getCookies } from '@/utils/cookies/cookies';
+import { deleteAllCookies, getCookies, setCookies } from '@/utils/cookies/cookies';
 import axios, { AxiosInstance } from 'axios';
 import { setCookie } from 'nookies';
 import type { ResponseType as AxiosResponseType } from 'axios';
@@ -27,11 +27,8 @@ class HttpService {
             switch (status) {
                 case 401:
                     if (!isServer) {
-                        const refresh_token_raw = getCookies('refresh_token');
-                        const access_token_raw = getCookies('access_token');
-
-                        const refresh_token = JSON.parse(refresh_token_raw);
-                        const access_token = JSON.parse(access_token_raw);
+                        const refresh_token = getCookies('refresh_token');
+                        const access_token = getCookies('access_token');
 
                         if (
                             refresh_token == null ||
@@ -40,7 +37,7 @@ class HttpService {
                             access_token == undefined
                         ) {
                             deleteAllCookies();
-                            window.location.href = '/login';
+                            window.location.href = 'login';
                         }
                         try {
                             const response = await axios.post(
@@ -50,14 +47,9 @@ class HttpService {
                             );
                             const accessToken = response.data.access_token;
                             const refreshToken = response.data.refresh_token;
-                            setCookie(null, 'access_token', accessToken, {
-                                maxAge: 604800,
-                                path: '/',
-                            });
-                            setCookie(null, 'refresh_token', refreshToken, {
-                                maxAge: 604800,
-                                path: '/',
-                            });
+
+                            setCookies('refresh_token', refreshToken, 30);
+                            setCookies('access_token', accessToken, 7);
                             const newRequest = {
                                 ...error.config,
                                 headers: {

@@ -13,7 +13,6 @@ function* handleFetchFirst({ payload }) {
 
     try {
         const userParse = JSON.parse(user);
-        const access_tokenParse = JSON.parse(access_token);
 
         if (userParse?.authorities[0]?.authority == 'ROLE_ADMIN') {
             payload('admin');
@@ -22,7 +21,7 @@ function* handleFetchFirst({ payload }) {
         yield* put(
             auth.actions.setAccount({
                 user: userParse,
-                token: access_tokenParse,
+                token: access_token,
             })
         );
     } catch (error) {
