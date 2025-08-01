@@ -51,6 +51,7 @@ const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredi
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
+const ImportManagement = lazy(() => import('@/pages/admin/importManagement'));
 
 const AppRoutes = () => {
     return (
@@ -132,6 +133,8 @@ const AppRoutes = () => {
                     />
 
                     <Route path="source-management" element={<SourceManagement />} />
+
+                    <Route path="import-management" element={<ImportManagement />} />
 
                     <Route path="order-management" element={<OrderManagement />} />
 

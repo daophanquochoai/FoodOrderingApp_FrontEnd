@@ -13,6 +13,7 @@ import ModalOrderManagement from './ModalOrderManagement';
 import ModalVoucher from './ModalVoucher';
 import ModalEmployeeManagement from './ModalEmployeeManagement';
 import ModalRecipeManagement from './ModalRecipeManagement';
+import ModalImportManagement from './ModalImportManagement';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -39,6 +40,8 @@ export const ModalRenderer = () => {
                 return <ModalEmployeeManagement key={modal.type} {...modal} />;
             case ModalType.RECIPE_MANAGEMENT:
                 return <ModalRecipeManagement key={modal.type} {...modal} />;
+            case ModalType.IMPORT_MANAGEMENT:
+                return <ModalImportManagement key={modal.type} {...modal} />;
             case ModalType.PRODUCT_MANAGEMENT:
                 if (modal.variant == 'view' || modal.variant == 'delete')
                     return <ModalProductManagementView key={modal.type} {...modal} />;

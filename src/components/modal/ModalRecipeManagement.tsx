@@ -98,6 +98,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                     {/* Chọn món ăn */}
                     <Form.Item name="food_id" label="Tên món ăn" rules={[{ required: true }]}>
                         <Select
+                            showSearch
                             placeholder="Chọn món ăn"
                             onChange={handleFoodChange}
                             options={foods.map((food) => ({

@@ -12,6 +12,7 @@ import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
 import { SiMaterialformkdocs } from 'react-icons/si';
+import { LiaFileImportSolid } from 'react-icons/lia';
 
 const MenuSider = () => {
     const baseAdmin: string = '/admin';
@@ -102,6 +103,11 @@ const MenuSider = () => {
                     key: '/source-management',
                     label: <Link to={`${baseAdmin}/source-management`}>Source Management</Link>,
                     icon: <VscSourceControl />,
+                },
+                {
+                    key: '/import-management',
+                    label: <Link to={`${baseAdmin}/import-management`}>Import Management</Link>,
+                    icon: <LiaFileImportSolid />,
                 },
             ],
         },
