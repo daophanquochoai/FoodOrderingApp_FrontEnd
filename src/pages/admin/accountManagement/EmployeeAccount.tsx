@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
 import FilterBar from '@/components/filter/FilterBar';
 import {
     changePageEmployee,
-    deleteEmployee,
+    resetPasswordEmployee,
     fetchFirst,
 } from '@/store/action/admin/employee/employee.action';
 import { selectEmployee, selectFilter } from '@/store/selector/admin/employee/employee.selector';
@@ -238,7 +238,7 @@ const EmployeeAccount = () => {
                             title="Confirm reset password"
                             description={`Are you sure you want to reset password of "${record.name}" ?`}
                             onConfirm={() => {
-                                dispatch(deleteEmployee(record?.id));
+                                dispatch(resetPasswordEmployee(record?.id));
                             }}
                             okText="Ok"
                             cancelText="Cancel"

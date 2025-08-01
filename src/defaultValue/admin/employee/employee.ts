@@ -15,6 +15,7 @@ export const initEmployeeSlice: EmployeeSlice = {
         totalPage: 0,
         loading: false,
     },
+    account : null,
     filter: initFilterEmployee,
     selectEmployee: null,
     loadingComponent: false,

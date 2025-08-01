@@ -1,123 +1,127 @@
-import React from 'react';
-import { Card, Tabs, Avatar, Descriptions, Button, Form, Input, message, Image } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import {
+    fetchEmployeeByUsername,
+    updatePasswordEmployee,
+} from '@/store/action/admin/employee/employee.action';
+import {
+    selectAccount,
+    selectLoadingComponent,
+} from '@/store/selector/admin/employee/employee.selector';
+import { Card, Tabs, Descriptions, Button, Form, Input, message, Image, Spin } from 'antd';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const { TabPane } = Tabs;
 
-const fakeEmployee = {
-    id: 1,
-    name: 'Nguyễn Văn A',
-    image: 'https://banobagi.vn/wp-content/uploads/2025/04/anh-avatar-dep-cho-con-trai-1.jpeg',
-    email: 'nguyenvana@example.com',
-    phoneNumber: '0901234567',
-    cccd: '045005031031',
-    gender: 'Nam',
-    address: '123 Đường ABC, Quận 1, TP.HCM',
-    status: true,
-    role: {
-        id: 2,
-        role: 'Admin',
-    },
-};
-
 const Account = () => {
+    // hook
+    const dispatch = useDispatch();
     const [form] = Form.useForm();
 
+    // selector
+    const loading = useSelector(selectLoadingComponent);
+    const account = useSelector(selectAccount);
+    // useEffect
+    useEffect(() => {
+        dispatch(fetchEmployeeByUsername());
+    }, []);
+
     const handleChangePassword = (values) => {
-        console.log('Changing password with:', values);
-        message.success('Đổi mật khẩu thành công!');
+        const data = {
+            oldPassword: values?.oldPassword,
+            newPassword: values?.newPassword,
+        };
+        dispatch(updatePasswordEmployee({ data, action: () => form.resetFields() }));
     };
 
-    const employee = fakeEmployee;
-
     return (
-        <Card title="Employee Account">
-            <Tabs defaultActiveKey="1">
-                <TabPane tab="Personal Information" key="1">
-                    <div style={{ display: 'flex', gap: 24 }}>
-                        <Image
-                            width={100}
-                            height={100}
-                            src={employee.image}
-                            alt={'avatar'}
-                            className="object-contain rounded-full"
-                        />
-                        <Descriptions column={1} bordered size="small">
-                            <Descriptions.Item label="Full Name">{employee.name}</Descriptions.Item>
-                            <Descriptions.Item label="Email">{employee.email}</Descriptions.Item>
-                            <Descriptions.Item label="Phone Number">
-                                {employee.phoneNumber}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Gender">{employee.gender}</Descriptions.Item>
-                            <Descriptions.Item label="Citizen ID Card (CCCD)">
-                                {employee.cccd}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Address">
-                                {employee.address}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Role">
-                                {employee.role?.role}
-                            </Descriptions.Item>
-                            <Descriptions.Item label="Status">
-                                {employee.status ? 'Active' : 'Inactive'}
-                            </Descriptions.Item>
-                        </Descriptions>
-                    </div>
-                </TabPane>
+        <Spin spinning={loading}>
+            <Card title="Employee Account">
+                <Tabs defaultActiveKey="1">
+                    <TabPane tab="Personal Information" key="1">
+                        <div style={{ display: 'flex', gap: 24 }}>
+                            <Descriptions column={1} bordered size="small">
+                                <Descriptions.Item label="Full Name">
+                                    {account?.name || 'Error'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Email">
+                                    {account?.email || 'Error'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Last Login">
+                                    {account?.lastLogin
+                                        ? new Date(account.lastLogin as string).toLocaleString()
+                                        : 'N/A'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Citizen ID Card (CCCD)">
+                                    {account?.cccd || 'Error'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Role">
+                                    {account?.role?.roleName || 'Error'}
+                                </Descriptions.Item>
+                                <Descriptions.Item label="Status">
+                                    {account?.isActive ? 'Active' : 'Inactive'}
+                                </Descriptions.Item>
+                            </Descriptions>
+                        </div>
+                    </TabPane>
 
-                <TabPane tab="Change Password" key="2">
-                    <Form
-                        form={form}
-                        layout="vertical"
-                        onFinish={handleChangePassword}
-                        style={{ maxWidth: 400 }}
-                    >
-                        <Form.Item
-                            label="Old Password"
-                            name="oldPassword"
-                            rules={[{ required: true, message: 'Please enter your old password' }]}
+                    <TabPane tab="Change Password" key="2">
+                        <Form
+                            form={form}
+                            layout="vertical"
+                            onFinish={handleChangePassword}
+                            style={{ maxWidth: 400 }}
                         >
-                            <Input.Password />
-                        </Form.Item>
+                            <Form.Item
+                                label="Old Password"
+                                name="oldPassword"
+                                rules={[
+                                    { required: true, message: 'Please enter your old password' },
+                                ]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
 
-                        <Form.Item
-                            label="New Password"
-                            name="newPassword"
-                            rules={[{ required: true, message: 'Please enter your new password' }]}
-                        >
-                            <Input.Password />
-                        </Form.Item>
+                            <Form.Item
+                                label="New Password"
+                                name="newPassword"
+                                rules={[
+                                    { required: true, message: 'Please enter your new password' },
+                                ]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
 
-                        <Form.Item
-                            label="Confirm New Password"
-                            name="confirmPassword"
-                            dependencies={['newPassword']}
-                            rules={[
-                                { required: true, message: 'Please confirm your new password' },
-                                ({ getFieldValue }) => ({
-                                    validator(_, value) {
-                                        if (!value || getFieldValue('newPassword') === value) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject(
-                                            new Error('The passwords do not match!')
-                                        );
-                                    },
-                                }),
-                            ]}
-                        >
-                            <Input.Password />
-                        </Form.Item>
+                            <Form.Item
+                                label="Confirm New Password"
+                                name="confirmPassword"
+                                dependencies={['newPassword']}
+                                rules={[
+                                    { required: true, message: 'Please confirm your new password' },
+                                    ({ getFieldValue }) => ({
+                                        validator(_, value) {
+                                            if (!value || getFieldValue('newPassword') === value) {
+                                                return Promise.resolve();
+                                            }
+                                            return Promise.reject(
+                                                new Error('The passwords do not match!')
+                                            );
+                                        },
+                                    }),
+                                ]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
 
-                        <Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Change Password
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                </TabPane>
-            </Tabs>
-        </Card>
+                            <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                    Change Password
+                                </Button>
+                            </Form.Item>
+                        </Form>
+                    </TabPane>
+                </Tabs>
+            </Card>
+        </Spin>
     );
 };
 

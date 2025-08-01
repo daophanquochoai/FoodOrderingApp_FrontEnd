@@ -13,6 +13,12 @@ class EmployeeApi extends HttpService {
     updatePasswrod = (id: any, token: string) => {
         return this.put(id, '@Hoai100303', 'update/password', token);
     };
+    getEmployeeByUsername = (username: any, token: string) => {
+        return this.get('employee/' + username, token);
+    };
+    updatePasswordEmployee = (data: any, username: string, token) => {
+        return this.put(username, data, 'update/password', token);
+    };
 }
 
 export const employeeApi = new EmployeeApi('employee');
