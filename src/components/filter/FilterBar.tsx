@@ -47,9 +47,9 @@ const FilterBar = ({ fields = [], values = {}, onChange, onReset, type }) => {
                     <div className="bg-gray-300 w-[1px] h-[25px] mx-2"></div>
 
                     <Button type="primary" onClick={handleFilter}>
-                        Lọc
+                        Apply
                     </Button>
-                    <Button onClick={onReset}>Đặt lại</Button>
+                    <Button onClick={onReset}>Reset</Button>
                 </Space>
             </div>
         </div>
