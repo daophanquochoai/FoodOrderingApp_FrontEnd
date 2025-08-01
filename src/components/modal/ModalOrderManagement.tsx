@@ -1,18 +1,45 @@
-import { ModalState } from '@/type/store/common'
-import React, { useRef, useState } from 'react'
-import ModalBase from './ModalBase'
-import { useDispatch } from 'react-redux';
-import { Button, DatePicker, Descriptions, DescriptionsProps, Image, Input, InputRef, Modal, Popconfirm, Select, Space, Table, TableColumnsType, TableColumnType, Tag } from 'antd';
+import { ModalState } from '@/type/store/common';
+import React, { useRef, useState } from 'react';
+import ModalBase from './ModalBase';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    Button,
+    Descriptions,
+    DescriptionsProps,
+    Image,
+    Input,
+    InputRef,
+    Popconfirm,
+    Select,
+    Space,
+    Table,
+    TableColumnsType,
+    TableColumnType,
+    Tag,
+} from 'antd';
 import dayjs from 'dayjs';
 import { FilterDropdownProps } from 'antd/es/table/interface';
-import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
+import { selectSelectedOrder } from '@/store/selector/admin/order/order.selector';
+import { OrderItem } from '@/type/store/admin/order/order.style';
 
 type DataIndex = keyof any;
+const ORDER_STATUSES = [
+    'CREATING',
+    'PENDING',
+    'PROCESSING',
+    'COMPLETE',
+    'SHIPPING',
+    'RECEIVE',
+    'CANCEL',
+] as const;
 
 const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => {
+    // selector
+    const selectOrder = useSelector(selectSelectedOrder);
 
-    const ORDER_STATUSES = ['pending', 'processing', 'completed', 'shipping', 'received'] as const;
+    console.log(selectOrder);
 
     const [selectedStatus, setSelectedStatus] = useState(false);
 
@@ -23,37 +50,40 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         let label = '';
 
         switch (status) {
-            case 'pending':
+            case 'CREATING':
                 color = 'default';
-                label = 'pending';
+                label = 'Creating';
                 break;
-            case 'processing':
+            case 'PENDING':
                 color = 'orange';
-                label = "processing";
+                label = 'Pending';
                 break;
-            case 'shipping':
-                color = 'blue';
-                label = "shipping";
+            case 'PROCESSING':
+                color = 'pink';
+                label = 'Processing';
                 break;
-            case 'received':
+            case 'COMPLETE':
                 color = 'cyan';
-                label = 'received';
+                label = 'Complete';
                 break;
-            case 'completed':
+            case 'SHIPPING':
+                color = 'blue';
+                label = 'Shippinh';
+                break;
+            case 'RECEIVE':
                 color = 'green';
-                label = "completed";
+                label = 'Receive';
                 break;
-            case 'cancel':
-                color = 'red';
-                label = "cancel";
-                break;
+            case 'CANCEL':
+                color: 'red';
+                label: 'Cancel';
             default:
                 color = 'gray';
                 label = status;
         }
 
         return <Tag color={color}>{label}</Tag>;
-    }
+    };
 
     //#region chi tiết sản phẩm
     const [searchText, setSearchText] = useState('');
@@ -154,45 +184,45 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
             ),
     });
 
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<OrderItem> = [
         {
-            title: 'Food name',
-            dataIndex: 'name',
+            title: 'Tên món',
             key: 'name',
-            ...getColumnSearchProps('name'),
-            sorter: (a, b) => a.id.localeCompare(b.id),
+            render: (e: OrderItem) => <p>{e?.foodId?.foodId?.name}</p>,
         },
         {
             title: 'Image',
-            dataIndex: 'image',
             key: 'image',
             align: 'center',
-            render: (image) => (
+            render: (image: OrderItem) => (
                 <div className="flex items-center justify-center">
-                    <Image width={120} height={80} className="object-contain" src={image} />
+                    <Image
+                        width={120}
+                        height={80}
+                        className="object-contain"
+                        src={image?.foodId?.foodId?.image}
+                    />
                 </div>
             ),
         },
         {
-            title: 'Price',
-            dataIndex: 'price_at_time',
+            title: 'Đơn giá',
             key: 'price_at_time',
-            sorter: (a, b) => a.total - b.total,
-            render: (price) => <p>{price.toLocaleString()}đ</p>
+            render: (price: OrderItem) => (
+                <p>{price?.priceAtTime ? price?.priceAtTime.toLocaleString() : 0}đ</p>
+            ),
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
+            title: 'Số lượng',
             key: 'quantity',
-            sorter: (a, b) => a.total - b.total,
-            render: (quantity) => <p>{quantity}</p>
+            render: (quantity: OrderItem) => <p>{quantity?.quantity}</p>,
         },
         {
-            title: 'Total',
-            dataIndex: 'total',
+            title: 'Tổng tiền',
             key: 'total',
-            sorter: (a, b) => a.total - b.total,
-            render: (_, record) => <p>{(record.quantity * record.price_at_time).toLocaleString()}đ</p>
+            render: (_, record: OrderItem) => (
+                <p>{(record?.quantity || 0 * record?.priceAtTime || 0).toLocaleString()}đ</p>
+            ),
         },
     ];
     //#endregion
@@ -203,7 +233,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         const nextStatuses = [];
 
         if (currentIndex >= 0 && currentIndex < ORDER_STATUSES.length - 1) {
-            nextStatuses.push(...ORDER_STATUSES.slice(currentIndex + 1));// Trạng thái tiếp theo
+            nextStatuses.push(...ORDER_STATUSES.slice(currentIndex + 1)); // Trạng thái tiếp theo
         }
 
         // Các trạng thái được phép huỷ
@@ -214,93 +244,74 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         return nextStatuses;
     };
 
+    console.log(selectOrder);
 
     const orderSummary: DescriptionsProps['items'] = [
         {
             key: 'status',
-            label: 'Order Status',
-            children: variant === 'edit' ? (
-                <div className='w-[180px]'>
-                    <Select
-                        disabled={getNextStatusOptions(data.status).length === 0}
-                        className="w-full"
-                        defaultValue={data.status}
-                        onChange={(value) => {
-                            setSelectedStatus(value);
-                        }}
-                        options={getNextStatusOptions(data.status).map(status => ({
-                            label: tagStatus(status),
-                            value: status,
-                        }))}
-                    />
-                    {selectedStatus && selectedStatus !== data.status ? (
-                        <Popconfirm
-                            title="Confirm status change"
-                            description={`Are you sure you want to switch to this state "${selectedStatus}"?`}
-                            onConfirm={() => {
-                                console.log("Confirmed status change: ", selectedStatus);
-                                // Gọi API hoặc callback xử lý ở đây
-                            }}
-                            okText="Confirm"
-                            cancelText="Cancel"
-                        >
-                            <Button type="primary" danger className='mt-3'>Confirm status</Button>
-                        </Popconfirm>
-                    ) : null}
-                </div>
-            ) : (
-                tagStatus(data.status)
-            )
+            label: 'Trạng thái đơn hàng',
+            children:
+                variant === 'edit' ? (
+                    <div className="w-[180px]">
+                        <Select
+                            disabled={getNextStatusOptions(data.status).length === 0}
+                            className="w-full"
+                            defaultValue={selectOrder?.status}
+                        />
+                    </div>
+                ) : (
+                    tagStatus(data.status)
+                ),
         },
         {
             key: 'id',
-            label: 'Order code',
-            children: <p className='font-medium'>{data.id}</p>,
-
+            label: 'Mã đơn hàng',
+            children: <p className="font-medium">{selectOrder?.id}</p>,
         },
         {
             key: 'clientName',
-            label: 'Customer name',
-            children: <p className='font-medium'>{data.buyer.name}</p>,
+            label: 'Tên khách hàng',
+            children: <p className="font-medium">{selectOrder?.name}</p>,
         },
         {
             key: 'clientPhone',
-            label: 'Phone number',
-            children: <p className='font-medium'>{data.buyer.phone}</p>,
+            label: 'Số điện thoại',
+            children: <p className="font-medium">{selectOrder?.phoneNumber}</p>,
         },
         {
             key: 'address',
-            label: 'Address',
-            children: <p className='font-medium'>{data.buyer.address}</p>,
+            label: 'Địa chỉ',
+            children: <p className="font-medium">{selectOrder?.address}</p>,
         },
         {
             key: 'createdAt',
-            label: 'Craeted at',
-            children: <p className='font-medium'>{dayjs(data.createdAt).format("DD/MM/YYYY")}</p>,
+            label: 'Ngày đặt',
+            children: (
+                <p className="font-medium">{dayjs(selectOrder?.createTime).format('DD/MM/YYYY')}</p>
+            ),
         },
         {
             key: 'shippingFee',
-            label: 'Shipping Fee',
-            children: <p className='font-medium'>{data.shippingFee.toLocaleString() || 0}đ</p>,
+            label: 'Phí ship',
+            children: (
+                <p className="font-medium">
+                    {selectOrder?.shipFee ? selectOrder?.shipFee.toLocaleString() : 0}đ
+                </p>
+            ),
         },
         {
             key: 'total',
-            label: 'Total',
-            children: <p className='font-medium'>{data.total.toLocaleString()}đ</p>,
+            label: 'Tổng đơn',
+            children: (
+                <p className="font-medium">
+                    {selectOrder?.totalPrice ? selectOrder?.totalPrice.toLocaleString() : 0}đ
+                </p>
+            ),
         },
         {
             key: 'paymentMethod',
-            label: 'Payment method',
-            children: <p className='font-medium'>{data.payment.method}</p>,
-        },
-        {
-            key: 'paymentStatus',
-            label: 'Payment status',
-            children: (
-                <p className={data.payment.status === "pending" ? "text-yellow-500" : "text-green-600"}>
-                    {data.payment.status === "pending" ? "Unpaid" : "Paid"}
-                </p>
-            ),
+            label: 'Phương thức thanh toán',
+            children: <p className="font-medium">{selectOrder?.paymentId?.methodName}</p>,
         },
     ];
     //#endregion
@@ -308,27 +319,25 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
     return (
         <ModalBase type={type}>
             <Descriptions
-                title={variant == "edit" ? "Update order" : "Order information"}
+                title={variant == 'edit' ? 'Cập nhật đơn hàng' : 'Thông tin đơn hàng'}
                 bordered
                 column={1}
                 items={orderSummary}
-                className=''
+                className=""
             />
 
-            <div className='pt-6 mt-6 mb-1 border-t-2 border-dashed border-gray-300'>
-                <h3 className='text-[14px] font-semibold mb-4'>Order details</h3>
+            <div className="pt-6 mt-6 mb-1 border-t-2 border-dashed border-gray-300">
+                <h3 className="text-[14px] font-semibold mb-4">Chi tiết đơn hàng</h3>
                 <Table
                     columns={columns}
-                    dataSource={data.items}
+                    dataSource={selectOrder.orderItems}
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
                 />
             </div>
         </ModalBase>
-    )
+    );
+};
 
-
-}
-
-export default ModalOrderManagement
+export default ModalOrderManagement;

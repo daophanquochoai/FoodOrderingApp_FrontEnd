@@ -32,7 +32,10 @@ const ClientLayout: React.FC = () => {
                 </main>
                 <Footer />
                 <Suspense fallback={<div>Đang tải AI...</div>}>
-                    <CopilotKit runtimeUrl={apiAIUrl} properties={{ id: 'ai-agent' }}>
+                    <CopilotKit 
+                        runtimeUrl={apiAIUrl} 
+                        properties={{ id: 'ai-agent' }}
+                    >
                         <AIAgent />
                     </CopilotKit>
                 </Suspense>

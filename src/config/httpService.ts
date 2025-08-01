@@ -1,7 +1,7 @@
 // src/services/HttpService.ts
-import { getCookies } from '@/utils/cookies/cookies';
+import { deleteAllCookies, getCookies, setCookies } from '@/utils/cookies/cookies';
 import axios, { AxiosInstance } from 'axios';
-import { parseCookies, setCookie } from 'nookies';
+import { setCookie } from 'nookies';
 import type { ResponseType as AxiosResponseType } from 'axios';
 
 class HttpService {
@@ -19,7 +19,7 @@ class HttpService {
     private async handleError(error: any) {
         let formatError = {};
         if (!error?.response) {
-            // window.location.href = '/500';
+            window.location.href = '500';
         }
         if (error?.response) {
             const { data, status } = error.response;
@@ -28,22 +28,27 @@ class HttpService {
                 case 401:
                     if (!isServer) {
                         const refresh_token = getCookies('refresh_token');
+                        const access_token = getCookies('access_token');
 
-                        if (refresh_token == null || refresh_token == undefined) {
-                            throw new Error('Unauthorized');
+                        if (
+                            refresh_token == null ||
+                            refresh_token == undefined ||
+                            access_token == null ||
+                            access_token == undefined
+                        ) {
+                            return;
                         }
                         try {
                             const response = await axios.post(
-                                `${import.meta.env.VITE_BACKEND_URL}/auth/refreshToken`,
-                                {
-                                    refreshToken: refresh_token,
-                                }
+                                `${
+                                    import.meta.env.VITE_BACKEND_URL
+                                }/auth/refreshToken/${access_token}/${refresh_token}`
                             );
-                            const accessToken = response.data.data.accessToken;
-                            setCookie(null, 'token', accessToken, {
-                                maxAge: 604800,
-                                path: '/',
-                            });
+                            const accessToken = response.data.access_token;
+                            const refreshToken = response.data.refresh_token;
+
+                            setCookies('refresh_token', refreshToken, 30);
+                            setCookies('access_token', accessToken, 7);
                             const newRequest = {
                                 ...error.config,
                                 headers: {
@@ -64,18 +69,17 @@ class HttpService {
                                 };
                                 return Promise.reject(formatError);
                             } else {
-                                // navigate to login
-                                // window.location.href = '/500';
+                                deleteAllCookies();
+                                window.location.href = 'login';
                                 return;
                             }
                         }
                     }
                     break;
                 case 503:
-                    if (!isServer)
-                        // navigate to 503
-                        // window.location.href = '/500';
-                        break;
+                    if (!isServer) deleteAllCookies();
+                    window.location.href = '500';
+                    break;
                 default:
                     break;
             }

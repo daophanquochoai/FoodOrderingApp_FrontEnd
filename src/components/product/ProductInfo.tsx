@@ -15,15 +15,20 @@ const ProductInfo = () => {
     const [selectedSize, setSelectedSize] = useState<FoodSize>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [loading, setLoading] = useState(false);
+    const [foodSize, setFoodSize] = useState([]);
 
     //hook
     const dispatch = useDispatch();
 
     //useEffect
     useEffect(() => {
-        if (foodDetail?.foodSizes != null && foodDetail?.foodSizes.length > 0) {
-            setSelectedSize(foodDetail?.foodSizes[0]);
+        if (foodSize != null && foodSize.length > 0) {
+            setSelectedSize(foodSize[0]);
         }
+    }, [foodSize]);
+
+    useEffect(() => {
+        setFoodSize(foodDetail.foodSizes?.filter((i) => i.isActive));
     }, [foodDetail]);
 
     //event handling
@@ -75,43 +80,47 @@ const ProductInfo = () => {
                 )}
             </div>
             <div className="flex flex-col">
-                <strong className="mb-2">Size</strong>
-                <div className="space-y-3">
-                    <div className="flex space-x-3">
-                        {foodDetail?.foodSizes &&
-                            foodDetail?.foodSizes
-                                .filter((item) => item.isActive)
-                                .map((option) => (
-                                    <div
-                                        key={option.id}
-                                        className={`block px-4 py-2 border-2 rounded-full w-auto cursor-pointer transition-all
+                {foodSize && foodSize.length > 0 && (
+                    <>
+                        <strong className="mb-2">Size</strong>
+                        <div className="space-y-3">
+                            <div className="flex space-x-3">
+                                {foodSize &&
+                                    foodSize.map((option) => (
+                                        <div
+                                            key={option.id}
+                                            className={`block px-4 py-2 border-2 rounded-full w-auto cursor-pointer transition-all
                             ${
                                 selectedSize?.id === option?.id
                                     ? 'border-orange-500'
                                     : 'border-gray-200 hover:border-orange-500'
                             }
                             `}
-                                        onClick={() => setSelectedSize(option)}
-                                    >
-                                        <span className="font-medium">{option?.sizeId?.name}</span>
-                                    </div>
-                                ))}
-                    </div>
-                </div>
-                <strong className="my-2">Quantity</strong>
-                <div className="-ml-2 flex items-center space-x-3">
-                    <QuantitySelector
-                        quantity={quantity}
-                        type={Type.PRODUCT}
-                        setQuantity={setQuantity}
-                    />
-                    <button
-                        onClick={handleAddToCart}
-                        className="text-white font-bold bg-orange-600 py-3 px-16 rounded-full hover:bg-black duration-300"
-                    >
-                        CART NOW
-                    </button>
-                </div>
+                                            onClick={() => setSelectedSize(option)}
+                                        >
+                                            <span className="font-medium">
+                                                {option?.sizeId?.name}
+                                            </span>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                        <strong className="my-2">Quantity</strong>
+                        <div className="-ml-2 flex items-center space-x-3">
+                            <QuantitySelector
+                                quantity={quantity}
+                                type={Type.PRODUCT}
+                                setQuantity={setQuantity}
+                            />
+                            <button
+                                onClick={handleAddToCart}
+                                className="text-white font-bold bg-orange-600 py-3 px-16 rounded-full hover:bg-black duration-300"
+                            >
+                                CART NOW
+                            </button>
+                        </div>
+                    </>
+                )}
                 {foodDetail?.category && (
                     <>
                         <div className="flex mt-2">

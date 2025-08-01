@@ -1,8 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { IoMdArrowBack } from "react-icons/io";
-import { PiDotOutlineFill } from "react-icons/pi";
-import { Tag, Button, List, Divider, Popconfirm } from "antd";
+import { PiDotOutlineFill, PiDotsThreeCircle } from "react-icons/pi";
+import { Tag, Button, List, Divider, Popconfirm, Steps } from "antd";
+import { StopOutlined } from "@ant-design/icons";
 import { statusColorMap, statusTextMap, countTotalQuantity } from "@/utils/validation/order";
+import { TfiReload } from "react-icons/tfi";
+import { LuClipboardCheck, LuPackageCheck  } from "react-icons/lu";
+import { FaShippingFast } from "react-icons/fa";
 
 const customerOrder = {
     full_name: "Nguyễn Ngọc Quý",
@@ -14,6 +18,30 @@ const UserOrderDetail = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { order } = location.state || {};
+
+    const baseOrderSteps = [
+        { key: "pending", title: "Pending", icon: <TfiReload />, description: "Order created on " + new Date(order.created_at).toLocaleDateString("vi-VN") },
+        { key: "processing", title: "Processing", icon: <PiDotsThreeCircle />, description: "Your order is being processed within 10 minutes." },
+        { key: "completed", title: "Completed", icon: <LuClipboardCheck />, description: "Your order is ready to serve." },
+        { key: "shipping", title: "Shipping", icon: <FaShippingFast />, description: "Your order is on the way." },
+        { key: "received", title: "Received", icon: <LuPackageCheck />, description: "Your order has been delivered to you." },
+        { key: "cancelled", title: "Cancelled", icon: <StopOutlined style={{ color: 'red' }} />, description: "Order has been cancelled." },
+    ];
+
+    let orderSteps: typeof baseOrderSteps = [];
+
+    if (order.status === "cancelled") {
+        orderSteps = [
+            baseOrderSteps.find(step => step.key === "pending"),
+            baseOrderSteps.find(step => step.key === "cancelled"),
+        ].filter(Boolean) as typeof baseOrderSteps;
+    } else if (order.table_number) {
+        orderSteps = baseOrderSteps.filter(step => step.key !== "shipping" && step.key !== "cancelled");
+    } else {
+        orderSteps = baseOrderSteps.filter(step => step.key !== "cancelled");
+    }
+
+    const currentStep = orderSteps.findIndex(step => step.key === order.status);
 
     return (
          <div className="relative">
@@ -92,6 +120,30 @@ const UserOrderDetail = () => {
                             ))
                         ) : null}
                     </List>
+                </div>
+                <div className="bg-white p-6 border border-gray-300 rounded-lg mt-4">
+                    <Steps
+                        size="small"
+                        current={currentStep}
+                        labelPlacement="vertical"
+                        items={orderSteps.map((step, idx) => ({
+                            title: (
+                                <span className={
+                                    idx <= currentStep
+                                        ? "text-lg font-bold text-orange-500"
+                                        : "text-base font-medium text-gray-400"
+                                }>
+                                    {step.title}
+                                </span>
+                            ),
+                            icon: step.icon,
+                            description:
+                                idx <= currentStep && step.description
+                                    ? <span className="text-xs text-gray-500">{step.description}</span>
+                                    : null,
+                        }))}
+                        responsive
+                    />
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
                     <div className="bg-white p-6 border border-gray-300 rounded-lg">

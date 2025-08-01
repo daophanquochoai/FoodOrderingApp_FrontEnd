@@ -7,9 +7,11 @@ import {
     checkout,
     collection,
     common,
+    employee,
     food,
     foodManager,
     ingredients,
+    order,
     payment,
     sources,
     voucher,
@@ -29,6 +31,8 @@ const rootReducers = combineReducers({
     [payment.name]: payment.default.reducer,
     [voucher.name]: voucher.default.reducer,
     [checkout.name]: checkout.default.reducer,
+    [employee.name]: employee.default.reducer,
+    [order.name]: order.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

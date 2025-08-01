@@ -11,6 +11,8 @@ import { watchAccount } from './client/account/account.saga';
 import { watchPayment } from './client/payment/payment.saga';
 import { watchVoucher } from './client/voucher/voucher.saga';
 import { watchCheckout } from './client/checkout/checkout.saga';
+import { watchEmployee } from './admin/employee/employee.saga';
+import { watchOrder } from './admin/order/order.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -25,4 +27,6 @@ export default function* rootSaga() {
     yield* fork(watchPayment);
     yield* fork(watchVoucher);
     yield* fork(watchCheckout);
+    yield* fork(watchEmployee);
+    yield* fork(watchOrder);
 }

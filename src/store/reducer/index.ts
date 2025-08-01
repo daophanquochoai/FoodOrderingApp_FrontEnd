@@ -11,3 +11,5 @@ export * as account from './client/account/account.reducer';
 export * as payment from './client/payment/payment.reducer';
 export * as voucher from './client/voucher/voucher.reducer';
 export * as checkout from './client/checkout/checkout.reducer';
+export * as employee from './admin/employee/employee.reducer';
+export * as order from './admin/order/order.reducer';
