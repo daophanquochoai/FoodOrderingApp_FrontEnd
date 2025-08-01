@@ -296,8 +296,8 @@ const SpoilIngredient = () => {
     };
 
     const spoilIngredientFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Tên nguyên liệu' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+        { key: 'name', type: 'text', placeholder: 'Name' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Created at' },
     ];
 
     const handleFilterChange = (key, value) => {

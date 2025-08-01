@@ -11,6 +11,7 @@ import { CgSmartHomeRefrigerator } from 'react-icons/cg';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
+import { SiMaterialformkdocs } from 'react-icons/si';
 
 const MenuSider = () => {
     const baseAdmin: string = '/admin';
@@ -118,6 +119,13 @@ const MenuSider = () => {
                     key: '/product-statistics',
                     label: <Link to={`${baseAdmin}`}>Product Statistics</Link>,
                     icon: <AiOutlineBarChart />,
+                },
+                {
+                    key: '/ingredient-statistics',
+                    label: (
+                        <Link to={`${baseAdmin}/ingredient-statistics`}>Ingredient Statistics</Link>
+                    ),
+                    icon: <SiMaterialformkdocs />,
                 },
             ],
         },

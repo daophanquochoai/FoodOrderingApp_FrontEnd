@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 import { AiOutlineMenuUnfold, AiOutlineMenuFold } from 'react-icons/ai';
 import { MenuSider } from '../components/menu';
 import { Outlet } from 'react-router-dom';
-import AccountDropdown from '@/components/dropdown/accountDropdown';
+import AccountDropdown from '@/components/dropdown/AccountDropdown';
 const { Sider, Content } = Layout;
 
 const AdminLayout = () => {
@@ -39,7 +39,7 @@ const AdminLayout = () => {
                             <div className="">{/* <SearchOutlined /> */}</div>
                         </div>
                         <div className="">
-                            <AccountDropdown/>
+                            <AccountDropdown />
                         </div>
                     </div>
                 </header>

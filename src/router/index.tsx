@@ -47,6 +47,7 @@ const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/Sp
 const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 const RecipeManagement = lazy(() => import('@/pages/admin/recipeManagement'));
 const AccountAdmin = lazy(() => import('@/pages/admin/accountManagement/Account'));
+const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredientStatistics'));
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
@@ -137,6 +138,8 @@ const AppRoutes = () => {
                     <Route path="recipe-management" element={<RecipeManagement />} />
 
                     <Route path="account" element={<AccountAdmin />} />
+
+                    <Route path="ingredient-statistics" element={<IngredientStatistics />} />
 
                     <Route
                         path="employee-account-management"

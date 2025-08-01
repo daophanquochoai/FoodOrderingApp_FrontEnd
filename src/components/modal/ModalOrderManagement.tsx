@@ -25,27 +25,27 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         switch (status) {
             case 'pending':
                 color = 'default';
-                label = 'Chờ xử lý';
+                label = 'pending';
                 break;
             case 'processing':
                 color = 'orange';
-                label = variant == "edit" ? "Xử lý" : 'Đang xử lý';
+                label = "processing";
                 break;
             case 'shipping':
                 color = 'blue';
-                label = variant == "edit" ? "Giao hàng" : 'Đang giao';
+                label = "shipping";
                 break;
             case 'received':
                 color = 'cyan';
-                label = 'Đã nhận';
+                label = 'received';
                 break;
             case 'completed':
                 color = 'green';
-                label = 'Hoàn thành';
+                label = "completed";
                 break;
             case 'cancel':
                 color = 'red';
-                label = variant == "edit" ? "Hủy đơn" : 'Đã hủy';
+                label = "cancel";
                 break;
             default:
                 color = 'gray';
@@ -156,7 +156,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
 
     const columns: TableColumnsType = [
         {
-            title: 'Tên món',
+            title: 'Food name',
             dataIndex: 'name',
             key: 'name',
             ...getColumnSearchProps('name'),
@@ -174,21 +174,21 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
             ),
         },
         {
-            title: 'Đơn giá',
+            title: 'Price',
             dataIndex: 'price_at_time',
             key: 'price_at_time',
             sorter: (a, b) => a.total - b.total,
             render: (price) => <p>{price.toLocaleString()}đ</p>
         },
         {
-            title: 'Số lượng',
+            title: 'Quantity',
             dataIndex: 'quantity',
             key: 'quantity',
             sorter: (a, b) => a.total - b.total,
             render: (quantity) => <p>{quantity}</p>
         },
         {
-            title: 'Tổng tiền',
+            title: 'Total',
             dataIndex: 'total',
             key: 'total',
             sorter: (a, b) => a.total - b.total,
@@ -218,7 +218,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
     const orderSummary: DescriptionsProps['items'] = [
         {
             key: 'status',
-            label: 'Trạng thái đơn hàng',
+            label: 'Order Status',
             children: variant === 'edit' ? (
                 <div className='w-[180px]'>
                     <Select
@@ -235,16 +235,16 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
                     />
                     {selectedStatus && selectedStatus !== data.status ? (
                         <Popconfirm
-                            title="Xác nhận thay đổi trạng thái"
-                            description={`Bạn có chắc muốn chuyển sang trạng thái "${selectedStatus}" không?`}
+                            title="Confirm status change"
+                            description={`Are you sure you want to switch to this state "${selectedStatus}"?`}
                             onConfirm={() => {
-                                console.log("Đã xác nhận chuyển trạng thái:", selectedStatus);
+                                console.log("Confirmed status change: ", selectedStatus);
                                 // Gọi API hoặc callback xử lý ở đây
                             }}
-                            okText="Xác nhận"
-                            cancelText="Huỷ"
+                            okText="Confirm"
+                            cancelText="Cancel"
                         >
-                            <Button type="primary" danger className='mt-3'>Xác nhận trạng thái</Button>
+                            <Button type="primary" danger className='mt-3'>Confirm status</Button>
                         </Popconfirm>
                     ) : null}
                 </div>
@@ -254,51 +254,51 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         },
         {
             key: 'id',
-            label: 'Mã đơn hàng',
+            label: 'Order code',
             children: <p className='font-medium'>{data.id}</p>,
 
         },
         {
             key: 'clientName',
-            label: 'Tên khách hàng',
+            label: 'Customer name',
             children: <p className='font-medium'>{data.buyer.name}</p>,
         },
         {
             key: 'clientPhone',
-            label: 'Số điện thoại',
+            label: 'Phone number',
             children: <p className='font-medium'>{data.buyer.phone}</p>,
         },
         {
             key: 'address',
-            label: 'Địa chỉ',
+            label: 'Address',
             children: <p className='font-medium'>{data.buyer.address}</p>,
         },
         {
             key: 'createdAt',
-            label: 'Ngày đặt',
+            label: 'Craeted at',
             children: <p className='font-medium'>{dayjs(data.createdAt).format("DD/MM/YYYY")}</p>,
         },
         {
             key: 'shippingFee',
-            label: 'Phí ship',
+            label: 'Shipping Fee',
             children: <p className='font-medium'>{data.shippingFee.toLocaleString() || 0}đ</p>,
         },
         {
             key: 'total',
-            label: 'Tổng đơn',
+            label: 'Total',
             children: <p className='font-medium'>{data.total.toLocaleString()}đ</p>,
         },
         {
             key: 'paymentMethod',
-            label: 'Phương thức thanh toán',
+            label: 'Payment method',
             children: <p className='font-medium'>{data.payment.method}</p>,
         },
         {
             key: 'paymentStatus',
-            label: 'Trạng thái thanh toán',
+            label: 'Payment status',
             children: (
                 <p className={data.payment.status === "pending" ? "text-yellow-500" : "text-green-600"}>
-                    {data.payment.status === "pending" ? "Chưa thanh toán" : "Đã thanh toán"}
+                    {data.payment.status === "pending" ? "Unpaid" : "Paid"}
                 </p>
             ),
         },
@@ -308,7 +308,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
     return (
         <ModalBase type={type}>
             <Descriptions
-                title={variant == "edit" ? "Cập nhật đơn hàng" : "Thông tin đơn hàng"}
+                title={variant == "edit" ? "Update order" : "Order information"}
                 bordered
                 column={1}
                 items={orderSummary}
@@ -316,7 +316,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
             />
 
             <div className='pt-6 mt-6 mb-1 border-t-2 border-dashed border-gray-300'>
-                <h3 className='text-[14px] font-semibold mb-4'>Chi tiết đơn hàng</h3>
+                <h3 className='text-[14px] font-semibold mb-4'>Order details</h3>
                 <Table
                     columns={columns}
                     dataSource={data.items}

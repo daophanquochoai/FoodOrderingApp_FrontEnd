@@ -2,6 +2,7 @@ import FilterBar from '@/components/filter/FilterBar';
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { LuTrendingUp, LuTrendingDown } from 'react-icons/lu';
 import {
     Button,
     DatePicker,
@@ -127,7 +128,7 @@ const OrderManagement = () => {
             ),
     });
 
-    const orders = [
+    let orders = [
         {
             id: 1001,
             buyer: {
@@ -143,6 +144,7 @@ const OrderManagement = () => {
                     name: 'Bánh mì thịt',
                     quantity: 2,
                     price_at_time: 50000,
+                    cost: 30000, // lợi nhuận dương
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
                 {
@@ -150,6 +152,7 @@ const OrderManagement = () => {
                     name: 'Nước cam',
                     quantity: 1,
                     price_at_time: 35000,
+                    cost: 20000,
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
             ],
@@ -177,13 +180,14 @@ const OrderManagement = () => {
                     name: 'Cơm gà chiên',
                     quantity: 1,
                     price_at_time: 65000,
+                    cost: 60000, // lợi nhuận thấp
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
             ],
             shippingFee: 15000,
             total: 80000,
             payment: {
-                method: 'Tiền mặt',
+                method: 'Cash',
                 status: 'pending',
             },
             status: 'shipping',
@@ -204,6 +208,7 @@ const OrderManagement = () => {
                     name: 'Phở bò tái',
                     quantity: 2,
                     price_at_time: 60000,
+                    cost: 65000, // lỗ
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
                 {
@@ -211,6 +216,7 @@ const OrderManagement = () => {
                     name: 'Trà sữa trân châu',
                     quantity: 2,
                     price_at_time: 40000,
+                    cost: 45000, // lỗ
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
             ],
@@ -238,6 +244,7 @@ const OrderManagement = () => {
                     name: 'Bún bò Huế',
                     quantity: 1,
                     price_at_time: 70000,
+                    cost: 40000, // lời nhiều
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
                 {
@@ -245,6 +252,7 @@ const OrderManagement = () => {
                     name: 'Nước suối',
                     quantity: 2,
                     price_at_time: 10000,
+                    cost: 7000,
                     image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
                 },
             ],
@@ -259,6 +267,16 @@ const OrderManagement = () => {
         },
     ];
 
+    orders = orders.map((order) => {
+        const costOfItems = order.items.reduce((sum, item) => sum + item.cost * item.quantity, 0);
+        const totalCost = costOfItems + order.shippingFee;
+        const profit = order.total - totalCost;
+
+        return { ...order, totalCost, profit };
+    });
+
+    console.log(orders);
+
     const columns: TableColumnsType = [
         {
             title: 'Order ID',
@@ -268,14 +286,14 @@ const OrderManagement = () => {
             sorter: (a, b) => a.id.localeCompare(b.id),
         },
         {
-            title: 'Khách hàng',
+            title: 'Customer name',
             dataIndex: 'buyer',
             key: 'buyer',
             ...getColumnSearchProps('id'),
             render: (buyer) => <p>{buyer.name}</p>,
         },
         {
-            title: 'Ngày đặt',
+            title: 'Created at',
             dataIndex: 'createdAt',
             key: 'createdAt',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -308,23 +326,47 @@ const OrderManagement = () => {
             render: (createdAt) => (createdAt ? dayjs(createdAt).format('DD/MM/YYYY') : ''),
         },
         {
-            title: 'Tổng tiền',
+            title: 'Total',
             dataIndex: 'total',
             key: 'total',
             sorter: (a, b) => a.total - b.total,
             render: (total) => <p>{total.toLocaleString()}đ</p>,
         },
         {
-            title: 'Trạng thái',
+            title: 'Cost',
+            dataIndex: 'totalCost',
+            key: 'totalCost',
+            render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
+        },
+        {
+            title: 'Price Difference',
+            key: 'priceDifference',
+            render: (_, record) => {
+                const profit = record.total - record.totalCost;
+
+                return (
+                    <div
+                        className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md ${
+                            profit > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+                        }`}
+                    >
+                        <h6 className="text-xs font-medium">${profit.toLocaleString()}</h6>
+                        {profit > 0 ? <LuTrendingUp /> : <LuTrendingDown />}
+                    </div>
+                );
+            },
+        },
+        {
+            title: 'Status',
             dataIndex: 'status',
             key: 'status',
             filters: [
-                { text: 'Chờ xử lý', value: 'pending' },
-                { text: 'Đang xử lý', value: 'processing' },
-                { text: 'Hoàn thành', value: 'completed' },
-                { text: 'Đang giao', value: 'shipping' },
-                { text: 'Đã nhận', value: 'received' },
-                { text: 'Đã hủy', value: 'cancel' },
+                { text: 'pending', value: 'pending' },
+                { text: 'processing', value: 'processing' },
+                { text: 'completed', value: 'completed' },
+                { text: 'shipping', value: 'shipping' },
+                { text: 'received', value: 'received' },
+                { text: 'cancel', value: 'cancel' },
             ],
             onFilter: (value, record) => record.status == value,
             render: (status) => {
@@ -334,27 +376,27 @@ const OrderManagement = () => {
                 switch (status) {
                     case 'pending':
                         color = 'default';
-                        label = 'Chờ xử lý';
+                        label = 'pending';
                         break;
                     case 'processing':
                         color = 'orange';
-                        label = 'Đang xử lý';
+                        label = 'processing';
                         break;
                     case 'shipping':
                         color = 'blue';
-                        label = 'Đang giao';
+                        label = 'shipping';
                         break;
                     case 'received':
                         color = 'cyan';
-                        label = 'Đã nhận';
+                        label = 'received';
                         break;
                     case 'completed':
                         color = 'green';
-                        label = 'Hoàn thành';
+                        label = 'completed';
                         break;
                     case 'cancel':
                         color = 'red';
-                        label = 'Đã hủy';
+                        label = 'cancel';
                         break;
                     default:
                         color = 'gray';
@@ -365,19 +407,19 @@ const OrderManagement = () => {
             },
         },
         {
-            title: 'Thanh toán',
+            title: 'Payment',
             dataIndex: 'payment',
             key: 'payment',
             filters: [
                 { text: 'Visa', value: 'Visa' },
-                { text: 'Tiền mặt', value: 'Tiền mặt' },
+                { text: 'Cash', value: 'Cash' },
             ],
             onFilter: (value, record) => record.payment.method == value,
             render: (payment) => (
                 <div className="flex items-center justify-start gap-2">
                     <p style={{ marginBottom: 4 }}>{payment.method}</p>
                     <Tag color={payment.status === 'pending' ? 'red' : 'green'}>
-                        {payment.status === 'pending' ? 'Chưa TT' : 'Đã TT'}
+                        {payment.status === 'pending' ? 'Unpaid' : 'Paid'}
                     </Tag>
                 </div>
             ),
@@ -433,19 +475,19 @@ const OrderManagement = () => {
     };
 
     const orderFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Tên người mua' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        { key: 'name', type: 'text', placeholder: 'Buyer Names' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Date of purchase' },
         {
             key: 'status',
             type: 'select',
-            placeholder: 'Trạng thái',
+            placeholder: 'Status',
             options: [
-                { label: 'Chờ xử lý', value: 'pending' },
-                { label: 'Đang xử lý', value: 'processing' },
-                { label: 'Hoàn thành', value: 'completed' },
-                { label: 'Đang giao', value: 'shipping' },
-                { label: 'Đã nhận', value: 'received' },
-                { label: 'Đã hủy', value: 'cancel' },
+                { label: 'pending', value: 'pending' },
+                { label: 'processing', value: 'processing' },
+                { label: 'completed', value: 'completed' },
+                { label: 'shipping', value: 'shipping' },
+                { label: 'received', value: 'received' },
+                { label: 'cancel', value: 'cancel' },
             ],
         },
     ];
@@ -460,7 +502,7 @@ const OrderManagement = () => {
 
     return (
         <div>
-            <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
+            <h1 className="text-2xl font-bold mb-3">Orders management</h1>
 
             {/* filter */}
             <div className="mb-3">

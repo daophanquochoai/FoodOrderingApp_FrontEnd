@@ -83,7 +83,15 @@ const Account = () => {
                         <Form.Item
                             label="New Password"
                             name="newPassword"
-                            rules={[{ required: true, message: 'Please enter your new password' }]}
+                            rules={[
+                                { required: true, message: 'Please enter your new password' },
+                                {
+                                    pattern:
+                                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).+$/,
+                                    message:
+                                        'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character',
+                                },
+                            ]}
                         >
                             <Input.Password />
                         </Form.Item>
