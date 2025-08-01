@@ -1,9 +1,17 @@
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { Button, Space, Table, TableColumnsType } from 'antd';
-import React from 'react';
+import { Button, Space, Table, TableColumnsType, Tag } from 'antd';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    EyeOutlined,
+} from '@ant-design/icons';
+import FilterBar from '@/components/filter/FilterBar';
+import dayjs from 'dayjs';
 
 const ingredientBatches = [
     {
@@ -48,7 +56,7 @@ const ingredientBatches = [
         batch_code: 'BATCH-20250801-002',
         type: 'import',
         note: 'Nguyên liệu khô nhập từ miền Tây',
-        is_active: true,
+        is_active: false,
         source: {
             id: 2,
             name: 'Hợp tác xã Nông sản Miền Tây',
@@ -87,6 +95,8 @@ const ingredientBatches = [
 const ImportManagement = () => {
     const dispatch = useDispatch();
 
+    const [filters, setFilters] = useState({});
+
     const columns: TableColumnsType<any> = [
         {
             title: 'Batch Code',
@@ -121,13 +131,48 @@ const ImportManagement = () => {
             dataIndex: 'ingredients',
             key: 'ingredients',
             align: 'center',
+            sorter: (a, b) => a.ingredients.length - b.ingredients.length,
             render: (ingredients) => <p>{ingredients.length}</p>,
+        },
+        {
+            title: 'Import date',
+            dataIndex: 'create_at',
+            key: 'create_at',
+            render: (importDate) => <p>{dayjs(importDate).format('DD/MM/YYYY')}</p>,
+        },
+        {
+            title: 'Status',
+            dataIndex: 'is_active',
+            key: 'isActive',
+            filters: [
+                { text: 'Active', value: true },
+                { text: 'Inactive', value: false },
+            ],
+            onFilter: (value, record) => record.is_active === value,
+            render: (status) => {
+                if (status == true) {
+                    return (
+                        <>
+                            <Tag icon={<CheckCircleOutlined />} color="success">
+                                Active
+                            </Tag>
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Tag icon={<CloseCircleOutlined />} color="error">
+                                Inactive
+                            </Tag>
+                        </>
+                    );
+                }
+            },
         },
         {
             title: 'Actions',
             key: 'actions',
             width: '150px',
-            align: 'center',
             render: (_, record) => (
                 <Space size="small">
                     <Button
@@ -200,9 +245,41 @@ const ImportManagement = () => {
         );
     };
 
+    const importFilterFields = [
+        { key: 'search', type: 'text', placeholder: 'Batch Code' },
+        {
+            key: 'is_active',
+            type: 'select',
+            placeholder: 'Status',
+            options: [
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
+            ],
+        },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Created Date' },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <div>
             <h1 className="text-2xl font-bold mb-3">Ingredients Import Management</h1>
+            {/* filter */}
+            <div className="mb-3">
+                <FilterBar
+                    fields={importFilterFields}
+                    values={filters}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                    type={ModalType.IMPORT_MANAGEMENT}
+                />
+            </div>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button type="primary" onClick={handleOpenAddImportModal}>
                     + New Import
