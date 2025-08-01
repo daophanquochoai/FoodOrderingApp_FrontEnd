@@ -25,9 +25,12 @@ const employeeSlice = createSlice({
         setSelectEmployee(state, { payload }: PayloadAction<any>) {
             state.selectEmployee = payload;
         },
-        setLoadingComponent(state, {payload} : PayloadAction<any>){
+        setLoadingComponent(state, { payload }: PayloadAction<any>) {
             state.loadingComponent = payload;
-        }
+        },
+        setAccount(state, { payload }: PayloadAction<any>) {
+            state.account = payload;
+        },
     },
 });
 

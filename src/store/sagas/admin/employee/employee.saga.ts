@@ -2,9 +2,11 @@ import { employeeApi } from '@/api/admin/employee/employee.api';
 import {
     changePageEmployee,
     createEmployee,
-    deleteEmployee,
+    resetPasswordEmployee,
+    fetchEmployeeByUsername,
     fetchFirst,
     updateEmployee,
+    updatePasswordEmployee,
 } from '@/store/action/admin/employee/employee.action';
 import { common, employee } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/admin/employee/employee.selector';
@@ -83,13 +85,55 @@ function* handleUpdateEmployee({ payload }) {
     }
 }
 
-function* handleDeleteEmployee({ payload }) {
+function* handleResetEmployee({ payload }) {
     yield put(employee.actions.setLoadingComponent(true));
     try {
         const tokenRaw = getCookies('access_token');
         yield call(employeeApi.updatePasswrod, payload, tokenRaw);
         yield handleFetchFirst();
         yield put(common.actions.setSuccessMessage('Reset employee successful'));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(employee.actions.setLoadingComponent(false));
+    }
+}
+
+function* handleFetchEmployeeById() {
+    yield put(employee.actions.setLoadingComponent(true));
+    try {
+        const tokenRaw = getCookies('access_token');
+        const userRaw = getCookies('user');
+        if (userRaw == undefined) {
+            yield put(common.actions.setErrorMessage('User not found'));
+            return;
+        }
+        const user = JSON.parse(userRaw);
+        const { data } = yield call(employeeApi.getEmployeeByUsername, user?.username, tokenRaw);
+
+        yield put(employee.actions.setAccount(data?.data));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(employee.actions.setLoadingComponent(false));
+    }
+}
+
+function* handleUpdatePasswordEmployee({ payload }) {
+    yield put(employee.actions.setLoadingComponent(true));
+    try {
+        const tokenRaw = getCookies('access_token');
+        const userRaw = getCookies('user');
+        if (userRaw == undefined) {
+            yield put(common.actions.setErrorMessage('User not found'));
+            return;
+        }
+        const user = JSON.parse(userRaw);
+        yield call(employeeApi.updatePasswordEmployee, payload?.data, user?.username, tokenRaw);
+        payload?.action();
+        yield put(common.actions.setSuccessMessage('Update password successful'));
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
@@ -115,7 +159,15 @@ function* watchUpdateEmployee() {
 }
 
 function* watchDeleteEmployee() {
-    yield takeEvery(deleteEmployee, handleDeleteEmployee);
+    yield takeEvery(resetPasswordEmployee, handleResetEmployee);
+}
+
+function* watchFetchEmployeeById() {
+    yield takeEvery(fetchEmployeeByUsername, handleFetchEmployeeById);
+}
+
+function* watchUpdatePasswordEmployee() {
+    yield takeEvery(updatePasswordEmployee, handleUpdatePasswordEmployee);
 }
 
 export function* watchEmployee() {
@@ -125,5 +177,7 @@ export function* watchEmployee() {
         fork(watchCreateEmployee),
         fork(watchUpdateEmployee),
         fork(watchDeleteEmployee),
+        fork(watchFetchEmployeeById),
+        fork(watchUpdatePasswordEmployee),
     ]);
 }

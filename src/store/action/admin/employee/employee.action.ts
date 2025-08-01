@@ -18,5 +18,15 @@ export const changePageEmployee = createAction(`${name}/CHANGE_PAGE`, (state) =>
     payload: state,
 }));
 
-// delete employee
-export const deleteEmployee = createAction(`${name}/DELETE_EMPLOYEE`, (state) => ({payload : state}));
+// reset password employee
+export const resetPasswordEmployee = createAction(`${name}/RESET_PASSWORD_EMPLOYEE`, (state) => ({
+    payload: state,
+}));
+
+// fetch employee by id
+export const fetchEmployeeByUsername = createAction(`${name}/FETCH_EMPLOYYEE_USERNAME`);
+
+// update password employee
+export const updatePasswordEmployee = createAction(`${name}/UPDATE_PASSWORD`, (state) => ({
+    payload: state,
+}));
