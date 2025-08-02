@@ -51,6 +51,7 @@ const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredi
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
+const StoreInformation = lazy(() => import('@/pages/admin/storeInformation'));
 const ImportManagement = lazy(() => import('@/pages/admin/importManagement'));
 
 const AppRoutes = () => {
@@ -148,6 +149,8 @@ const AppRoutes = () => {
                         path="employee-account-management"
                         element={<EmployeeAccountManagement />}
                     />
+
+                    <Route path="store-information" element={<StoreInformation />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />

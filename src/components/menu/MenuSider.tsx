@@ -45,6 +45,11 @@ const MenuSider = () => {
             icon: <IoStorefrontOutline />,
             children: [
                 {
+                    key: '/store-information',
+                    label: <Link to={`${baseAdmin}/store-information`}>Store Information</Link>,
+                    icon: <IoStorefrontOutline />,
+                },
+                {
                     key: '/order-management',
                     label: <Link to={`${baseAdmin}/order-management`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
