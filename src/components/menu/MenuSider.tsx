@@ -12,6 +12,7 @@ import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
 import { SiMaterialformkdocs } from 'react-icons/si';
+import { GiCook } from 'react-icons/gi';
 import { LiaFileImportSolid } from 'react-icons/lia';
 
 const MenuSider = () => {
@@ -53,6 +54,11 @@ const MenuSider = () => {
                     key: '/order-management',
                     label: <Link to={`${baseAdmin}/order-management`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
+                },
+                {
+                    key: '/order-management-chef',
+                    label: <Link to={`${baseAdmin}/order-management-chef`}>Order Chef</Link>,
+                    icon: <GiCook />,
                 },
                 {
                     key: '/voucher-management',
