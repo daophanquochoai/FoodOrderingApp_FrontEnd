@@ -16,6 +16,7 @@ import {
     payment,
     sources,
     voucher,
+    documentManager,
     voucher_admin,
 } from '.';
 
@@ -35,6 +36,7 @@ const rootReducers = combineReducers({
     [checkout.name]: checkout.default.reducer,
     [employee.name]: employee.default.reducer,
     [order.name]: order.default.reducer,
+    [documentManager.name]: documentManager.default.reducer,
     [voucher_admin.name]: voucher_admin.default.reducer,
     [history_import.name]: history_import.default.reducer,
 });

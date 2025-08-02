@@ -13,6 +13,7 @@ import { watchVoucher } from './client/voucher/voucher.saga';
 import { watchCheckout } from './client/checkout/checkout.saga';
 import { watchEmployee } from './admin/employee/employee.saga';
 import { watchOrder } from './admin/order/order.saga';
+import { watchDocumentManager } from './admin/document/document_manager.saga';
 import { watchVoucherAdmin } from './admin/voucher/voucher_admin.saga';
 import { watchHistory } from './admin/history/history.saga';
 
@@ -31,6 +32,7 @@ export default function* rootSaga() {
     yield* fork(watchCheckout);
     yield* fork(watchEmployee);
     yield* fork(watchOrder);
+    yield* fork(watchDocumentManager);
     yield* fork(watchVoucherAdmin);
     yield* fork(watchHistory);
 }
