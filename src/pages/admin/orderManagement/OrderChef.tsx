@@ -1,7 +1,9 @@
+import FilterBar from '@/components/filter/FilterBar';
 import { common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { Badge, Card, Col, Row } from 'antd';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 let orders = [
@@ -256,6 +258,8 @@ let orders = [
 const OrderChef = () => {
     const dispatch = useDispatch();
 
+    const [filters, setFilters] = useState({});
+
     const handleOpenViewOrder = (data) => {
         dispatch(
             common.actions.showModal({
@@ -266,8 +270,44 @@ const OrderChef = () => {
         );
     };
 
+    const orderFilterFields = [
+        { key: 'search', type: 'text', placeholder: 'Input search order code' },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Order time' },
+        {
+            key: 'status',
+            type: 'select',
+            placeholder: 'Status',
+            options: [
+                { label: 'pending', value: 'pending' },
+                { label: 'processing', value: 'processing' },
+                { label: 'completed', value: 'completed' },
+            ],
+        },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        setFilters((pre) => ({ ...pre, [key]: value }));
+    };
+
+    const handleResetFilter = () => {
+        setFilters({});
+    };
+
     return (
         <div>
+            <h1 className="text-2xl font-bold mb-3">Order Management</h1>
+
+            {/* filter */}
+            <div className="mb-3">
+                <FilterBar
+                    fields={orderFilterFields}
+                    values={filters}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                    type={ModalType.ORDER_CHEF}
+                />
+            </div>
+
             <Row gutter={[20, 20]}>
                 {orders &&
                     orders.length > 0 &&
