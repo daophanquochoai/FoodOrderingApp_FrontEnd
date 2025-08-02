@@ -15,6 +15,7 @@ import {
     payment,
     sources,
     voucher,
+    voucher_admin,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -33,6 +34,7 @@ const rootReducers = combineReducers({
     [checkout.name]: checkout.default.reducer,
     [employee.name]: employee.default.reducer,
     [order.name]: order.default.reducer,
+    [voucher_admin.name]: voucher_admin.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
