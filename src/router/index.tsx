@@ -48,7 +48,7 @@ const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 const RecipeManagement = lazy(() => import('@/pages/admin/recipeManagement'));
 const AccountAdmin = lazy(() => import('@/pages/admin/accountManagement/Account'));
 const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredientStatistics'));
-const OrderManagementChef = lazy(() => import('@/pages/admin/orderManagement/orderChef'));
+const OrderManagementChef = lazy(() => import('@/pages/admin/orderManagement/OrderChef'));
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
