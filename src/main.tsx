@@ -8,7 +8,6 @@ import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store } from './store/config';
 import MessagePopUp from './components/popup/MessagePopUp';
-import LoadingPage from './pages/LoadingPage';
 
 const queryClient = new QueryClient();
 
