@@ -50,6 +50,7 @@ const AccountAdmin = lazy(() => import('@/pages/admin/accountManagement/Account'
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
+const StoreInformation = lazy(() => import('@/pages/admin/storeInformation'));
 
 const AppRoutes = () => {
     return (
@@ -142,6 +143,8 @@ const AppRoutes = () => {
                         path="employee-account-management"
                         element={<EmployeeAccountManagement />}
                     />
+
+                    <Route path="store-information" element={<StoreInformation />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />

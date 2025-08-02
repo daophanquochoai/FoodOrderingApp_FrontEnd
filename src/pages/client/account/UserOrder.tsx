@@ -25,8 +25,6 @@ interface OrderItem {
     price: number;
 }
 
-const { TabPane } = Tabs;
-
 const orderList: Order[] = [
     {
         id: "1",
@@ -227,6 +225,79 @@ const UserOrder: React.FC = () => {
         </div>
     );
 
+    const tabItems = [
+        {
+            key: "all",
+            label: (
+                <span className="flex items-center">
+                    <InboxOutlined className="mr-2" />
+                    All Orders
+                </span>
+            ),
+            children: renderOrderList(orderList),
+        },
+        {
+            key: "pending",
+            label: (
+                <span className="flex items-center">
+                    <HourglassOutlined className="mr-2" />
+                    Pending
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "pending")),
+        },
+        {
+            key: "processing",
+            label: (
+                <span className="flex items-center">
+                    <ClockCircleOutlined className="mr-2" />
+                    Processing
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "processing")),
+        },
+        {
+            key: "completed",
+            label: (
+                <span className="flex items-center">
+                    <CheckCircleOutlined className="mr-2" />
+                    Completed
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "completed")),
+        },
+        {
+            key: "shipping",
+            label: (
+                <span className="flex items-center">
+                    <CarOutlined className="mr-2" />
+                    Shipping
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "shipping")),
+        },
+        {
+            key: "received",
+            label: (
+                <span className="flex items-center">
+                    <ShoppingOutlined className="mr-2" />
+                    Received
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "received")),
+        },
+        {
+            key: "cancelled",
+            label: (
+                <span className="flex items-center">
+                    <StopOutlined className="mr-2" style={{ color: 'red' }} />
+                    Cancelled
+                </span>
+            ),
+            children: renderOrderList(orderList.filter(order => order.status === "cancelled")),
+        }
+    ];
+
     return (
         <div className="bg-white p-6 border border-gray-300 rounded-lg min-h-[500px]">
             <div className="p-8">
@@ -237,91 +308,8 @@ const UserOrder: React.FC = () => {
                     onChange={handleTabChange}
                     size="large"
                     renderTabBar={renderTabBar}
-                >
-                    <TabPane
-                        key="all"
-                        tab={
-                            <span className="flex items-center">
-                                <InboxOutlined className="mr-2" />
-                                All Orders
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList)}
-                    </TabPane>
-
-                    <TabPane
-                        key="pending"
-                        tab={
-                            <span className="flex items-center">
-                                <HourglassOutlined className="mr-2" />
-                                Pending
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "pending"))}
-                    </TabPane>
-
-                    <TabPane
-                        key="processing"
-                        tab={
-                            <span className="flex items-center">
-                                <ClockCircleOutlined className="mr-2" />
-                                Processing
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "processing"))}
-                    </TabPane>
-
-                    <TabPane
-                        key="completed"
-                        tab={
-                            <span className="flex items-center">
-                                <CheckCircleOutlined className="mr-2" />
-                                Completed
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "completed"))}
-                    </TabPane>
-
-                    <TabPane
-                        key="shipping"
-                        tab={
-                            <span className="flex items-center">
-                                <CarOutlined className="mr-2" />
-                                Shipping
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "shipping"))}
-                    </TabPane>
-
-                    <TabPane
-                        key="received"
-                        tab={
-                            <span className="flex items-center">
-                                <ShoppingOutlined className="mr-2" />
-                                Received
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "received"))}
-                    </TabPane>
-
-                    <TabPane
-                        key="cancelled"
-                        tab={
-                            <span className="flex items-center">
-                                <StopOutlined className="mr-2" style={{ color: 'red' }} />
-                                Cancelled
-                            </span>
-                        }
-                    >
-                        {renderOrderList(orderList.filter(order => order.status === "cancelled"))}
-                    </TabPane>
-                </Tabs>
+                    items={tabItems}
+                />
             </div>
         </div>
     );
