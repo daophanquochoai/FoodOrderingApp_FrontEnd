@@ -1,4 +1,7 @@
+import { filter } from '@/defaultValue/common';
 import {
+    FilterHistoryAdmin,
+    HistoryImportAdminSlice,
     HistoryImportOrExportDto,
     HistoryIngredientsDto,
     IngredientsErrorDto,
@@ -13,12 +16,13 @@ export const historyImportOrExport: HistoryImportOrExportDto = {
     source: '',
     isActive: null,
     historyIngredients: [],
+    createdAt: null,
 };
 
 export const historyIngredientsDto: HistoryIngredientsDto = {
     id: 0,
     quantity: 0,
-    useUnit: 0,
+    usedUnit: 0,
     pricePerUnit: 0,
     avgPrice: 0,
     type: null,
@@ -44,4 +48,28 @@ export const ingredientsUseDto: IngredientsUseDto = {
     quantity: 0,
     orderItemId: 0,
     isActive: null,
+};
+
+// =========================== admin ==========================
+export const initFilterHistoryAdmin: FilterHistoryAdmin = {
+    ...filter,
+    sourceId: null,
+    inventory: null,
+    ingredientsId: null,
+    minPrice: null,
+    maxPrice: null,
+    historyImportOrExportId: null,
+    deep: 1,
+};
+
+export const initHistoryAdminSlice: HistoryImportAdminSlice = {
+    history: {
+        data: [],
+        loading: false,
+        filter: initFilterHistoryAdmin,
+        totalPage: 0,
+    },
+    selectedHistory: null,
+    loadingComponent: false,
+    filterOption: null,
 };

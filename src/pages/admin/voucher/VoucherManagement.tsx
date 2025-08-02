@@ -150,8 +150,6 @@ const VoucherManagement = () => {
             key: 'actions',
             width: '150px',
             render: (_, record) => {
-                console.log(record);
-                console.log(new Date());
                 return (
                     <Space size="middle">
                         <Button

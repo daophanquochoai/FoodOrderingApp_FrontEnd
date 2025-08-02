@@ -1,28 +1,44 @@
-import { ModalState, ModalType } from '@/type/store/common';
-import React, { useEffect, useState } from 'react';
+import { ModalState } from '@/type/store/common';
+import React, { useState } from 'react';
 import ModalBase from './ModalBase';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
 import {
     Button,
     Col,
     DatePicker,
-    DatePickerProps,
     Form,
     Input,
     InputNumber,
+    message,
     Row,
     Select,
     Space,
+    Spin,
     Table,
     TableColumnsType,
-    Tabs,
 } from 'antd';
 import dayjs from 'dayjs';
-import { unitData } from '../unitIngredient/UnitIngredient';
+import {
+    selectFilterOption,
+    selectHistorySelected,
+    selectLoadingComponent,
+} from '@/store/selector/admin/history/history.selector';
+import { HistoryIngredientsDto } from '@/type/store/admin/history/history.style';
+import { addHistoryImport, deleteHistoryImport } from '@/store/action/admin/history/history.action';
+import Editor from '../editor/editor';
 
 const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) => {
+    // hook
     const dispatch = useDispatch();
+
+    // selector
+    const selectedHistory = useSelector(selectHistorySelected);
+    const filterOption = useSelector(selectFilterOption);
+    const loadingComponent = useSelector(selectLoadingComponent);
+
+    // state
+    const [editorData, setEditorData] = useState('');
 
     const [form] = Form.useForm();
 
@@ -41,72 +57,69 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
     const title = getModalTitle();
 
+    // event handling
+
     const onClose = () => {
         dispatch(common.actions.setHiddenModal(type));
     };
-
-    const handleSubmitForm = (data) => {
-        console.log('-------data form-----', data);
-        if (variant == 'add') onClose();
-    };
-
     //#region view
     if (variant == 'view') {
-        console.log(data);
-
-        const columns: TableColumnsType = [
+        const columns: TableColumnsType<HistoryIngredientsDto> = [
             {
                 title: 'Ingredient Name',
-                dataIndex: 'name',
                 key: 'name',
-                sorter: (a, b) => a.name.localeCompare(b.name),
+                sorter: (a, b) => a?.ingredients?.name.localeCompare(b?.ingredients?.name),
+                render: (item: HistoryIngredientsDto) => <p>{item?.ingredients?.name}</p>,
             },
             {
                 title: 'Unit',
-                dataIndex: 'unit',
                 key: 'unit',
+                render: (item: HistoryIngredientsDto) => <p>{item?.ingredients?.unit}</p>,
             },
             {
                 title: 'Import Price',
-                dataIndex: 'price_per_unit',
                 key: 'price_per_unit',
-                sorter: (a, b) => a.price_per_unit - b.price_per_unit,
-                render: (price) => <p>{price.toLocaleString()}đ</p>,
+                sorter: (a, b) => a?.pricePerUnit - b?.pricePerUnit,
+                render: (price) => <p>{price?.pricePerUnit?.toLocaleString() || 0}đ</p>,
             },
             {
                 title: 'Avg Price',
-                dataIndex: 'avg_price',
                 key: 'avg_price',
-                sorter: (a, b) => a.avg_price - b.avg_price,
-                render: (price) => <p>{price.toLocaleString()}đ</p>,
+                sorter: (a, b) => a?.avgPrice - b?.avgPrice,
+                render: (price) => <p>{price?.avgPrice?.toLocaleString() || 0}đ</p>,
             },
             {
                 title: 'Quantity',
-                dataIndex: 'quantity',
                 key: 'quantity',
-                sorter: (a, b) => a.quantity - b.quantity,
+                sorter: (a, b) => a?.quantity - b?.quantity,
+                render: (item: HistoryIngredientsDto) => <p>{item?.quantity}</p>,
             },
             {
                 title: 'Total',
-                dataIndex: 'total',
                 key: 'total',
-                sorter: (a, b) => a.quantity * a.price_per_unit - b.quantity * b.price_per_unit,
+                sorter: (a, b) =>
+                    a?.quantity * a?.pricePerUnit || 0 - b?.quantity || 0 * b?.pricePerUnit || 0,
                 render: (_, record) => (
-                    <p>{(record.quantity * record.price_per_unit).toLocaleString()}đ</p>
+                    <p>
+                        {(record?.quantity || 0 * record?.pricePerUnit || 0)?.toLocaleString() || 0}
+                        đ
+                    </p>
                 ),
             },
             {
                 title: 'Expired time',
-                dataIndex: 'expired_time',
                 key: 'expired_time',
-                render: (expired_time) => <p>{dayjs(expired_time).format('DD/MM/YYYY')}</p>,
+                render: (expired_time: HistoryIngredientsDto) => (
+                    <p>{dayjs(expired_time?.expiredTime).format('DD/MM/YYYY')}</p>
+                ),
             },
         ];
 
-        const totalPrice = data.ingredients.reduce(
-            (total, item) => total + item.price_per_unit * item.quantity,
-            0
-        );
+        const totalPrice =
+            selectedHistory?.historyIngredients?.reduce(
+                (total, item) => total + item?.pricePerUnit || 0 * item?.quantity || 0,
+                0
+            ) || 0;
 
         return (
             <ModalBase type={type}>
@@ -121,19 +134,23 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                         <Row gutter={[0, 5]}>
                             <Col span={12}>
                                 <p>
-                                    <i>Batch Code:</i> <b>{data.batch_code}</b>
+                                    <i>Batch Code:</i> <b>{selectedHistory?.bathCode}</b>
                                 </p>
                             </Col>
                             <Col span={12}>
                                 <p className="text-right">
                                     <i>Import Date: </i>
-                                    <b>{dayjs(data.create_at).format('DD/MM/YYYY HH:MM')}</b>
+                                    <b>
+                                        {dayjs(selectedHistory?.createdAt).format(
+                                            'DD/MM/YYYY HH:MM'
+                                        )}
+                                    </b>
                                 </p>
                             </Col>
 
                             <Col span={24}>
                                 <p>
-                                    <i>Note: </i> {data.note}
+                                    <i>Note: </i> {selectedHistory?.note}
                                 </p>
                             </Col>
                         </Row>
@@ -146,33 +163,34 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                         <Row gutter={[0, 5]}>
                             <Col span={24}>
                                 <p>
-                                    <i>Supplier Code:</i> <b>{data.source.id}</b>
+                                    <i>Supplier Code:</i> <b>{selectedHistory?.source?.id}</b>
                                 </p>
                             </Col>
                             <Col span={24}>
                                 <p>
                                     <i>Supplier Name: </i>
                                     <b>
-                                        {data.source.name} [{data.source.taxCode}]
+                                        {selectedHistory?.source?.name} [
+                                        {selectedHistory?.source?.taxCode}]
                                     </b>
                                 </p>
                             </Col>
                             <Col span={24}>
                                 <p>
                                     <i>Address: </i>
-                                    <b>{data.source.address}</b>
+                                    <b>{selectedHistory?.source?.address}</b>
                                 </p>
                             </Col>
                             <Col span={24}>
                                 <p>
                                     <i>Email: </i>
-                                    <b>{data.source.email}</b>
+                                    <b>{selectedHistory?.source?.email}</b>
                                 </p>
                             </Col>
                             <Col span={24}>
                                 <p>
                                     <i>Phone Number: </i>
-                                    <b>{data.source.phoneNumber}</b>
+                                    <b>{selectedHistory?.source?.phoneNumber}</b>
                                 </p>
                             </Col>
                         </Row>
@@ -184,7 +202,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                         </p>
                         <Table
                             columns={columns}
-                            dataSource={data.ingredients}
+                            dataSource={selectedHistory?.historyIngredients}
                             rowKey="key"
                             scroll={{ x: 'max-content' }}
                             pagination={false}
@@ -201,7 +219,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
     //#region delete
     const handleDeleted = () => {
-        console.log('---------delete record---------', data);
+        dispatch(deleteHistoryImport(selectedHistory?.id));
     };
 
     if (variant == 'delete') {
@@ -213,7 +231,8 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                 <div className="">
                     <p className="text-center text-red-600">
                         <>
-                            Are you sure you want to delete import <b>"{data.batch_code}"</b> ?
+                            Are you sure you want to delete import{' '}
+                            <b>"{selectedHistory?.bathCode}"</b> ?
                         </>
                     </p>
                     <div className="flex justify-end space-x-3 mt-6">
@@ -230,72 +249,6 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
     //#region new + edit
     if (variant === 'edit' || variant === 'add') {
-        const suppliers = [
-            {
-                id: 1,
-                name: 'Công ty TNHH Nguyên Liệu Xanh',
-                address: '123 Lê Lợi, Quận 1, TP.HCM',
-                phoneNumber: '0909123456',
-                email: 'contact@nguyenlieuxanh.vn',
-                link: 'https://nguyenlieuxanh.vn',
-                taxCode: '0301234567',
-                create_at: '2025-07-01T10:00:00',
-                late_update_time: '2025-08-01T09:00:00',
-                is_active: true,
-            },
-            {
-                id: 2,
-                name: 'HTX Nông Sản Miền Tây',
-                address: 'Ấp 3, Chợ Lách, Bến Tre',
-                phoneNumber: '0911123456',
-                email: 'htx@nongsanmientay.vn',
-                link: 'https://nongsanmientay.vn',
-                taxCode: '1400234567',
-                create_at: '2025-07-05T08:30:00',
-                late_update_time: '2025-08-01T08:00:00',
-                is_active: true,
-            },
-        ];
-
-        const ingredients = [
-            {
-                id: 1,
-                name: 'Thịt bò',
-                unit: 'kg',
-                low_threshold: 10,
-                create_at: '2025-06-01T09:00:00',
-                late_update_time: '2025-08-01T07:00:00',
-                is_active: true,
-            },
-            {
-                id: 2,
-                name: 'Rau xà lách',
-                unit: 'kg',
-                low_threshold: 5,
-                create_at: '2025-06-05T10:15:00',
-                late_update_time: '2025-08-01T07:10:00',
-                is_active: true,
-            },
-            {
-                id: 3,
-                name: 'Bột mì',
-                unit: 'kg',
-                low_threshold: 20,
-                create_at: '2025-06-10T14:00:00',
-                late_update_time: '2025-08-01T07:30:00',
-                is_active: true,
-            },
-            {
-                id: 4,
-                name: 'Đường trắng',
-                unit: 'kg',
-                low_threshold: 15,
-                create_at: '2025-06-15T11:45:00',
-                late_update_time: '2025-08-01T07:45:00',
-                is_active: true,
-            },
-        ];
-
         const handleSubmitForm = (data) => {
             if (!data.ingredients || data.ingredients.length === 0) {
                 console.log('Invalid import form');
@@ -310,177 +263,283 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                 })),
             };
 
-            console.log('Dữ liệu sau khi chuẩn hóa ngày:', updatedData);
-
-            if (variant === 'add') onClose();
+            const payload = {
+                type: 'IMPORT',
+                note: editorData,
+                bathCode: updatedData?.batchCode,
+                source: {
+                    id: updatedData?.source_id,
+                },
+                historyIngredients: updatedData?.ingredients.map((item) => {
+                    return {
+                        quantity: item?.quantity,
+                        usedUnit: 0,
+                        pricePerUnit: item?.price_per_unit,
+                        unit: item?.unit,
+                        expiredTime: item?.expired_time,
+                        ingredients: {
+                            id: item?.id,
+                        },
+                    };
+                }),
+            };
+            dispatch(addHistoryImport(payload));
         };
-
-        console.log(data);
 
         return (
             <ModalBase type={type}>
-                <div>
-                    <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
-                </div>
-                <Form
-                    form={form}
-                    layout="vertical"
-                    onFinish={(data) => handleSubmitForm(data)}
-                    initialValues={{
-                        source_id: data?.source.id,
-                        ingredients: data?.ingredients?.map((item) => ({
-                            ...item,
-                            expired_time: item.expired_time ? dayjs(item.expired_time) : null,
-                        })),
-                    }}
-                >
-                    <Form.Item name="source_id" label="Supplier" rules={[{ required: true }]}>
-                        <Select
-                            showSearch
-                            placeholder="Supplier name"
-                            optionFilterProp="label"
-                            options={suppliers.map((s) => ({
-                                label: s.name,
-                                value: s.id,
-                            }))}
-                        />
-                    </Form.Item>
+                <Spin spinning={loadingComponent}>
+                    <div>
+                        <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
+                    </div>
+                    <Form
+                        form={form}
+                        layout="vertical"
+                        onFinish={(data) => handleSubmitForm(data)}
+                        initialValues={{
+                            source_id: data?.source.id,
+                            ingredients: data?.ingredients?.map((item) => ({
+                                ...item,
+                                expired_time: item.expired_time ? dayjs(item.expired_time) : null,
+                            })),
+                        }}
+                    >
+                        <Form.Item name="source_id" label="Supplier" rules={[{ required: true }]}>
+                            <Select
+                                showSearch
+                                placeholder="Supplier name"
+                                optionFilterProp="label"
+                                options={filterOption?.source?.map((s) => ({
+                                    label: s.name,
+                                    value: s.id,
+                                }))}
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            name="batchCode"
+                            label="Batch Code"
+                            rules={[
+                                { required: true, message: 'Please enter the batch code' },
+                                { min: 12, message: 'Batch code must be at least 12 characters' },
+                            ]}
+                        >
+                            <Input placeholder="Enter batch code (min 12 characters)" />
+                        </Form.Item>
 
-                    <Form.List name="ingredients" initialValue={[{}]}>
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map(({ key, name, ...restField }, index) => (
-                                    <Space
-                                        key={key}
-                                        style={{ display: 'flex', marginBottom: 8 }}
-                                        align="baseline"
-                                    >
-                                        {/* Chọn nguyên liệu */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'id']}
-                                            rules={[
-                                                { required: true, message: 'Select Ingredient' },
-                                            ]}
-                                        >
-                                            <Select
-                                                style={{ width: 120 }}
-                                                placeholder="Ingredient"
-                                                options={ingredients.map((ing) => ({
-                                                    label: ing.name,
-                                                    value: ing.id,
-                                                }))}
-                                            />
-                                        </Form.Item>
+                        <Form.List name="ingredients" initialValue={[{}]}>
+                            {(fields, { add, remove }) => {
+                                const ingredientsSelected = form.getFieldValue('ingredients') || [];
 
-                                        {/* Đơn vị:  */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'unit']}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Unit cannot be left blank',
-                                                },
-                                            ]}
-                                        >
-                                            <Select
-                                                style={{ minWidth: 80 }}
-                                                placeholder="Unit"
-                                                // onChange={(value) => handleChangeUnit(value, index)}
-                                                options={unitData.map((unit) => ({
-                                                    label: unit.name,
-                                                    value: unit.ratio, // giá trị là tỉ số đơn vị so với kg
-                                                }))}
-                                            />
-                                        </Form.Item>
+                                return (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }) => {
+                                            // Danh sách id đã chọn, bỏ qua chính dòng hiện tại
+                                            const selectedIds = ingredientsSelected
+                                                .map((item, idx) =>
+                                                    idx !== name ? item?.id : null
+                                                )
+                                                .filter((id) => id !== null);
 
-                                        {/* Số lượng */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'quantity']}
-                                            rules={[
-                                                { required: true, message: 'Enter quantity' },
-                                                {
-                                                    type: 'number',
-                                                    min: 0.01,
-                                                    message: 'Must be greater than 0',
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber
-                                                style={{ minWidth: 60 }}
-                                                placeholder="Quantity"
-                                            />
-                                        </Form.Item>
+                                            // Lọc ra các nguyên liệu chưa được chọn
+                                            const availableOptions = filterOption.ingredient.filter(
+                                                (ing) => !selectedIds.includes(ing.id)
+                                            );
 
-                                        {/* Gái nhập */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'price_per_unit']}
-                                            rules={[
-                                                { required: true, message: 'Enter price' },
-                                                {
-                                                    type: 'number',
-                                                    min: 0.01,
-                                                    message: 'Must be greater than 0',
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber
-                                                style={{ minWidth: 80 }}
-                                                placeholder="Price"
-                                            />
-                                        </Form.Item>
+                                            return (
+                                                <Space
+                                                    key={key}
+                                                    style={{ display: 'flex', marginBottom: 8 }}
+                                                    align="baseline"
+                                                >
+                                                    {/* Chọn nguyên liệu */}
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'id']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Select Ingredient',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <Select
+                                                            style={{ width: 150 }}
+                                                            placeholder="Ingredient"
+                                                            onChange={(value) => {
+                                                                const selected =
+                                                                    filterOption.ingredient.find(
+                                                                        (ing) => ing.id === value
+                                                                    );
+                                                                const currentValues =
+                                                                    form.getFieldValue(
+                                                                        'ingredients'
+                                                                    ) || [];
 
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'expired_time']}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Enter expiration date',
-                                                },
-                                                {
-                                                    validator: (_, value) => {
-                                                        if (
-                                                            !value ||
-                                                            (dayjs.isDayjs(value) &&
-                                                                value.isValid())
-                                                        ) {
-                                                            return Promise.resolve();
-                                                        }
-                                                        return Promise.reject(
-                                                            new Error('Invalid date')
+                                                                // Cập nhật lại unit ứng với nguyên liệu
+                                                                form.setFieldsValue({
+                                                                    ingredients: currentValues.map(
+                                                                        (item, idx) =>
+                                                                            idx === name
+                                                                                ? {
+                                                                                      ...item,
+                                                                                      unit: selected?.unit,
+                                                                                  }
+                                                                                : item
+                                                                    ),
+                                                                });
+                                                            }}
+                                                            options={availableOptions.map(
+                                                                (ing) => ({
+                                                                    label: ing.name,
+                                                                    value: ing.id,
+                                                                })
+                                                            )}
+                                                        />
+                                                    </Form.Item>
+
+                                                    {/* Đơn vị */}
+                                                    <Form.Item name={[name, 'unit']}>
+                                                        <Input
+                                                            style={{ width: 100 }}
+                                                            placeholder="Unit"
+                                                            disabled
+                                                        />
+                                                    </Form.Item>
+
+                                                    {/* Số lượng */}
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'quantity']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Enter quantity',
+                                                            },
+                                                            {
+                                                                type: 'number',
+                                                                min: 0.01,
+                                                                message: 'Must be greater than 0',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <InputNumber
+                                                            style={{ minWidth: 60 }}
+                                                            placeholder="Quantity"
+                                                        />
+                                                    </Form.Item>
+
+                                                    {/* Giá nhập */}
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'price_per_unit']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Enter price',
+                                                            },
+                                                            {
+                                                                type: 'number',
+                                                                min: 0.01,
+                                                                message: 'Must be greater than 0',
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <InputNumber
+                                                            style={{ minWidth: 80 }}
+                                                            placeholder="Price"
+                                                        />
+                                                    </Form.Item>
+
+                                                    {/* Hạn sử dụng */}
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'expired_time']}
+                                                        rules={[
+                                                            {
+                                                                required: true,
+                                                                message: 'Enter expiration date',
+                                                            },
+                                                            {
+                                                                validator: (_, value) => {
+                                                                    if (
+                                                                        !value ||
+                                                                        (dayjs.isDayjs(value) &&
+                                                                            value.isValid())
+                                                                    ) {
+                                                                        return Promise.resolve();
+                                                                    }
+                                                                    return Promise.reject(
+                                                                        new Error('Invalid date')
+                                                                    );
+                                                                },
+                                                            },
+                                                        ]}
+                                                    >
+                                                        <DatePicker />
+                                                    </Form.Item>
+
+                                                    <Button danger onClick={() => remove(name)}>
+                                                        X
+                                                    </Button>
+                                                </Space>
+                                            );
+                                        })}
+
+                                        <Form.Item>
+                                            <Button
+                                                type="dashed"
+                                                block
+                                                onClick={() => {
+                                                    const selectedIds = (
+                                                        form.getFieldValue('ingredients') || []
+                                                    ).map((i) => i.id);
+                                                    const available =
+                                                        filterOption.ingredient.filter(
+                                                            (i) => !selectedIds.includes(i.id)
                                                         );
-                                                    },
-                                                },
-                                            ]}
-                                        >
-                                            <DatePicker />
+                                                    if (available.length === 0) {
+                                                        message.warning(
+                                                            'Tất cả nguyên liệu đã được chọn'
+                                                        );
+                                                        return;
+                                                    }
+                                                    add();
+                                                }}
+                                            >
+                                                + Ingredient
+                                            </Button>
                                         </Form.Item>
+                                        <div className="flex flex-col">
+                                            <label
+                                                htmlFor="description"
+                                                className="text-sm mb-1 font-medium"
+                                            >
+                                                Description
+                                            </label>
+                                            <Editor
+                                                editorData={editorData}
+                                                setEditorData={(data) => {
+                                                    setEditorData(data);
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                );
+                            }}
+                        </Form.List>
 
-                                        <Button danger onClick={() => remove(name)}>
-                                            X
-                                        </Button>
-                                    </Space>
-                                ))}
-
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block>
-                                        + Ingredient
-                                    </Button>
-                                </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
-
-                    <Form.Item>
-                        <Button type="primary" onClick={() => form.submit()} block>
-                            {variant == 'edit' ? 'Update Import' : 'Add Import'}
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        <Form.Item>
+                            <Button
+                                type="primary"
+                                onClick={() => form.submit()}
+                                block
+                                className="mt-[10px]"
+                            >
+                                {variant == 'edit' ? 'Update Import' : 'Add Import'}
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Spin>
             </ModalBase>
         );
     }
