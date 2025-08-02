@@ -1,8 +1,8 @@
-import { common } from '@/store/reducer';
+import { common, history_import } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { Button, Space, Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { Button, Pagination, Space, Table, TableColumnsType, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
     CheckCircleOutlined,
     CloseCircleOutlined,
@@ -12,96 +12,29 @@ import {
 } from '@ant-design/icons';
 import FilterBar from '@/components/filter/FilterBar';
 import dayjs from 'dayjs';
-
-const ingredientBatches = [
-    {
-        batch_code: 'BATCH-20250801-001',
-        type: 'import',
-        note: 'Lô hàng đầu tháng 8',
-        is_active: true,
-        source: {
-            id: 1,
-            name: 'Công ty TNHH Nguyên Liệu Xanh',
-            address: '123 Đường Lê Lợi, Q1, TP.HCM',
-            phoneNumber: '0909123456',
-            email: 'contact@nguyenlieuxanh.vn',
-            link: 'https://nguyenlieuxanh.vn',
-            taxCode: '0301234567',
-        },
-        ingredients: [
-            {
-                id: 1,
-                name: 'Thịt bò',
-                unit: 'kg',
-                quantity: 50,
-                used_unit: 'kg',
-                price_per_unit: 180000,
-                avg_price: 180000,
-                expired_time: '2025-08-20',
-            },
-            {
-                id: 2,
-                name: 'Rau xà lách',
-                unit: 'kg',
-                quantity: 20,
-                used_unit: 'kg',
-                price_per_unit: 40000,
-                avg_price: 40000,
-                expired_time: '2025-08-05',
-            },
-        ],
-        create_at: '2025-08-01T09:30:00',
-    },
-    {
-        batch_code: 'BATCH-20250801-002',
-        type: 'import',
-        note: 'Nguyên liệu khô nhập từ miền Tây',
-        is_active: false,
-        source: {
-            id: 2,
-            name: 'Hợp tác xã Nông sản Miền Tây',
-            address: 'Ấp 3, huyện Chợ Lách, Bến Tre',
-            phoneNumber: '0911123456',
-            email: 'htx@nongsanmientay.vn',
-            link: 'https://nongsanmientay.vn',
-            taxCode: '1400234567',
-        },
-        ingredients: [
-            {
-                id: 3,
-                name: 'Bột mì',
-                unit: 'kg',
-                quantity: 100,
-                used_unit: 'kg',
-                price_per_unit: 12000,
-                avg_price: 12000,
-                expired_time: '2026-01-01',
-            },
-            {
-                id: 4,
-                name: 'Đường trắng',
-                unit: 'kg',
-                quantity: 30,
-                used_unit: 'kg',
-                price_per_unit: 18000,
-                avg_price: 18000,
-                expired_time: '2026-02-15',
-            },
-        ],
-        create_at: '2025-08-01T10:00:00',
-    },
-];
+import { selectHistory } from '@/store/selector/admin/history/history.selector';
+import { fetchFirst } from '@/store/action/admin/history/history.action';
+import { HistoryImportAdmin } from '@/type/store/admin/history/history.style';
 
 const ImportManagement = () => {
+    // hook
     const dispatch = useDispatch();
+
+    //selector
+    const historyList = useSelector(selectHistory);
+
+    //useEffect
+    useEffect(() => {
+        dispatch(fetchFirst());
+    }, []);
 
     const [filters, setFilters] = useState({});
 
-    const columns: TableColumnsType<any> = [
+    const columns: TableColumnsType<HistoryImportAdmin> = [
         {
             title: 'Batch Code',
-            dataIndex: 'batch_code',
-            key: 'batch_code',
+            dataIndex: 'bathCode',
+            key: 'bathCode',
         },
         {
             title: 'Note',
@@ -122,33 +55,31 @@ const ImportManagement = () => {
         },
         {
             title: 'Supplier Name',
-            dataIndex: 'source',
             key: 'source',
-            render: (source) => <p>{source.name}</p>,
+            render: (source) => <p>{source?.source?.name}</p>,
         },
         {
             title: 'Quantity of ingredients',
-            dataIndex: 'ingredients',
             key: 'ingredients',
             align: 'center',
-            sorter: (a, b) => a.ingredients.length - b.ingredients.length,
-            render: (ingredients) => <p>{ingredients.length}</p>,
+            sorter: (a, b) => a?.historyIngredients?.length - b?.historyIngredients?.length,
+            render: (ingredients) => <p>{ingredients?.historyIngredients?.length}</p>,
         },
         {
             title: 'Import date',
-            dataIndex: 'create_at',
-            key: 'create_at',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
             render: (importDate) => <p>{dayjs(importDate).format('DD/MM/YYYY')}</p>,
         },
         {
             title: 'Status',
-            dataIndex: 'is_active',
+            dataIndex: 'isActive',
             key: 'isActive',
             filters: [
                 { text: 'Active', value: true },
                 { text: 'Inactive', value: false },
             ],
-            onFilter: (value, record) => record.is_active === value,
+            onFilter: (value, record) => record?.isActive === value,
             render: (status) => {
                 if (status == true) {
                     return (
@@ -183,15 +114,15 @@ const ImportManagement = () => {
                         className=""
                         size="small"
                     />
-                    {record?.is_active && (
+                    {record?.isActive && (
                         <>
-                            <Button
+                            {/* <Button
                                 type="primary"
                                 icon={<EditOutlined />}
                                 onClick={() => handleOpenEditImportModal(record)}
                                 className="bg-blue-500 hover:bg-blue-600"
                                 size="small"
-                            />
+                            /> */}
                             <Button
                                 danger
                                 icon={<DeleteOutlined />}
@@ -206,6 +137,7 @@ const ImportManagement = () => {
     ];
 
     const handleOpenViewImportModal = (data) => {
+        dispatch(history_import.actions.setSelectHistory(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.IMPORT_MANAGEMENT,
@@ -216,6 +148,7 @@ const ImportManagement = () => {
     };
 
     const handleOpenAddImportModal = () => {
+        dispatch(history_import.actions.setSelectHistory(null));
         dispatch(
             common.actions.showModal({
                 type: ModalType.IMPORT_MANAGEMENT,
@@ -225,17 +158,18 @@ const ImportManagement = () => {
         );
     };
 
-    const handleOpenEditImportModal = (data) => {
-        dispatch(
-            common.actions.showModal({
-                type: ModalType.IMPORT_MANAGEMENT,
-                variant: 'edit',
-                data: data,
-            })
-        );
-    };
+    // const handleOpenEditImportModal = (data) => {
+    //     dispatch(
+    //         common.actions.showModal({
+    //             type: ModalType.IMPORT_MANAGEMENT,
+    //             variant: 'edit',
+    //             data: data,
+    //         })
+    //     );
+    // };
 
     const handleOpenDeleteImportModal = (data) => {
+        dispatch(history_import.actions.setSelectHistory(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.IMPORT_MANAGEMENT,
@@ -287,10 +221,15 @@ const ImportManagement = () => {
 
                 <Table
                     columns={columns}
-                    dataSource={ingredientBatches}
+                    dataSource={historyList?.data || []}
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
+                />
+                <Pagination
+                    current={historyList?.filter?.pageNo}
+                    pageSize={10}
+                    total={historyList.totalPage}
                 />
             </div>
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ModalState } from '@/type/store/common';
 import ModalBase from './ModalBase';
-import { Button, DatePicker, message, Spin } from 'antd';
+import { Button, DatePicker, Spin } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
 import { FloatingInput, FloatingSelect } from '../input';
