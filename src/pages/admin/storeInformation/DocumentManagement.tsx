@@ -1,57 +1,30 @@
-import { useState, useEffect } from 'react';
-import { Card, Button, Empty, message, Spin } from 'antd';
+import { Card, Button, Empty, Spin, Pagination } from 'antd';
 import { 
     DownloadOutlined,  
     FilePdfOutlined, 
     CalendarOutlined,
     FileOutlined
 } from '@ant-design/icons';
-
-interface DocumentItem {
-    id: string;
-    fileName: string;
-    uploadDate: string;
-    fileSize: number;
-    url: string;
-}
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    downloadDocument,
+    changePage
+} from '@/store/action/admin/document/document_manager.action';
+import {
+    selectDocuments,
+    selectLoadingPage,
+    selectFilter,
+    selectTotalPage
+} from '@/store/selector/admin/document/document_manager.selector';
 
 const DocumentManagement = () => {
-    const [documents, setDocuments] = useState<DocumentItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const documents = useSelector(selectDocuments);
+    const loading = useSelector(selectLoadingPage);
+    const filter = useSelector(selectFilter);
+    const totalPage = useSelector(selectTotalPage);
 
-    useEffect(() => {
-        const fetchDocuments = async () => {
-            try {
-                await new Promise(resolve => setTimeout(resolve, 800));
-
-                const mockData: DocumentItem[] = [
-                    {
-                        id: '1',
-                        fileName: 'restaurant-info-2025-08-02T01:38:24.269Z.pdf',
-                        uploadDate: '2025-08-02T14:30:45',
-                        fileSize: 1200000,
-                        url: '/api/documents/1'
-                    },
-                    {
-                        id: '2',
-                        fileName: 'restaurant-info-2025-08-01T01:38:24.269Z.pdf',
-                        uploadDate: '2025-08-01T14:30:45',
-                        fileSize: 2500000,
-                        url: '/api/documents/2'
-                    }
-                ];
-
-                setDocuments(mockData);
-            } catch (error) {
-                console.error('Error fetching documents:', error);
-                message.error('Failed to load documents');
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchDocuments();
-    }, []);
+    
 
     const formatFileSize = (bytes: number): string => {
         if (bytes < 1024) return `${bytes} B`;
@@ -59,15 +32,22 @@ const DocumentManagement = () => {
         return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     };
 
-    const formatDateTime = (dateTimeStr: string): string => {
-        const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+    const formatDateTime = (dateTimeStr?: string): string => {
+        if (!dateTimeStr) return 'N/A';
+        try {
+            const date = new Date(dateTimeStr);
+            
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        } catch (error) {
+            console.error("Date format error:", error);
+            return 'Invalid date';
+        }
     };
 
     const truncateFileName = (fileName: string, maxLength: number = 25): string => {
@@ -84,14 +64,12 @@ const DocumentManagement = () => {
         return name.substring(0, truncateLength) + '...' + extension;
     };
 
-    const handleDownload = (document: DocumentItem) => {
-        message.success(`Downloading ${document.fileName}...`);
+    const handleDownload = (document: any) => {
+        dispatch(downloadDocument({ id: document.id, name: document.name }));
+    };
 
-        setTimeout(() => {
-            message.success(`${document.fileName} downloaded successfully`);
-        }, 1500);
-
-        // window.location.href = document.url;
+    const handleChangePage = (page: number) => {
+        dispatch(changePage(page));
     };
 
     return (
@@ -105,41 +83,55 @@ const DocumentManagement = () => {
             ) : documents.length === 0 ? (
                 <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No documents found" />
             ) : (
-                <div className='space-y-4'>
-                    {documents.map((document) => (
-                        <Card 
-                            key={document.id}
-                            className="hover:shadow-md transition-shadow"
-                            styles={{ body: { padding: '16px' } }}
-                        >
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center">
-                                    <div className="bg-red-100 p-3 rounded-lg mr-4">
-                                        <FilePdfOutlined className="text-red-500 text-xl" />
-                                    </div>
-                                    <div>
-                                        <div className="font-medium">
-                                            {truncateFileName(document.fileName, 40)}
+                <div>
+                    <div className='space-y-4'>
+                        {documents.map((document) => (
+                            <Card 
+                                key={document.id}
+                                className="hover:shadow-md transition-shadow"
+                                styles={{ body: { padding: '16px' } }}
+                            >
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <div className="bg-red-100 p-3 rounded-lg mr-4">
+                                            <FilePdfOutlined className="text-red-500 text-xl" />
                                         </div>
-                                        <div className="text-sm text-gray-500 flex items-center mt-1">
-                                            <CalendarOutlined className="mr-1" />
-                                            <span className="mr-3">{formatDateTime(document.uploadDate)}</span>
-                                            <FileOutlined className="mr-1" />
-                                            <span>{formatFileSize(document.fileSize)}</span>
+                                        <div>
+                                            <div className="font-medium">
+                                                {truncateFileName(document.name, 40)}
+                                            </div>
+                                            <div className="text-sm text-gray-500 flex items-center mt-1">
+                                                <CalendarOutlined className="mr-1" />
+                                                <span className="mr-3">{formatDateTime(document.create_at)}</span>
+                                                <FileOutlined className="mr-1" />
+                                                <span>{formatFileSize(document.size)}</span>
+                                            </div>
                                         </div>
                                     </div>
+                                    <Button 
+                                        type="primary"
+                                        icon={<DownloadOutlined />}
+                                        onClick={() => handleDownload(document)}
+                                        className="mr-2"
+                                    >
+                                        Download
+                                    </Button>
                                 </div>
-                                <Button 
-                                    type="primary"
-                                    icon={<DownloadOutlined />}
-                                    onClick={() => handleDownload(document)}
-                                    className="mr-2"
-                                >
-                                    Download
-                                </Button>
-                            </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        ))}
+                    </div>
+
+                    {totalPage > 1 && (
+                        <div className="flex justify-center mt-4">
+                            <Pagination
+                                current={filter.pageNo}
+                                total={totalPage * filter.pageSize}
+                                pageSize={filter.pageSize}
+                                onChange={handleChangePage}
+                                showSizeChanger={false}
+                            />
+                        </div>
+                    )}
                 </div>
             )}
         </div>

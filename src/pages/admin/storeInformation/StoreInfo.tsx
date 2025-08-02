@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
 import { Form, Button, Radio, Upload, message } from "antd";
-import { SaveOutlined, EditOutlined, FilePdfOutlined, UploadOutlined } from "@ant-design/icons";
+import { SaveOutlined, EditOutlined, FilePdfOutlined, UploadOutlined, LoadingOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import html2pdf from "html2pdf.js";
 import RTE from "./RTE";
+import { useDispatch, useSelector } from "react-redux";
+import { uploadDocument } from "@/store/action/admin/document/document_manager.action";
+import { selectLoadingComponent } from "@/store/selector/admin/document/document_manager.selector";
 
 const StoreInfo = () => {
+    const dispatch = useDispatch();
+    const uploadLoading = useSelector(selectLoadingComponent);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [inputType, setInputType] = useState<'text' | 'file'>('text');
@@ -84,12 +89,17 @@ const StoreInfo = () => {
                     return;
                 }
 
-                const fileName = `restaurant-info-${new Date().toISOString()}.pdf`;
+                const fileName = `restaurant-info-${new Date().toISOString().replace(/:/g, '-')}.pdf`;
 
                 await generatePDF(editorContent, fileName);
 
+                const pdfBlob = await htmlToPdfBlob(editorContent);
+                const pdfFile = new File([pdfBlob], fileName, { type: 'application/pdf' });
+
+                uploadPdfToServer(pdfFile);
+                
                 console.log("Content saved as PDF:", fileName);
-                message.success("PDF has been generated and saved successfully!");
+                message.success("PDF has been generated successfully!");
             } else {
                 if (!uploadedFile) {
                     message.error("Please upload a PDF file before saving");
@@ -97,9 +107,9 @@ const StoreInfo = () => {
                     return;
                 }
 
+                uploadPdfToServer(uploadedFile);
+                
                 console.log("Uploading PDF file:", uploadedFile.name);
-
-                message.success(`File "${uploadedFile.name}" has been saved successfully!`);
             }
         } catch (error) {
             console.error("Error in save operation:", error);
@@ -107,6 +117,58 @@ const StoreInfo = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const htmlToPdfBlob = async (htmlContent: string): Promise<Blob> => {
+        const tempContainer = document.createElement('div');
+        tempContainer.innerHTML = htmlContent;
+        tempContainer.style.padding = '20px';
+        tempContainer.style.width = '800px';
+
+        document.body.appendChild(tempContainer);
+
+        const options = {
+            margin: [15, 15],
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { 
+                scale: 2,
+                useCORS: true,
+                letterRendering: true,
+            },
+            jsPDF: { 
+                unit: 'mm', 
+                format: 'a4', 
+                orientation: 'portrait',
+                precision: 16
+            },
+            output: 'blob'
+        };
+
+        try {
+            const pdfBlob = await html2pdf().from(tempContainer).set(options).output('blob');
+            document.body.removeChild(tempContainer);
+            return pdfBlob;
+        } catch (error) {
+            document.body.removeChild(tempContainer);
+            throw error;
+        }
+    };
+
+    const uploadPdfToServer = (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'restaurant_info');
+
+        dispatch(uploadDocument({
+            formData,
+            onSuccess: () => {
+                message.success(`File "${file.name}" has been uploaded successfully!`);
+                setUploadedFile(null); // Reset uploaded file sau khi thành công
+            },
+            onError: (error: any) => {
+                message.error(error?.message || "Failed to upload document");
+            }
+        }));
     };
 
     const handleUpload: UploadProps["customRequest"] = (options) => {
@@ -199,11 +261,11 @@ const StoreInfo = () => {
                     <Button 
                         type="primary" 
                         htmlType="submit" 
-                        loading={loading}
-                        icon={<SaveOutlined />}
-                        disabled={inputType === 'file' && !uploadedFile}
+                        loading={loading || uploadLoading}
+                        icon={loading || uploadLoading ? <LoadingOutlined /> : <SaveOutlined />}
+                        disabled={(inputType === 'file' && !uploadedFile) || uploadLoading}
                     >
-                        Save Information
+                        {loading || uploadLoading ? 'Processing...' : 'Save Information'}
                     </Button>
                 </Form.Item>
             </Form>
