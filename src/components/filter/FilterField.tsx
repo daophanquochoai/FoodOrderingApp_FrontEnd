@@ -17,6 +17,7 @@ const FilterField = ({ field, value, onChange }) => {
         case 'select':
             return (
                 <Select
+                    showSearch
                     placeholder={field.placeholder}
                     value={value}
                     onChange={(value) => onChange(field.key, value)}

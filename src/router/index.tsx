@@ -47,9 +47,12 @@ const SpoilIngredient = lazy(() => import('@/pages/admin/ingredientManagement/Sp
 const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 const RecipeManagement = lazy(() => import('@/pages/admin/recipeManagement'));
 const AccountAdmin = lazy(() => import('@/pages/admin/accountManagement/Account'));
+const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredientStatistics'));
 const EmployeeAccountManagement = lazy(
     () => import('@/pages/admin/accountManagement/EmployeeAccount')
 );
+const StoreInformation = lazy(() => import('@/pages/admin/storeInformation'));
+const ImportManagement = lazy(() => import('@/pages/admin/importManagement'));
 
 const AppRoutes = () => {
     return (
@@ -132,16 +135,22 @@ const AppRoutes = () => {
 
                     <Route path="source-management" element={<SourceManagement />} />
 
+                    <Route path="import-management" element={<ImportManagement />} />
+
                     <Route path="order-management" element={<OrderManagement />} />
 
                     <Route path="recipe-management" element={<RecipeManagement />} />
 
                     <Route path="account" element={<AccountAdmin />} />
 
+                    <Route path="ingredient-statistics" element={<IngredientStatistics />} />
+
                     <Route
                         path="employee-account-management"
                         element={<EmployeeAccountManagement />}
                     />
+
+                    <Route path="store-information" element={<StoreInformation />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />

@@ -5,6 +5,7 @@ import { selectOrders } from '@/store/selector/admin/order/order.selector';
 import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { LuTrendingUp, LuTrendingDown } from 'react-icons/lu';
 import {
     Button,
     DatePicker,
@@ -92,7 +93,31 @@ const OrderManagement = () => {
             render: (total) => <p>{total ? total.toLocaleString() : 0}đ</p>,
         },
         {
-            title: 'Trạng thái',
+            title: 'Cost',
+            dataIndex: 'totalCost',
+            key: 'totalCost',
+            render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
+        },
+        // {
+        //     title: 'Price Difference',
+        //     key: 'priceDifference',
+        //     render: (_, record) => {
+        //         const profit = record.total - record.totalCost;
+
+        //         return (
+        //             <div
+        //                 className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md ${
+        //                     profit > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+        //                 }`}
+        //             >
+        //                 <h6 className="text-xs font-medium">${profit.toLocaleString()}</h6>
+        //                 {profit > 0 ? <LuTrendingUp /> : <LuTrendingDown />}
+        //             </div>
+        //         );
+        //     },
+        // },
+        {
+            title: 'Status',
             dataIndex: 'status',
             key: 'status',
             filters: [
@@ -192,14 +217,14 @@ const OrderManagement = () => {
         {
             key: 'status',
             type: 'select',
-            placeholder: 'Trạng thái',
+            placeholder: 'Status',
             options: [
-                { label: 'Chờ xử lý', value: 'pending' },
-                { label: 'Đang xử lý', value: 'processing' },
-                { label: 'Hoàn thành', value: 'completed' },
-                { label: 'Đang giao', value: 'shipping' },
-                { label: 'Đã nhận', value: 'received' },
-                { label: 'Đã hủy', value: 'cancel' },
+                { label: 'pending', value: 'pending' },
+                { label: 'processing', value: 'processing' },
+                { label: 'completed', value: 'completed' },
+                { label: 'shipping', value: 'shipping' },
+                { label: 'received', value: 'received' },
+                { label: 'cancel', value: 'cancel' },
             ],
         },
     ];

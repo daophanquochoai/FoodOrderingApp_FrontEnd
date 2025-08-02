@@ -100,37 +100,37 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
         const spoilIngredient: DescriptionsProps['items'] = [
             {
                 key: 'name',
-                label: 'Tên nguyên liệu',
+                label: 'Ingredient name',
                 children: data.name,
                 },
                 {
                     key: 'importHistoryId',
-                    label: 'Mã lô nhập',
+                    label: 'Import batch code',
                     children: data.importHistoryId,
                 },
                 {
                     key: 'unit',
-                    label: 'Đơn vị',
+                    label: 'Unit',
                     children: data.unit,
                 },
                 {
                     key: 'quantity',
-                    label: 'Số lượng hư',
+                    label: 'Quantity',
                     children: data.quantity,
                 },
                 {
                     key: 'reason',
-                    label: 'Lý do hư',
+                    label: 'Reason',
                     children: data.reason,
                 },
                 {
                     key: 'create_at',
-                    label: 'Ngày tạo',
+                    label: 'Craeted at',
                     children: dayjs(data.create_at).format('DD/MM/YYYY'),
                 },
                 {
-                    key: 'create_at',
-                    label: 'Ngày cập nhật',
+                    key: 'create_update',
+                    label: 'Updated at',
                     children: data.late_update_time ? dayjs(data.late_update_time).format('DD/MM/YYYY') : "no date",
                 },
         ];
@@ -139,7 +139,7 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
             <ModalBase type={type}>
                 <div className="bg-white px-2 py-2 rounded-md">
                     <Descriptions
-                        title="Thông tin nguyên liệu hư hỏng"
+                        title="Damaged ingredient information"
                         bordered
                         column={1}
                         items={spoilIngredient}
