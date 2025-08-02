@@ -1,3 +1,5 @@
+import { Ingredient } from '@/type/ingredient/ingredient';
+import { Filter } from '../../common';
 import { Ingredinets } from '../ingredients/ingredients.style';
 
 export enum ETypeHistory {
@@ -7,6 +9,17 @@ export enum ETypeHistory {
 
 export enum EUnitType {
     KG,
+}
+
+export interface Source {
+    id: number;
+    name: string;
+    address: string;
+    phoneNumber: string;
+    email: string;
+    link: string;
+    taxCode: string;
+    isActive: boolean;
 }
 
 export class HistoryImportOrExportDto {
@@ -47,4 +60,41 @@ export class IngredientsUseDto {
     quantity: number;
     orderItemId: number;
     isActive: boolean;
+}
+
+// ==================================== admin
+export interface HistoryImportAdmin {
+    id: number;
+    type: ETypeHistory;
+    note: string;
+    bathCode: string;
+    source: Source;
+    isActive: boolean;
+    historyIngredients: HistoryIngredientsDto[];
+    createdAt: Date;
+}
+
+export interface FilterHistoryAdmin extends Filter {
+    sourceId: number[];
+    inventory: boolean;
+    ingredientsId: number[];
+    minPrice: number;
+    maxPrice: number;
+    historyImportOrExportId: number[];
+    deep: number;
+}
+
+export interface HistoryImportAdminSlice {
+    history: {
+        data: HistoryImportAdmin[];
+        loading: boolean;
+        totalPage: number;
+        filter: FilterHistoryAdmin;
+    };
+    selectedHistory: HistoryImportAdmin;
+    loadingComponent: boolean;
+    filterOption: {
+        ingredient: Ingredient[];
+        source: Source[];
+    };
 }

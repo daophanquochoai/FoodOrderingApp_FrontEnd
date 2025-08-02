@@ -14,6 +14,8 @@ import ModalVoucher from './ModalVoucher';
 import ModalEmployeeManagement from './ModalEmployeeManagement';
 import ModalRecipeManagement from './ModalRecipeManagement';
 import ModalImportManagement from './ModalImportManagement';
+import ModalOrderChef from './ModalOrderChef';
+import ModalOrderShipper from './ModalOrderShipper';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -36,6 +38,10 @@ export const ModalRenderer = () => {
                 return <ModalSourceManagement key={modal.type} {...modal} />;
             case ModalType.ORDER_MANAGEMENT:
                 return <ModalOrderManagement key={modal.type} {...modal} />;
+            case ModalType.ORDER_CHEF:
+                return <ModalOrderChef key={modal.type} {...modal} />;
+            case ModalType.ORDER_SHIPPER:
+                return <ModalOrderShipper key={modal.type} {...modal} />;
             case ModalType.EMP_ACCCOUNT_MANAGEMENT:
                 return <ModalEmployeeManagement key={modal.type} {...modal} />;
             case ModalType.RECIPE_MANAGEMENT:

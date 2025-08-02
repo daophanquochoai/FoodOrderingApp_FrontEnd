@@ -10,12 +10,14 @@ import {
     employee,
     food,
     foodManager,
+    history_import,
     ingredients,
     order,
     payment,
     sources,
     voucher,
     documentManager,
+    voucher_admin,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -35,6 +37,8 @@ const rootReducers = combineReducers({
     [employee.name]: employee.default.reducer,
     [order.name]: order.default.reducer,
     [documentManager.name]: documentManager.default.reducer,
+    [voucher_admin.name]: voucher_admin.default.reducer,
+    [history_import.name]: history_import.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
