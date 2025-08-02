@@ -17,3 +17,5 @@ export const selectLoadingComponent = createSelector(
     selectState,
     (state: EmployeeSlice) => state.loadingComponent
 );
+
+export const selectAccount = createSelector(selectState, (state: EmployeeSlice) => state.account);

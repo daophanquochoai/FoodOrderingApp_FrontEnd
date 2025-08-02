@@ -36,8 +36,7 @@ class HttpService {
                             access_token == null ||
                             access_token == undefined
                         ) {
-                            deleteAllCookies();
-                            window.location.href = 'login';
+                            return;
                         }
                         try {
                             const response = await axios.post(

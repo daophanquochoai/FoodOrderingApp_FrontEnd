@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
 import FilterBar from '@/components/filter/FilterBar';
 import {
     changePageEmployee,
-    deleteEmployee,
+    resetPasswordEmployee,
     fetchFirst,
 } from '@/store/action/admin/employee/employee.action';
 import { selectEmployee, selectFilter } from '@/store/selector/admin/employee/employee.selector';
@@ -121,7 +121,7 @@ const EmployeeAccount = () => {
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: 'cccd',
+            title: 'Citizen ID Card',
             dataIndex: 'cccd',
             key: 'cccd',
         },
@@ -238,7 +238,7 @@ const EmployeeAccount = () => {
                             title="Confirm reset password"
                             description={`Are you sure you want to reset password of "${record.name}" ?`}
                             onConfirm={() => {
-                                dispatch(deleteEmployee(record?.id));
+                                dispatch(resetPasswordEmployee(record?.id));
                             }}
                             okText="Ok"
                             cancelText="Cancel"
@@ -261,26 +261,44 @@ const EmployeeAccount = () => {
 
     //------------------ filter ---------------------
     const employeeAccountFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Tên nhân viên' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+        { key: 'search', type: 'text', placeholder: 'Search' },
+        {
+            key: 'email',
+            type: 'select',
+            placeholder: 'Email',
+            options: [
+                { label: 'abc@gmail.com', value: 'abc@gmail.com' },
+                { label: 'xyz@gmail.com', value: 'xyz@gmail.com' },
+            ],
+        },
+        {
+            key: 'phoneNumber', // khong thay phoneNumber trong ERD ?
+            type: 'select',
+            placeholder: 'Phone number',
+            options: [
+                { label: '0989123456', value: '0989123456' },
+                { label: '0123456789', value: '0123456789' },
+            ],
+        },
+        {
+            key: 'cccd', // khong thay phoneNumber trong ERD ?
+            type: 'select',
+            placeholder: 'Citizen ID Card',
+            options: [
+                { label: '012345678901', value: '012345678901' },
+                { label: '012345678902', value: '012345678902' },
+            ],
+        },
         {
             key: 'isActive',
             type: 'select',
-            placeholder: 'Trạng thái',
+            placeholder: 'Status',
             options: [
-                { label: 'Hoạt động', value: true },
-                { label: 'Không hoạt động', value: false },
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
             ],
         },
-        {
-            key: 'role',
-            type: 'select',
-            placeholder: 'Quyền',
-            options: [
-                { label: 'Admin', value: 'Admin' },
-                { label: 'Nhân viên', value: 'Employee' },
-            ],
-        },
+        { key: 'create_at', type: 'dateRange', placeholder: 'Created Date' },
     ];
 
     const handleFilterChange = (key, value) => {

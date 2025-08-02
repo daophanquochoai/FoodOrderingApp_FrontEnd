@@ -11,6 +11,8 @@ import { CgSmartHomeRefrigerator } from 'react-icons/cg';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
+import { SiMaterialformkdocs } from 'react-icons/si';
+import { LiaFileImportSolid } from 'react-icons/lia';
 
 const MenuSider = () => {
     const baseAdmin: string = '/admin';
@@ -107,6 +109,11 @@ const MenuSider = () => {
                     label: <Link to={`${baseAdmin}/source-management`}>Source Management</Link>,
                     icon: <VscSourceControl />,
                 },
+                {
+                    key: '/import-management',
+                    label: <Link to={`${baseAdmin}/import-management`}>Import Management</Link>,
+                    icon: <LiaFileImportSolid />,
+                },
             ],
         },
         {
@@ -123,6 +130,13 @@ const MenuSider = () => {
                     key: '/product-statistics',
                     label: <Link to={`${baseAdmin}`}>Product Statistics</Link>,
                     icon: <AiOutlineBarChart />,
+                },
+                {
+                    key: '/ingredient-statistics',
+                    label: (
+                        <Link to={`${baseAdmin}/ingredient-statistics`}>Ingredient Statistics</Link>
+                    ),
+                    icon: <SiMaterialformkdocs />,
                 },
             ],
         },

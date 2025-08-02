@@ -1,13 +1,18 @@
 import FilterBar from '@/components/filter/FilterBar';
-import { common } from '@/store/reducer';
+import { fetchFirst } from '@/store/action/admin/order/order.action';
+import { common, order } from '@/store/reducer';
+import { selectOrders } from '@/store/selector/admin/order/order.selector';
+import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
+import { LuTrendingUp, LuTrendingDown } from 'react-icons/lu';
 import {
     Button,
     DatePicker,
     Input,
     InputRef,
     Space,
+    Spin,
     Table,
     TableColumnsType,
     TableColumnType,
@@ -15,269 +20,43 @@ import {
 } from 'antd';
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import dayjs from 'dayjs';
-import React, { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 type DataIndex = keyof any;
 
 const OrderManagement = () => {
+    // hook
     const dispatch = useDispatch();
 
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const searchInput = useRef<InputRef>(null);
+    //selector
+    const orderList = useSelector(selectOrders);
+
+    // useEffect
+    useEffect(() => {
+        dispatch(fetchFirst());
+    }, []);
 
     const [filters, setFilters] = useState({});
 
-    const navigate = useNavigate();
-
-    const handleSearch = (
-        selectedKeys: string[],
-        confirm: FilterDropdownProps['confirm'],
-        dataIndex: DataIndex
-    ) => {
-        confirm();
-        setSearchText(selectedKeys[0]);
-        setSearchedColumn(String(dataIndex));
-    };
-
-    const handleReset = (clearFilters: () => void) => {
-        clearFilters();
-        setSearchText('');
-    };
-
-    const getColumnSearchProps = (dataIndex: DataIndex): TableColumnType => ({
-        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-                <Input
-                    ref={searchInput}
-                    placeholder={`Search ${String(dataIndex)}`}
-                    value={selectedKeys[0]}
-                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                    style={{ marginBottom: 8, display: 'block' }}
-                />
-                <Space>
-                    <Button
-                        type="primary"
-                        onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                        icon={<SearchOutlined />}
-                        size="small"
-                        style={{ width: 90 }}
-                    >
-                        Search
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{ width: 90 }}
-                    >
-                        Reset
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            confirm({ closeDropdown: false });
-                            setSearchText((selectedKeys as string[])[0]);
-                            setSearchedColumn(String(dataIndex));
-                        }}
-                    >
-                        Filter
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            close();
-                        }}
-                    >
-                        close
-                    </Button>
-                </Space>
-            </div>
-        ),
-        filterIcon: (filtered: boolean) => (
-            <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
-        ),
-        onFilter: (value, record) =>
-            record[dataIndex]
-                ?.toString()
-                .toLowerCase()
-                .includes((value as string).toLowerCase()) || false,
-        filterDropdownProps: {
-            onOpenChange(open) {
-                if (open) {
-                    setTimeout(() => searchInput.current?.select(), 100);
-                }
-            },
-        },
-        render: (text) =>
-            searchedColumn === dataIndex ? (
-                <Highlighter
-                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                    searchWords={[searchText]}
-                    autoEscape
-                    textToHighlight={text ? text.toString() : ''}
-                />
-            ) : (
-                text
-            ),
-    });
-
-    const orders = [
-        {
-            id: 1001,
-            buyer: {
-                id: 1,
-                name: 'Nguyễn Văn A',
-                phone: '0909123456',
-                email: 'vana@example.com',
-                address: 'TP Hồ Chí Minh',
-            },
-            items: [
-                {
-                    id: 101,
-                    name: 'Bánh mì thịt',
-                    quantity: 2,
-                    price_at_time: 50000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-                {
-                    id: 102,
-                    name: 'Nước cam',
-                    quantity: 1,
-                    price_at_time: 35000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-            ],
-            shippingFee: 15000,
-            total: 135000,
-            payment: {
-                method: 'Visa',
-                status: 'paid',
-            },
-            status: 'processing',
-            createdAt: '2025-07-23T14:00:00Z',
-        },
-        {
-            id: 1002,
-            buyer: {
-                id: 2,
-                name: 'Trần Thị B',
-                phone: '0911123456',
-                email: 'tranb@example.com',
-                address: 'TP Hồ Chí Minh',
-            },
-            items: [
-                {
-                    id: 103,
-                    name: 'Cơm gà chiên',
-                    quantity: 1,
-                    price_at_time: 65000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-            ],
-            shippingFee: 15000,
-            total: 80000,
-            payment: {
-                method: 'Tiền mặt',
-                status: 'pending',
-            },
-            status: 'shipping',
-            createdAt: '2025-07-22T10:30:00Z',
-        },
-        {
-            id: 1003,
-            buyer: {
-                id: 3,
-                name: 'Lê Quốc C',
-                phone: '0988765432',
-                email: 'quocc@example.com',
-                address: 'TP Hồ Chí Minh',
-            },
-            items: [
-                {
-                    id: 104,
-                    name: 'Phở bò tái',
-                    quantity: 2,
-                    price_at_time: 60000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-                {
-                    id: 105,
-                    name: 'Trà sữa trân châu',
-                    quantity: 2,
-                    price_at_time: 40000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-            ],
-            shippingFee: 0,
-            total: 200000,
-            payment: {
-                method: 'Visa',
-                status: 'paid',
-            },
-            status: 'received',
-            createdAt: '2025-07-21T09:00:00Z',
-        },
-        {
-            id: 1004,
-            buyer: {
-                id: 4,
-                name: 'Phạm Minh D',
-                phone: '0977123988',
-                email: 'minhd@example.com',
-                address: 'TP Hồ Chí Minh',
-            },
-            items: [
-                {
-                    id: 106,
-                    name: 'Bún bò Huế',
-                    quantity: 1,
-                    price_at_time: 70000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-                {
-                    id: 107,
-                    name: 'Nước suối',
-                    quantity: 2,
-                    price_at_time: 10000,
-                    image: 'https://file.hstatic.net/200000700229/article/ga-ran-vi-kfc-1_0c2450efe15d4b6f9e6bd2637b71d88d.jpg',
-                },
-            ],
-            shippingFee: 15000,
-            total: 95000,
-            payment: {
-                method: 'Visa',
-                status: 'paid',
-            },
-            status: 'pending',
-            createdAt: '2025-07-24T11:45:00Z',
-        },
-    ];
-
-    const columns: TableColumnsType = [
+    const columns: TableColumnsType<Order> = [
         {
             title: 'Order ID',
             dataIndex: 'id',
             key: 'id',
-            ...getColumnSearchProps('id'),
-            sorter: (a, b) => a.id.localeCompare(b.id),
+            sorter: (a, b) => a.id - b.id,
         },
         {
             title: 'Khách hàng',
-            dataIndex: 'buyer',
-            key: 'buyer',
-            ...getColumnSearchProps('id'),
-            render: (buyer) => <p>{buyer.name}</p>,
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Ngày đặt',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
+            dataIndex: 'createTime',
+            key: 'createTime',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
                 <div style={{ padding: 8 }}>
                     <DatePicker
@@ -303,28 +82,52 @@ const OrderManagement = () => {
                     </Button>
                 </div>
             ),
-            onFilter: (value, record) =>
-                record.late_update_time?.startsWith(value as string) || false,
+            onFilter: (value, record) => record?.createTime?.startsWith(value as string) || false,
             render: (createdAt) => (createdAt ? dayjs(createdAt).format('DD/MM/YYYY') : ''),
         },
         {
             title: 'Tổng tiền',
-            dataIndex: 'total',
-            key: 'total',
-            sorter: (a, b) => a.total - b.total,
-            render: (total) => <p>{total.toLocaleString()}đ</p>,
+            dataIndex: 'totalPrice',
+            key: 'totalPrice',
+            sorter: (a, b) => a?.totalPrice - b?.totalPrice,
+            render: (total) => <p>{total ? total.toLocaleString() : 0}đ</p>,
         },
         {
-            title: 'Trạng thái',
+            title: 'Cost',
+            dataIndex: 'totalCost',
+            key: 'totalCost',
+            render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
+        },
+        // {
+        //     title: 'Price Difference',
+        //     key: 'priceDifference',
+        //     render: (_, record) => {
+        //         const profit = record.total - record.totalCost;
+
+        //         return (
+        //             <div
+        //                 className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md ${
+        //                     profit > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
+        //                 }`}
+        //             >
+        //                 <h6 className="text-xs font-medium">${profit.toLocaleString()}</h6>
+        //                 {profit > 0 ? <LuTrendingUp /> : <LuTrendingDown />}
+        //             </div>
+        //         );
+        //     },
+        // },
+        {
+            title: 'Status',
             dataIndex: 'status',
             key: 'status',
             filters: [
-                { text: 'Chờ xử lý', value: 'pending' },
-                { text: 'Đang xử lý', value: 'processing' },
-                { text: 'Hoàn thành', value: 'completed' },
-                { text: 'Đang giao', value: 'shipping' },
-                { text: 'Đã nhận', value: 'received' },
-                { text: 'Đã hủy', value: 'cancel' },
+                { text: 'Creating', value: 'CREATING' },
+                { text: 'Pending', value: 'PENDING' },
+                { text: 'Processing', value: 'PROCESSING' },
+                { text: 'Complete', value: 'COMPLETE' },
+                { text: 'Shipping', value: 'SHIPPING' },
+                { text: 'Receive', value: 'RECEIVE' },
+                { text: 'Cancel', value: 'CANCEL' },
             ],
             onFilter: (value, record) => record.status == value,
             render: (status) => {
@@ -332,30 +135,33 @@ const OrderManagement = () => {
                 let label = '';
 
                 switch (status) {
-                    case 'pending':
+                    case 'CREATING':
                         color = 'default';
-                        label = 'Chờ xử lý';
+                        label = 'Creating';
                         break;
-                    case 'processing':
+                    case 'PENDING':
                         color = 'orange';
-                        label = 'Đang xử lý';
+                        label = 'Pending';
                         break;
-                    case 'shipping':
-                        color = 'blue';
-                        label = 'Đang giao';
+                    case 'PROCESSING':
+                        color = 'pink';
+                        label = 'Processing';
                         break;
-                    case 'received':
+                    case 'COMPLETE':
                         color = 'cyan';
-                        label = 'Đã nhận';
+                        label = 'Complete';
                         break;
-                    case 'completed':
+                    case 'SHIPPING':
+                        color = 'blue';
+                        label = 'Shippinh';
+                        break;
+                    case 'RECEIVE':
                         color = 'green';
-                        label = 'Hoàn thành';
+                        label = 'Receive';
                         break;
-                    case 'cancel':
-                        color = 'red';
-                        label = 'Đã hủy';
-                        break;
+                    case 'CANCEL':
+                        color: 'red';
+                        label: 'Cancel';
                     default:
                         color = 'gray';
                         label = status;
@@ -363,24 +169,6 @@ const OrderManagement = () => {
 
                 return <Tag color={color}>{label}</Tag>;
             },
-        },
-        {
-            title: 'Thanh toán',
-            dataIndex: 'payment',
-            key: 'payment',
-            filters: [
-                { text: 'Visa', value: 'Visa' },
-                { text: 'Tiền mặt', value: 'Tiền mặt' },
-            ],
-            onFilter: (value, record) => record.payment.method == value,
-            render: (payment) => (
-                <div className="flex items-center justify-start gap-2">
-                    <p style={{ marginBottom: 4 }}>{payment.method}</p>
-                    <Tag color={payment.status === 'pending' ? 'red' : 'green'}>
-                        {payment.status === 'pending' ? 'Chưa TT' : 'Đã TT'}
-                    </Tag>
-                </div>
-            ),
         },
         {
             title: 'Actions',
@@ -398,7 +186,7 @@ const OrderManagement = () => {
                         className=""
                         size="small"
                     />
-                    <Button
+                    {/* <Button
                         type="primary"
                         icon={<EditOutlined />}
                         onClick={() => {
@@ -406,13 +194,14 @@ const OrderManagement = () => {
                         }}
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
-                    />
+                    /> */}
                 </Space>
             ),
         },
     ];
 
     const handleOpenViewOrderModal = (data) => {
+        dispatch(order.actions.setSelectOrder(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.ORDER_MANAGEMENT,
@@ -422,30 +211,20 @@ const OrderManagement = () => {
         );
     };
 
-    const handleOpenEditOrderModal = (data) => {
-        dispatch(
-            common.actions.showModal({
-                type: ModalType.ORDER_MANAGEMENT,
-                variant: 'edit',
-                data: data,
-            })
-        );
-    };
-
     const orderFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Tên người mua' },
+        { key: 'search', type: 'text', placeholder: 'Input search' },
         { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
         {
             key: 'status',
             type: 'select',
-            placeholder: 'Trạng thái',
+            placeholder: 'Status',
             options: [
-                { label: 'Chờ xử lý', value: 'pending' },
-                { label: 'Đang xử lý', value: 'processing' },
-                { label: 'Hoàn thành', value: 'completed' },
-                { label: 'Đang giao', value: 'shipping' },
-                { label: 'Đã nhận', value: 'received' },
-                { label: 'Đã hủy', value: 'cancel' },
+                { label: 'pending', value: 'pending' },
+                { label: 'processing', value: 'processing' },
+                { label: 'completed', value: 'completed' },
+                { label: 'shipping', value: 'shipping' },
+                { label: 'received', value: 'received' },
+                { label: 'cancel', value: 'cancel' },
             ],
         },
     ];
@@ -459,30 +238,32 @@ const OrderManagement = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
+        <Spin spinning={orderList.loading}>
+            <div>
+                <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
 
-            {/* filter */}
-            <div className="mb-3">
-                <FilterBar
-                    fields={orderFilterFields}
-                    values={filters}
-                    onChange={handleFilterChange}
-                    onReset={handleResetFilter}
-                    type={ModalType.ORDER_MANAGEMENT}
-                />
-            </div>
+                {/* filter */}
+                <div className="mb-3">
+                    <FilterBar
+                        fields={orderFilterFields}
+                        values={filters}
+                        onChange={handleFilterChange}
+                        onReset={handleResetFilter}
+                        type={ModalType.ORDER_MANAGEMENT}
+                    />
+                </div>
 
-            <div className="bg-white p-2 rounded-md">
-                <Table
-                    columns={columns}
-                    dataSource={orders}
-                    rowKey="key"
-                    scroll={{ x: 'max-content' }}
-                    pagination={false}
-                />
+                <div className="bg-white p-2 rounded-md">
+                    <Table
+                        columns={columns}
+                        dataSource={orderList.data}
+                        rowKey="key"
+                        scroll={{ x: 'max-content' }}
+                        pagination={false}
+                    />
+                </div>
             </div>
-        </div>
+        </Spin>
     );
 };
 

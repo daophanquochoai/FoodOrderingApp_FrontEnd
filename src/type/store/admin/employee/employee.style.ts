@@ -36,6 +36,7 @@ export interface EmployeeSlice {
         totalPage: number;
         loading: boolean;
     };
+    account: Employee;
     filter: FilterEmployee;
     selectEmployee: Employee;
     loadingComponent: boolean;
