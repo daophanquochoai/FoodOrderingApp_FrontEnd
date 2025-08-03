@@ -15,6 +15,7 @@ import { SiMaterialformkdocs } from 'react-icons/si';
 import { GiCook } from 'react-icons/gi';
 import { LiaFileImportSolid } from 'react-icons/lia';
 import { getCookies } from '@/utils/cookies/cookies';
+import { MdOutlineLocalShipping } from 'react-icons/md';
 
 const MenuSider = () => {
     const baseAdmin: string = '/admin';
@@ -85,6 +86,16 @@ const MenuSider = () => {
                     key: '/order-management',
                     label: <Link to={`${baseAdmin}/order-management`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
+                },
+                {
+                    key: '/order-management-chef',
+                    label: <Link to={`${baseAdmin}/order-management-chef`}>Order Chef</Link>,
+                    icon: <GiCook />,
+                },
+                {
+                    key: '/order-management-shipper',
+                    label: <Link to={`${baseAdmin}/order-management-shipper`}>Order Shipper</Link>,
+                    icon: <MdOutlineLocalShipping />,
                 },
                 {
                     key: '/voucher-management',

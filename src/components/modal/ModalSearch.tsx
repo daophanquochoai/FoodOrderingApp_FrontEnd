@@ -1,0 +1,255 @@
+import React, { useState } from 'react';
+import { IoMdClose } from 'react-icons/io';
+import { useDispatch, useSelector } from 'react-redux';
+import { common } from '@/store/reducer';
+import { selectModal } from '@/store/selector/common/common.selector';
+import { ModalState } from '@/type/store/common';
+import Search, { SearchProps } from 'antd/es/input/Search';
+import { ConfigProvider, Image, Spin } from 'antd';
+
+const dataFakeResult = {
+    suggestions: [
+        'pizza',
+        'Pizza',
+        'Spinach Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+        'Veg Pizza',
+    ],
+    products: [
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+            priceDiscount: '80',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+            priceDiscount: '80',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+            priceDiscount: '80',
+        },
+        {
+            name: 'Vankirk Grabb Pizza Hawaiian',
+            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+            price: '100',
+        },
+    ],
+};
+
+const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
+    // hook
+    const dispatch = useDispatch();
+    const modal = useSelector(selectModal);
+
+    const [dataSearch, setDataSearch] = useState<any>({});
+    const [loadingSearch, setLoadingSearch] = useState(false);
+    const [notFound, setNotFound] = useState(false);
+
+    const onClose = () => {
+        dispatch(common.actions.setHiddenModal(type));
+    };
+
+    if (!modal.some((m) => m.type === type)) {
+        return;
+    }
+
+    const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
+        console.log(info?.source, value);
+
+        if (value.trim() == '') {
+            setDataSearch({});
+            setNotFound(false);
+            return;
+        }
+
+        setLoadingSearch(true);
+
+        setTimeout(() => {
+            if ('pizza'.includes(value.toLowerCase())) {
+                setDataSearch(dataFakeResult);
+            } else {
+                setDataSearch({});
+                setNotFound(true);
+            }
+
+            setLoadingSearch(false);
+        }, 1000);
+    };
+
+    return (
+        <ConfigProvider
+            theme={{
+                token: {
+                    colorPrimary: '#f97316',
+                    colorPrimaryHover: '#fb923c',
+                    colorPrimaryActive: '#ea580c',
+                },
+            }}
+        >
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-start justify-center">
+                <div className="container flex items-center justify-center mt-20 lg:mt-10">
+                    <div className="bg-white rounded-lg p-6 min-w-[300px] relative w-[85%] overflow-y-auto">
+                        <button
+                            onClick={onClose}
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                        >
+                            <IoMdClose className="size-4" />
+                        </button>
+
+                        {/* content */}
+                        <div>
+                            <h2 className="text-xl font-semibold text-center">
+                                What are you looking for?
+                            </h2>
+                            <div className="flex items-center justify-center mt-4">
+                                <Search
+                                    placeholder="input search text"
+                                    allowClear
+                                    onSearch={onSearch}
+                                    size="large"
+                                    className="w-[90%] lg:w-[75%]"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            {loadingSearch ? (
+                                <div className="flex justify-center mt-4">
+                                    <Spin size="large" />
+                                </div>
+                            ) : (
+                                <>
+                                    {Object.keys(dataSearch).length > 0 && (
+                                        <div className="flex items-center justify-center">
+                                            <div className="w-[90%] lg:w-[75%] p-4 border border-gray-200 rounded-md shadow-md mt-2">
+                                                {/* Suggestions */}
+                                                {dataSearch &&
+                                                    dataSearch?.suggestions &&
+                                                    dataSearch?.suggestions.length > 0 && (
+                                                        <div>
+                                                            <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
+                                                                SUGGESTIONS
+                                                            </h2>
+                                                            <div className="lg:max-h-[138px] max-h-[170px] overflow-y-auto">
+                                                                {dataSearch.suggestions.map(
+                                                                    (item, index) => (
+                                                                        <p
+                                                                            className={`text-sm text-gray-800 p-2 cursor-pointer hover:bg-slate-50 hover:font-medium hover:text-[#f97316]`}
+                                                                            key={index}
+                                                                        >
+                                                                            {item}
+                                                                        </p>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                {/* Products */}
+                                                {dataSearch &&
+                                                    dataSearch?.products &&
+                                                    dataSearch.products.length > 0 && (
+                                                        <div className="mt-5">
+                                                            <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
+                                                                PRODUCTS
+                                                            </h2>
+                                                            <div className="lg:max-h-[240px] max-h-[300px] overflow-y-auto">
+                                                                {dataSearch.products.map(
+                                                                    (item, index) => (
+                                                                        <div className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50">
+                                                                            <div>
+                                                                                <Image
+                                                                                    src={item.image}
+                                                                                    alt="Product search"
+                                                                                    width={80}
+                                                                                    height={60}
+                                                                                    className="object-contain"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="flex justify-center items-start gap-1 flex-col ">
+                                                                                <p className="text-sm font-medium">
+                                                                                    {item.name}
+                                                                                </p>
+                                                                                {item.priceDiscount ? (
+                                                                                    <div className="flex justify-start gap-2 items-end">
+                                                                                        <p className="line-through text-xs text-gray-600">
+                                                                                            $
+                                                                                            {item.price.toLocaleString()}
+                                                                                        </p>
+                                                                                        <p
+                                                                                            className={`font-medium text-sm text-[#f97316]`}
+                                                                                        >
+                                                                                            $
+                                                                                            {item.priceDiscount.toLocaleString()}
+                                                                                        </p>
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <p
+                                                                                        className={`font-medium text-sm text-[#f97316]`}
+                                                                                    >
+                                                                                        $
+                                                                                        {item.price.toLocaleString()}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {notFound && (
+                                        <div className="text-center text-gray-500 mt-4 italic">
+                                            No matching information found.
+                                        </div>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ConfigProvider>
+    );
+};
+
+export default ModalSearch;
