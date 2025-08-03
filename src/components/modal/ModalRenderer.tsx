@@ -16,6 +16,7 @@ import ModalRecipeManagement from './ModalRecipeManagement';
 import ModalImportManagement from './ModalImportManagement';
 import ModalOrderChef from './ModalOrderChef';
 import ModalOrderShipper from './ModalOrderShipper';
+import ModalSearch from './ModalSearch';
 
 export const ModalRenderer = () => {
     const modals = useSelector(selectModal);
@@ -53,6 +54,8 @@ export const ModalRenderer = () => {
                     return <ModalProductManagementView key={modal.type} {...modal} />;
             case ModalType.VOUCHER:
                 return <ModalVoucher key={modal.type} {...modal} />;
+            case ModalType.SEARCH:
+                return <ModalSearch key={modal.type} {...modal} />;
             default:
                 return null;
         }

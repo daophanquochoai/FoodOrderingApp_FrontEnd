@@ -5,6 +5,7 @@ import { MenuSider } from '../components/menu';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 import AccountDropdown from '@/components/dropdown/AccountDropdown';
 const { Sider, Content } = Layout;
+import { IoSearchOutline } from 'react-icons/io5';
 
 const AdminLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
@@ -18,8 +19,8 @@ const AdminLayout = () => {
 
     return (
         <div>
-            <Layout className="layout-default">
-                <header className="flex bg-white border-b border-[#ddd]">
+            <Layout className="min-h-screen flex flex-col">
+                <header className="flex bg-white border-b border-[#ddd] sticky top-0 z-40">
                     <div
                         className="flex items-center justify-center border-r border-[#ddd] transition-all duration-200 ease-in-out"
                         style={{ width: collapsed ? '80px' : '230px', height: '60px' }}
@@ -34,7 +35,7 @@ const AdminLayout = () => {
                         />
                     </div>
                     <div className="p-2 flex flex-1 items-center justify-between">
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center gap-4">
                             <div
                                 className="text-[20px] cursor-pointer mr-5"
                                 onClick={() => {
@@ -43,19 +44,24 @@ const AdminLayout = () => {
                             >
                                 {collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
                             </div>
-                            <div className="">{/* <SearchOutlined /> */}</div>
                         </div>
                         <div className="">
                             <AccountDropdown />
                         </div>
                     </div>
                 </header>
-                <Layout style={{ minHeight: 'Calc(100vh - 62px)' }}>
+                <Layout className="flex flex-row flex-1 overflow-hidden">
                     <Sider
-                        className="sider "
+                        className="sider"
                         collapsed={collapsed}
                         theme="light"
-                        style={{ borderRight: '1px solid #ddd' }}
+                        style={{
+                            borderRight: '1px solid #ddd',
+                            position: 'sticky',
+                            top: '60px',
+                            left: '0',
+                            zIndex: '30',
+                        }}
                         width={230}
                     >
                         <MenuSider />
