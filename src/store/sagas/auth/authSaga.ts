@@ -13,8 +13,7 @@ function* handleLogin({ payload }) {
         yield* put(auth.actions.setLoading(true));
 
         const { data } = yield* call(authApi.login, { username, password });
-        console.log(data);
-        const user: User = data.data;
+        const user: any = data.data;
         yield* put(
             auth.actions.setAccount({
                 user,
@@ -25,8 +24,15 @@ function* handleLogin({ payload }) {
         setCookies('refresh_token', data?.refresh_token, 30);
         setCookies('access_token', data?.access_token, 7);
         setCookies('user', JSON.stringify(user), 7);
+        console.log(user?.authorities[0]);
 
-        window.location.href = '/';
+        if (user?.authorities[0]?.authority == 'ROLE_USER') {
+            console.log(user?.authorities[0]);
+
+            payload.action('/');
+        } else {
+            payload.action('/admin');
+        }
     } catch (e) {
         yield* put(common.actions.setErrorMessage(e?.message));
     } finally {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineBarChart, AiOutlineDashboard } from 'react-icons/ai';
 import { IoStorefrontOutline } from 'react-icons/io5';
 import { VscSourceControl } from 'react-icons/vsc';
@@ -14,10 +14,41 @@ import { GiChart } from 'react-icons/gi';
 import { SiMaterialformkdocs } from 'react-icons/si';
 import { GiCook } from 'react-icons/gi';
 import { LiaFileImportSolid } from 'react-icons/lia';
+import { getCookies } from '@/utils/cookies/cookies';
 import { MdOutlineLocalShipping } from 'react-icons/md';
 
 const MenuSider = () => {
     const baseAdmin: string = '/admin';
+
+    const [user, setUser] = useState(getCookies('user'));
+    const [nav, setNav] = useState([]);
+
+    // get cookies
+    useEffect(() => {
+        const account = JSON.parse(user);
+        const role = account?.authorities[0]?.authority;
+        if (role == 'ROLE_ADMIN') {
+            setNav(items);
+        } else if (role == 'ROLE_CHEF') {
+            setNav(chef);
+        } else if (role == 'ROLE_SHIPPER') {
+        }
+    }, [user]);
+
+    const chef = [
+        {
+            key: 'store',
+            label: 'Store Management',
+            icon: <IoStorefrontOutline />,
+            children: [
+                {
+                    key: '/order-management-chef',
+                    label: <Link to={`${baseAdmin}/order-management-chef`}>Order Chef</Link>,
+                    icon: <GiCook />,
+                },
+            ],
+        },
+    ];
 
     const items = [
         {
@@ -155,7 +186,7 @@ const MenuSider = () => {
     ];
     return (
         <div>
-            <Menu mode="inline" defaultSelectedKeys={['/']} defaultOpenKeys={['1']} items={items} />
+            <Menu mode="inline" defaultSelectedKeys={['/']} defaultOpenKeys={['1']} items={nav} />
         </div>
     );
 };

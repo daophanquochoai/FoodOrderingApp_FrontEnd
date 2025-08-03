@@ -11,12 +11,12 @@ interface Ward {
 export const useWards = (selectedProvinceCode?: string) => {
     const wards = useMemo(() => {
         if (!selectedProvinceCode) return [];
-        
+
         return wardsData
-            .filter((ward: Ward) => ward.province_code === selectedProvinceCode)
+            .filter((ward: Ward) => ward.province_name === selectedProvinceCode)
             .map((ward: Ward) => ({
-                value: ward.ward_code,
-                label: ward.ward_name
+                value: ward.ward_name,
+                label: ward.ward_name,
             }))
             .sort((a, b) => a.label.localeCompare(b.label, 'vi'));
     }, [selectedProvinceCode]);
@@ -27,6 +27,6 @@ export const useWards = (selectedProvinceCode?: string) => {
 
     return {
         wards,
-        getWardByCode
+        getWardByCode,
     };
 };

@@ -24,3 +24,8 @@ export const selectFilterAddress = createSelector(
     selectState,
     (state: Account) => state.address.filter
 );
+
+export const selectAddressSelected = createSelector(
+    selectState,
+    (state: Account) => state.address.selectedAccount
+);

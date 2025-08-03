@@ -13,7 +13,6 @@ import { shipApi } from '@/api/client/ship/ship.api';
 import {
     selectCheckout,
     selectShip,
-    selectSubTotal,
     selectTotal,
 } from '@/store/selector/client/checkout/checkout.selector';
 import { EStatusOrder } from '@/type/store/client/checkout/checkout.style';
@@ -34,8 +33,7 @@ function* handleFetchFirst() {
 
 function* handleFetchShip() {
     try {
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        const token = getCookies('access_token');
         const { data } = yield call(shipApi.getShip, token);
         const ship = {
             baseFee: data?.data?.baseFee,
@@ -62,8 +60,7 @@ function* handleFetchPoint() {
             account: select(selectInfo),
         });
 
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        const token = getCookies('access_token');
         const { data } = yield call(pointApi.getPoint, account?.id, token);
         yield put(checkout.actions.setPoint(data?.point || 0));
     } catch (e) {
@@ -115,8 +112,7 @@ function* handlePaymentAction({ payload }) {
             }),
             point: checkout?.point?.used || 0,
         };
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        const token = getCookies('access_token');
 
         yield call(orderApi.order, data, token);
         yield put(common.actions.setSuccessMessage('Order Successfull'));

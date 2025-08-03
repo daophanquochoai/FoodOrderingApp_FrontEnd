@@ -9,8 +9,8 @@ interface Province {
 export const useProvinces = () => {
     const provinces = useMemo(() => {
         return provincesData.map((province: Province) => ({
-            value: province.province_code,
-            label: province.name
+            value: province.name,
+            label: province.name,
         }));
     }, []);
 
@@ -20,6 +20,6 @@ export const useProvinces = () => {
 
     return {
         provinces,
-        getProvinceByCode
+        getProvinceByCode,
     };
 };

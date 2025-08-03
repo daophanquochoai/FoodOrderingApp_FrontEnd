@@ -20,3 +20,18 @@ export const fetchAddress = createAction(`${name}/FETCH/ADDRESS`);
 export const createAddress = createAction(`${name}/CREATE_ADDRESS`, (state) => ({
     payload: state,
 }));
+
+// create address in profile
+export const createAddressInProfile = createAction(`${name}/CREATE_ADDRESS/PROFILE`, (state) => ({
+    payload: state,
+}));
+
+// update address in profile
+export const updateAddressInProfile = createAction(`${name}/UPDATE_ADDRESS/PROFILE`, (state) => ({
+    payload: state,
+}));
+
+// setDefault address
+export const setDefaultAddress = createAction(`${name}/SET_DEFAULT`, (state) => ({
+    payload: state,
+}));

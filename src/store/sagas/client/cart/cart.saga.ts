@@ -13,6 +13,10 @@ function* handleFetchFirst() {
             filter: select(selectFitler),
         });
 
+        if (auth?.user?.authorities[0]?.authority != 'ROLE_USER') {
+            return;
+        }
+
         if (!auth?.user?.username) {
             // tao cart
         } else {
@@ -21,7 +25,6 @@ function* handleFetchFirst() {
         }
     } catch (e) {
         console.error(e);
-        yield put(common.actions.setErrorMessage(e?.message));
     }
 }
 

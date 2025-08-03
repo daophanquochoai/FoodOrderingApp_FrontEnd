@@ -16,6 +16,7 @@ import { watchOrder } from './admin/order/order.saga';
 import { watchDocumentManager } from './admin/document/document_manager.saga';
 import { watchVoucherAdmin } from './admin/voucher/voucher_admin.saga';
 import { watchHistory } from './admin/history/history.saga';
+import { watchOrderProfile } from './client/order_profile/order_profile.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -35,4 +36,5 @@ export default function* rootSaga() {
     yield* fork(watchDocumentManager);
     yield* fork(watchVoucherAdmin);
     yield* fork(watchHistory);
+    yield* fork(watchOrderProfile);
 }

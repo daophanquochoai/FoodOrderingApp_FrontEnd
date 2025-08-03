@@ -5,7 +5,6 @@ import AddressSelector from '../../../components/checkout/AddressSelector';
 import OrderDetail from '../../../components/checkout/OrderDetail';
 import PaymentMethod from '../../../components/checkout/PaymentMethod';
 import Voucher from '../../../components/checkout/Voucher';
-import Point from '../../../components/checkout/Point';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     fetchFirst,
@@ -66,9 +65,9 @@ const Checkout = () => {
         setError('');
     };
 
-    const handlePointsUsage = (points: number) => {
-        dispatch(usePointAction(points / 1000));
-    };
+    // const handlePointsUsage = (points: number) => {
+    //     dispatch(usePointAction(points / 1000));
+    // };
 
     const handleCheckout = (e: React.FormEvent) => {
         e.preventDefault();
@@ -135,10 +134,10 @@ const Checkout = () => {
                         selectedVoucher={selectedVoucher}
                         onVoucherSelect={handleVoucherSelect}
                     />
-                    <Point
+                    {/* <Point
                         userPoints={checkoutSlice?.point?.data + 10000}
                         onUsePoints={handlePointsUsage}
-                    />
+                    /> */}
                     {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
                     <button className="btn-primary" type="submit">
                         PAY NOW

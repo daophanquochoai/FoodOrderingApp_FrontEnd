@@ -4,12 +4,16 @@ import { userApi } from '@/api/client/user/user.api';
 import {
     actionLogout,
     createAddress,
+    createAddressInProfile,
     fetchAddress,
     fetchFirst,
+    setDefaultAddress,
     updateAccount,
+    updateAddressInProfile,
 } from '@/store/action/client/account/account.action';
 import { account, common } from '@/store/reducer';
 import { selectFilterAddress, selectInfo } from '@/store/selector/client/account/account.selector';
+import { ModalType } from '@/type/store/common';
 import { deleteAllCookies, getCookies } from '@/utils/cookies/cookies';
 import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
 
@@ -28,14 +32,13 @@ function* handleFetchFirst() {
 export function* handleFetchInfo() {
     try {
         const json = getCookies('user');
-        const tokenRaw = getCookies('access_token');
-        if (json == undefined || tokenRaw == undefined) {
+        const token = getCookies('access_token');
+        if (json == undefined || token == undefined) {
             yield put(common.actions.setErrorMessage('User not found'));
             deleteAllCookies();
             window.location.href = '/login';
         } else {
             const user = JSON.parse(json);
-            const token = JSON.parse(tokenRaw);
             const { data } = yield call(userApi.getUser, user?.username, token);
             yield put(account.actions.setInfo(data?.data));
         }
@@ -65,8 +68,7 @@ function* handleLogout() {
 function* handleUpdateAccount({ payload }) {
     yield put(account.actions.selectLoadingComponent(true));
     try {
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        const token = getCookies('access_token');
         yield call(userApi.updateUser, payload, payload?.id, token);
 
         yield put(common.actions.setSuccessMessage('Update Successful'));
@@ -86,8 +88,7 @@ function* handleFetchAddress() {
             filter: select(selectFilterAddress),
             info: select(selectInfo),
         });
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        const token = getCookies('access_token');
 
         const { data } = yield call(
             addressApi.getAddress,
@@ -110,24 +111,80 @@ function* handleFetchAddress() {
 
 function* handleCreateAddress({ payload }) {
     try {
-        const { info } = yield all({
-            info: select(selectInfo),
-        });
-        const tokenRaw = getCookies('access_token');
-        const token = JSON.parse(tokenRaw);
+        let info = yield select(selectInfo);
+        if (!info) {
+            yield call(handleFetchInfo);
+            info = yield select(selectInfo);
+        }
+        const token = getCookies('access_token');
         payload = {
             ...payload,
             userId: {
                 id: info?.id,
             },
         };
-        console.log(payload);
-        const { data } = yield call(addressApi.createAddress, payload, token);
-        console.log(data);
+        yield call(addressApi.createAddress, payload, token);
         yield handleFetchAddress();
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
+    }
+}
+
+function* handleCreateAddressInProfile({ payload }) {
+    yield put(account.actions.selectLoadingComponent(true));
+    try {
+        yield* handleCreateAddress({ payload });
+        yield put(common.actions.setHiddenModal(ModalType.ADDRESS));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(account.actions.selectLoadingComponent(false));
+    }
+}
+
+function* handleUpdateAddressInProfile({ payload }) {
+    yield put(account.actions.selectLoadingComponent(true));
+    try {
+        let info = yield select(selectInfo);
+        if (!info) {
+            yield call(handleFetchInfo);
+            info = yield select(selectInfo);
+        }
+        payload = {
+            ...payload,
+            userId: {
+                id: info?.id,
+            },
+        };
+        const token = getCookies('access_token');
+        yield call(addressApi.updateAddress, payload, payload?.id, token);
+        yield put(common.actions.setHiddenModal(ModalType.ADDRESS));
+        yield handleFetchAddress();
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(account.actions.selectLoadingComponent(false));
+    }
+}
+
+function* handleSetDefault({ payload }) {
+    yield put(account.actions.setLoading(true));
+    try {
+        let info = yield select(selectInfo);
+        if (!info) {
+            yield call(handleFetchInfo);
+            info = yield select(selectInfo);
+        }
+        const token = getCookies('access_token');
+        const { data } = yield call(addressApi.seDefault, payload, info?.id, token);
+        yield handleFetchAddress();
+        yield put(common.actions.setSuccessMessage('Update successful'));
+    } catch (e) {
+        console.error(e);
+        yield put(account.actions.setLoading(false));
     }
 }
 
@@ -151,6 +208,18 @@ function* watchCreateAddress() {
     yield takeEvery(createAddress, handleCreateAddress);
 }
 
+function* watchCreateAddressInProfile() {
+    yield takeEvery(createAddressInProfile, handleCreateAddressInProfile);
+}
+
+function* watchUpdateAddressInProfile() {
+    yield takeEvery(updateAddressInProfile, handleUpdateAddressInProfile);
+}
+
+function* watchSetDefaultAddress() {
+    yield takeEvery(setDefaultAddress, handleSetDefault);
+}
+
 export function* watchAccount() {
     yield all([
         fork(watchFetchFirst),
@@ -158,5 +227,8 @@ export function* watchAccount() {
         fork(watchUpdateAccount),
         fork(watchFetchAddress),
         fork(watchCreateAddress),
+        fork(watchCreateAddressInProfile),
+        fork(watchUpdateAddressInProfile),
+        fork(watchSetDefaultAddress),
     ]);
 }
