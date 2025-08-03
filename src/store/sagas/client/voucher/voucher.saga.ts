@@ -2,6 +2,7 @@ import { voucherApi } from '@/api/client/voucher/voucher.api';
 import { fetchFirst } from '@/store/action/client/voucher/voucher.action';
 import { common, voucher } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/client/voucher/voucher.selector';
+import { getCookies } from '@/utils/cookies/cookies';
 import { all, select, takeEvery } from 'redux-saga/effects';
 import { call, fork, put } from 'typed-redux-saga';
 
@@ -11,7 +12,16 @@ function* handleFetchFirst() {
         const { filter } = yield all({
             filter: select(selectFilter),
         });
-        const { data } = yield call(voucherApi.getVoucherByFilter, filter);
+
+        const token = getCookies('access_token');
+        const { data } = yield call(
+            voucherApi.getVoucherByFilter,
+            {
+                ...filter,
+                id: null,
+            },
+            token
+        );
         yield put(voucher.actions.setVoucher(data?.data?.data));
         yield put(voucher?.actions.setTotalPage(data?.data?.totalPage));
     } catch (e) {

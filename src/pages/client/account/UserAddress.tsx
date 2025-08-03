@@ -1,29 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Address } from '@/type';
-import { Button, Card, Tag, Empty, Popconfirm } from 'antd';
+import { useEffect } from 'react';
+import { Button, Card, Tag, Empty, Popconfirm, Pagination } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { formatFullAddress } from '../../../utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { common } from '@/store/reducer';
+import { account, common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { fetchAddress } from '@/store/action/client/account/account.action';
-import { selectAddress } from '@/store/selector/client/account/account.selector';
+import { fetchAddress, setDefaultAddress, updateAddressInProfile } from '@/store/action/client/account/account.action';
+import {
+    selectAddress,
+    selectFilterAddress,
+} from '@/store/selector/client/account/account.selector';
+import { Address } from '@/type/store/client/account/account.style';
 
 const UserAddress = () => {
     // disatch
     const dispatch = useDispatch();
 
     // selector
-    const address = useSelector(selectAddress);
+    const addressList = useSelector(selectAddress);
+    const filter = useSelector(selectFilterAddress);
 
     // useEffect
     useEffect(() => {
         dispatch(fetchAddress());
     }, []);
 
-    console.log(address);
-
     const handleOpenAddAddressModal = () => {
+        dispatch(account.actions.setSelectedAddress(null));
         dispatch(
             common.actions.showModal({
                 type: ModalType.ADDRESS,
@@ -34,6 +37,7 @@ const UserAddress = () => {
     };
 
     const handleOpenEditAddressModal = (address: Address) => {
+        dispatch(account.actions.setSelectedAddress(address));
         dispatch(
             common.actions.showModal({
                 type: ModalType.ADDRESS,
@@ -43,9 +47,18 @@ const UserAddress = () => {
         );
     };
 
-    const handleDeleteAddress = (id: string) => {};
+    const handleDeleteAddress = (id: number) => {
+        let add = addressList?.data?.find((i) => i?.id == id);
+        add = {
+            ...add,
+            isActive: false,
+        };
+        dispatch(updateAddressInProfile(add));
+    };
 
-    const handleSetDefaultAddress = (id: string) => {};
+    const handleSetDefaultAddress = (id: number) => {
+        dispatch(setDefaultAddress(id))
+    };
 
     return (
         <div className="bg-white p-6 border border-gray-300 rounded-lg">
@@ -62,11 +75,11 @@ const UserAddress = () => {
                     </Button>
                 </div>
 
-                {!address?.data || address?.data?.length === 0 ? (
+                {!addressList?.data || addressList?.data?.length === 0 ? (
                     <Empty description="No addresses found" className="my-12" />
                 ) : (
                     <div className="grid grid-cols-1 gap-6">
-                        {address?.data.map((address) => (
+                        {addressList?.data.map((address) => (
                             <Card
                                 key={address.id}
                                 className={`shadow-sm ${
@@ -89,22 +102,40 @@ const UserAddress = () => {
                                         </p>
                                     </div>
                                     <div className="flex space-x-2">
-                                        <Button type="text" icon={<EditOutlined />}>
+                                        <Button
+                                            type="text"
+                                            icon={<EditOutlined />}
+                                            onClick={() => handleOpenEditAddressModal(address)}
+                                        >
                                             Edit
                                         </Button>
-                                        <Popconfirm
-                                            title="Delete this address"
-                                            description="Are you sure you want to delete this address?"
-                                            okText="Yes"
-                                            cancelText="No"
-                                            okButtonProps={{ danger: true }}
-                                        >
-                                            <Button type="text" danger icon={<DeleteOutlined />}>
-                                                Delete
-                                            </Button>
-                                        </Popconfirm>
                                         {!address.isDefault && (
-                                            <Button type="link">Set as Default</Button>
+                                            <Popconfirm
+                                                title="Delete this address"
+                                                description="Are you sure you want to delete this address?"
+                                                okText="Yes"
+                                                cancelText="No"
+                                                okButtonProps={{ danger: true }}
+                                                onPopupClick={() =>
+                                                    handleDeleteAddress(address?.id)
+                                                }
+                                            >
+                                                <Button
+                                                    type="text"
+                                                    danger
+                                                    icon={<DeleteOutlined />}
+                                                >
+                                                    Delete
+                                                </Button>
+                                            </Popconfirm>
+                                        )}
+                                        {!address.isDefault && (
+                                            <Button
+                                                type="link"
+                                                onClick={() => handleSetDefaultAddress(address?.id)}
+                                            >
+                                                Set as Default
+                                            </Button>
                                         )}
                                     </div>
                                 </div>
@@ -112,6 +143,12 @@ const UserAddress = () => {
                         ))}
                     </div>
                 )}
+                <Pagination
+                    pageSize={10}
+                    current={filter.pageNo}
+                    total={addressList.totalPage}
+                    className="mt-[10px]"
+                />
             </div>
         </div>
     );

@@ -7,6 +7,9 @@ class OrderApi extends HttpService {
     getOrderByFilter = (filter: any, token) => {
         return this.post(filter, 'all', token);
     };
+    updateOrder = (id: number, data: any, token: string) => {
+        return this.put(id, data, 'order', token);
+    };
 }
 
 export const orderApi = new OrderApi('order');

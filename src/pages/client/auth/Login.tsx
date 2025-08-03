@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import ClientBreadcrumb from '../../../components/breadcrumb/ClientBreadcrumb';
 import FloatingInput from '../../../components/input/FloatingInput';
 import { Link, useNavigate } from 'react-router-dom';
@@ -34,7 +33,17 @@ const Login = () => {
     });
     // event handling
     const onSubmit = (data) => {
-        dispatch(loginAction({ username: data.userName, password: data.password }));
+        dispatch(
+            loginAction({
+                username: data.userName,
+                password: data.password,
+                action: (e) => navigateTo(e),
+            })
+        );
+    };
+
+    const navigateTo = (e: string) => {
+        navigate(e);
     };
 
     return (

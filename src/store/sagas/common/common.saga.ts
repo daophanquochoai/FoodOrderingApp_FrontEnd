@@ -14,9 +14,9 @@ function* handleFetchFirst({ payload }) {
     try {
         const userParse = JSON.parse(user);
 
-        if (userParse?.authorities[0]?.authority == 'ROLE_ADMIN') {
-            payload('admin');
-        }
+        // if (userParse?.authorities[0]?.authority == 'ROLE_ADMIN' ) {
+        //     payload('admin');
+        // }
 
         yield* put(
             auth.actions.setAccount({
