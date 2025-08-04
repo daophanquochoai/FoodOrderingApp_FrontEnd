@@ -41,7 +41,7 @@ const rootReducers = combineReducers({
     [documentManager.name]: documentManager.default.reducer,
     [voucher_admin.name]: voucher_admin.default.reducer,
     [history_import.name]: history_import.default.reducer,
-    [homepage.name]: homepage.default.reducer
+    [homepage.name]: homepage.default.reducer,
     [order_profile.name]: order_profile.default.reducer,
 });
 
