@@ -16,3 +16,4 @@ export * as order from './admin/order/order.reducer';
 export * as documentManager from './admin/document/document_manager.reducer';
 export * as voucher_admin from './admin/voucher/voucher_admin.reducer';
 export * as history_import from './admin/history/history.reducer';
+export * as homepage from './admin/homepage/homepage.reducer';

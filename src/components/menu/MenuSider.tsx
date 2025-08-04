@@ -8,6 +8,7 @@ import { MdOutlineCategory, MdOutlineManageAccounts, MdOutlineReport } from 'rea
 import { CiDiscount1 } from 'react-icons/ci';
 import { LuNotebookPen } from 'react-icons/lu';
 import { CgSmartHomeRefrigerator } from 'react-icons/cg';
+import { RiHome3Line } from "react-icons/ri";
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
@@ -29,6 +30,11 @@ const MenuSider = () => {
                     key: '/',
                     label: <Link to={`${baseAdmin}`}>Dashboard</Link>,
                     icon: <AiOutlineDashboard />,
+                },
+                {
+                    key: 'homepage-management',
+                    label: <Link to={`${baseAdmin}/homepage-management`}>Homepage Management</Link>,
+                    icon: <RiHome3Line />,
                 },
                 {
                     key: '/account-management',
