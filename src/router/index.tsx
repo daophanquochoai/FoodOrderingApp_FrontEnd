@@ -55,6 +55,10 @@ const EmployeeAccountManagement = lazy(
 );
 const StoreInformation = lazy(() => import('@/pages/admin/storeInformation'));
 const ImportManagement = lazy(() => import('@/pages/admin/importManagement'));
+const HomepageManagement = lazy(() => import('@/pages/admin/homepageManagement'));
+const ShopByCategories = lazy(() => import('@/pages/admin/homepageManagement/ShopByCategories'));
+const LatestProduct = lazy(() => import('@/pages/admin/homepageManagement/LatestProduct'));
+const DealOfTheWeek = lazy(() => import('@/pages/admin/homepageManagement/DealOfTheWeek'));
 
 const AppRoutes = () => {
     return (
@@ -157,6 +161,11 @@ const AppRoutes = () => {
                     />
 
                     <Route path="store-information" element={<StoreInformation />} />
+                    
+                    <Route path="homepage-management" element={<HomepageManagement />} />
+                    <Route path="homepage-management/shop-by-categories" element={<ShopByCategories />} />
+                    <Route path="homepage-management/latest-products" element={<LatestProduct />} />
+                    <Route path="homepage-management/deal-of-the-week" element={<DealOfTheWeek />} />
                 </Route>
 
                 <Route path="/500" element={<ServerError500 />} />
