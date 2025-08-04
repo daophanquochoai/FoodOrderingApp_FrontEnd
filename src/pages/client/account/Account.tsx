@@ -73,7 +73,7 @@ const Account = () => {
                         <FaList className="text-2xl" />
                         <p>My orders</p>
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                         to={'/account/vouchers'}
                         className={({ isActive }) =>
                             `w-fit flex items-center gap-2 hover:text-orange-600${
@@ -94,7 +94,7 @@ const Account = () => {
                     >
                         <LuCircleDollarSign className="text-2xl" />
                         <p>Points</p>
-                    </NavLink>
+                    </NavLink> */}
                     <button onClick={handleLogout}>Logout</button>
                 </div>
                 <div>

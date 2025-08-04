@@ -8,6 +8,7 @@ export interface Account {
         filter: FilterAddress;
         loading: boolean;
         totalPage: number;
+        selectedAccount: Address;
     };
     loading: boolean;
     loadingComponent: boolean;

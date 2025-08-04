@@ -29,6 +29,9 @@ const AccountSlice = createSlice({
         setFilterAddress(state, { payload }: PayloadAction<any>) {
             state.address.filter = payload;
         },
+        setSelectedAddress(state, { payload }: PayloadAction<any>) {
+            state.address.selectedAccount = payload;
+        },
     },
 });
 

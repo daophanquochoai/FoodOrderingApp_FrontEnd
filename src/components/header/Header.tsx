@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectAuth } from '@/store/selector/auth/auth.selector';
 import { fetchFirst } from '@/store/action/client/cart/cart.action';
 import { selectCart } from '@/store/selector/client/cart/cart.selector';
+import { common } from '@/store/reducer';
+import { ModalType } from '@/type/store/common';
 
 const Header: React.FC = () => {
     //selector
@@ -59,6 +61,16 @@ const Header: React.FC = () => {
         }
     };
 
+    const handleSearch = () => {
+        dispatch(
+            common.actions.showModal({
+                type: ModalType.SEARCH,
+                variant: 'client',
+                data: null,
+            })
+        );
+    };
+
     return (
         <>
             {/* Nếu cuộn xuống 50px thì background từ trong suốt thành màu đen */}
@@ -94,7 +106,10 @@ const Header: React.FC = () => {
                     </div>
                     <DesktopNav />
                     <div ref={dropdownRef} className=" p-7 flex items-center space-x-8 text-2xl">
-                        <IoSearchOutline className="hover:text-orange-500 lg:size-6 size-5 hover:cursor-pointer" />
+                        <IoSearchOutline
+                            className="hover:text-orange-500 lg:size-6 size-5 hover:cursor-pointer"
+                            onClick={handleSearch}
+                        />
 
                         {auth?.user && auth?.token && (
                             <div className="relative">

@@ -28,6 +28,7 @@ export const initAccount: Account = {
         loading: false,
         totalPage: 0,
         filter: filterAddress,
+        selectedAccount: null,
     },
     loading: false,
     loadingComponent: false,

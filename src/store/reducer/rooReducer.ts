@@ -13,6 +13,7 @@ import {
     history_import,
     ingredients,
     order,
+    order_profile,
     payment,
     sources,
     voucher,
@@ -41,6 +42,7 @@ const rootReducers = combineReducers({
     [voucher_admin.name]: voucher_admin.default.reducer,
     [history_import.name]: history_import.default.reducer,
     [homepage.name]: homepage.default.reducer
+    [order_profile.name]: order_profile.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

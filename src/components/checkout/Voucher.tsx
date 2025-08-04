@@ -101,7 +101,11 @@ const Voucher: React.FC<any> = () => {
                                         </span>
                                     </div>
                                     <p className="text-gray-600 text-sm leading-relaxed">
-                                        {voucher.desc}
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: `${voucher.desc || ''}`,
+                                            }}
+                                        />
                                     </p>
                                     <span className="text-xs text-gray-400">
                                         Expiration Date:{' '}

@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { FloatingSelect } from '../input';
 import { useProvinces } from '../../hooks/address/useProvinces';
 import { useWards } from '../../hooks/address/useWards';
-import { Address } from '../../type';
 import { formatFullAddress } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAddress, fetchAddress } from '@/store/action/client/account/account.action';
 import { selectAddress } from '@/store/selector/client/account/account.selector';
 import { Spin } from 'antd';
-import { selectCart } from '@/store/selector/client/cart/cart.selector';
 
 interface AddressSelectorProps {
     selectedAddressId: number;

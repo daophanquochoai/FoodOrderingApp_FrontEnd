@@ -21,7 +21,6 @@ const OrderDetail: React.FC<any> = () => {
     const checkoutData = useSelector(selectCheckout);
     const discountApply = useSelector(selectDiscountApply);
     const voucher = useSelector(selectVoucher);
-    const point = useSelector(selectPoint);
     const total = useSelector(selectTotal);
     const ship = useSelector(selectShip);
     const subTotal = useSelector(selectSubTotal);
@@ -33,37 +32,37 @@ const OrderDetail: React.FC<any> = () => {
     });
 
     useEffect(() => {
-        if (cart?.cartItems && cart?.cartItems.length > 0) {
-            dispatch(
-                checkout.actions.setSubTotal(
-                    cart?.cartItems.reduce(
-                        (sum, item) =>
-                            sum +
-                            item.quantity *
-                                ((item?.foodId?.price * (100 - item?.foodId?.discount)) / 100),
-                        0
-                    ) + 10000
-                )
-            );
-        } else {
-            dispatch(checkout.actions.setSubTotal(0));
-        }
+        let subTotalValue =
+            cart?.cartItems?.reduce(
+                (sum, item) =>
+                    sum +
+                    item.quantity * ((item?.foodId?.price * (100 - item?.foodId?.discount)) / 100),
+                0
+            ) || 0;
+        subTotalValue = Number.parseInt(subTotalValue?.toFixed(2)) || 0;
+        dispatch(checkout.actions.setSubTotal(subTotalValue));
+
+        // ship
+        let shipValue = 0;
         if (checkoutData) {
-            const ship =
+            shipValue =
                 checkoutData?.ship_fee?.baseFee +
                 checkoutData?.ship_fee?.feePerKm +
                 checkoutData?.ship_fee?.rushHourFee;
-            dispatch(checkout.actions.setFeeShip(ship > subTotal ? subTotal : ship));
+            shipValue = Number.parseInt(shipValue?.toFixed(2)) || 0;
+            shipValue = shipValue > subTotalValue ? subTotalValue : shipValue;
+            dispatch(checkout.actions.setFeeShip(shipValue));
         } else {
             dispatch(checkout.actions.setFeeShip(0));
         }
 
         if (voucher != null && voucher?.data?.length > 0 && discountApply != null) {
             const discountUsing = voucher?.data?.filter((i) => i.id === discountApply)[0];
-            const totalActual = subTotal - ship - point > 0 ? subTotal - ship - point : 0;
+            const totalActual = subTotalValue + shipValue > 0 ? subTotalValue - shipValue : 0;
+            let ability = 0;
             if (discountUsing) {
                 if (discountUsing.discountType.toString() == 'PERCENT') {
-                    let ability = (totalActual * discountUsing.discountValue) / 100;
+                    ability = (totalActual * discountUsing.discountValue) / 100;
 
                     if (ability > discountUsing.discountValue) {
                         ability = discountUsing.discountValue;
@@ -76,30 +75,35 @@ const OrderDetail: React.FC<any> = () => {
                         voucher: discountUsing,
                     });
                 } else {
+                    ability =
+                        discountUsing.discountValue > totalActual
+                            ? totalActual
+                            : discountUsing.discountValue;
                     setDiscount({
-                        value:
-                            discountUsing.discountValue > totalActual
-                                ? totalActual
-                                : discountUsing.discountValue,
+                        value: ability,
                         voucher: discountUsing,
                     });
                 }
             }
+            dispatch(
+                checkout.actions.setTotal(
+                    subTotalValue + shipValue - ability > 0
+                        ? subTotalValue + shipValue - ability
+                        : 0
+                )
+            );
         } else {
+            dispatch(
+                checkout.actions.setTotal(
+                    subTotalValue + shipValue > 0 ? subTotalValue + shipValue : 0
+                )
+            );
             setDiscount({
                 value: 0,
                 voucher: null,
             });
         }
-
-        dispatch(
-            checkout.actions.setTotal(
-                subTotal - ship - point - discount?.value > 0
-                    ? subTotal - ship - point - discount?.value
-                    : 0
-            )
-        );
-    }, [cart, checkoutData, point, discountApply]);
+    }, [cart, discountApply, checkoutData]);
 
     return (
         <div className="xl:w-2/3">
@@ -153,7 +157,7 @@ const OrderDetail: React.FC<any> = () => {
                     <p>-${discount?.value ? discount?.value?.toFixed(2) : 0}</p>
                 </div>
             )}
-            {point > 0 && (
+            {/* {point > 0 && (
                 <div className="flex items-center justify-between mt-2 text-purple-600">
                     <div className="flex items-center">
                         <p>Points discount</p>
@@ -163,7 +167,7 @@ const OrderDetail: React.FC<any> = () => {
                     </div>
                     <p>-${point ? point.toFixed(2) : 0}</p>
                 </div>
-            )}
+            )} */}
             <div className="flex items-center justify-between mt-2">
                 <p>Shipping</p>
                 <p>${ship}</p>
@@ -172,13 +176,7 @@ const OrderDetail: React.FC<any> = () => {
                 <strong className="text-lg">Total</strong>
                 <div className="flex gap-2 items-center">
                     <p className="text-sm pt-1">USD</p>
-                    <strong className="text-lg">
-                        $
-                        {(total - ship - point - discount?.value > 0
-                            ? total - ship - point - discount?.value
-                            : 0
-                        ).toFixed(2)}
-                    </strong>
+                    <strong className="text-lg">${total?.toFixed(2)}</strong>
                 </div>
             </div>
         </div>
