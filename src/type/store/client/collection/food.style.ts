@@ -44,6 +44,7 @@ export interface FilterFood extends Filter {
     minReady?: number;
     maxReady?: number;
     sizeIds?: number[];
+    categoryId?: number | null;
 }
 
 export interface FoodSlice {

@@ -44,8 +44,9 @@ export const initFoodFilter: FilterFood = {
     endDate: null,
     deep: 1,
     id: [],
-    statusFoods: [],
+    statusFoods: [EStatusFood.ACTIVE],
     sizeIds: [],
+    categoryId: null,
 };
 
 export const initFoodSlice: FoodSlice = {

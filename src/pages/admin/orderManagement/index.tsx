@@ -92,12 +92,12 @@ const OrderManagement = () => {
             sorter: (a, b) => a?.totalPrice - b?.totalPrice,
             render: (total) => <p>{total ? total.toLocaleString() : 0}đ</p>,
         },
-        {
-            title: 'Cost',
-            dataIndex: 'totalCost',
-            key: 'totalCost',
-            render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
-        },
+        // {
+        //     title: 'Cost',
+        //     dataIndex: 'totalCost',
+        //     key: 'totalCost',
+        //     render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
+        // },
         // {
         //     title: 'Price Difference',
         //     key: 'priceDifference',

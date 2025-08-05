@@ -18,9 +18,9 @@ class HttpService {
 
     private async handleError(error: any) {
         let formatError = {};
-        if (!error?.response) {
-            window.location.href = '500';
-        }
+        // if (!error?.response) {
+        //     window.location.href = '500';
+        // }
         if (error?.response) {
             const { data, status } = error.response;
             const isServer = typeof window === 'undefined';

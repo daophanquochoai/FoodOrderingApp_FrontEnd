@@ -1,8 +1,8 @@
 import React from 'react';
 import { FilterMobileProps } from '../../../type';
-import FormFilter from './FormFilter';
+import FormFilterClient from './FormFilterClient';
 
-const FilterMobile: React.FC<FilterMobileProps> = ({ isOpen, onClose }) => {
+const FilterMobile: React.FC<FilterMobileProps> = ({ isOpen, onClose, setIsMobile }) => {
     return (
         <div className="">
             {isOpen && (
@@ -20,7 +20,7 @@ const FilterMobile: React.FC<FilterMobileProps> = ({ isOpen, onClose }) => {
             >
                 <h2 className="mt-10 text-center font-kanit text-xl">Filter Products</h2>
                 <div className="">
-                    <FormFilter />
+                    <FormFilterClient />
                 </div>
             </div>
         </div>

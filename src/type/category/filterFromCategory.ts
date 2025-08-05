@@ -21,4 +21,5 @@ export type FilterFormValues = Asserts<typeof FilterProductSchema>;
 export interface FilterMobileProps {
     isOpen: boolean;
     onClose: () => void;
+    setIsMobile?: React.Dispatch<React.SetStateAction<boolean>>;
 }

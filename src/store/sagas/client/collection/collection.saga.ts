@@ -1,13 +1,17 @@
 import { collectionApi } from '@/api/client/collection/collection.api';
 import { foodApi } from '@/api/client/collection/food.api';
 import { sizeApi } from '@/api/client/collection/size.api';
-import { fetchFoodById, firstFetch } from '@/store/action/client/collection/collection.action';
+import {
+    fetchFood,
+    fetchFoodById,
+    firstFetch,
+} from '@/store/action/client/collection/collection.action';
 import { collection, food } from '@/store/reducer';
 import commonSlice from '@/store/reducer/common/common.reducer';
 import { selectFilterCategory } from '@/store/selector/client/collection/collection.selector';
 import { selectFilter } from '@/store/selector/client/collection/food.selector';
 import { takeLatest, takeLeading } from 'redux-saga/effects';
-import { all, call, fork, put, select } from 'typed-redux-saga';
+import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
 
 function* handleFirstFetch() {
     try {
@@ -69,6 +73,7 @@ function* handleFetchFood() {
 
         //get food by api
         const responseFood = yield* call(foodApi.getFoodByFilter, filterFood);
+
         yield put(food.actions.setFood(responseFood?.data?.data?.data));
     } catch (e) {
         console.error(e);
@@ -109,6 +114,11 @@ function* watchFirstFetch() {
     yield takeLeading(firstFetch, handleFirstFetch);
 }
 
+//watch fetch food
+function* watchFetchFood() {
+    yield* takeEvery(fetchFood, handleFetchFood);
+}
+
 export function* watchCollection() {
-    yield* all([fork(watchFirstFetch), fork(watchFetchFoodById)]);
+    yield* all([fork(watchFirstFetch), fork(watchFetchFoodById), fork(watchFetchFood)]);
 }

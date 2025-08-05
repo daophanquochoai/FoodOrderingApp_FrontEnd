@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { FormFilter } from '../category';
 import { CiFilter } from 'react-icons/ci';
 import { Button } from 'antd';
 import FilterMobile from './categoryProduct/FilterMobile';
+import FormFilterClient from './categoryProduct/FormFilterClient';
 
 export default function FilterBar() {
     const [isMobile, setIsMobile] = useState(false);
@@ -15,15 +15,22 @@ export default function FilterBar() {
                     <CiFilter /> Filter
                 </Button>
 
-                <FilterMobile isOpen={isMobile} onClose={() => setIsMobile(false)} />
+                <FilterMobile
+                    setIsMobile={setIsMobile}
+                    isOpen={isMobile}
+                    onClose={() => setIsMobile(false)}
+                />
             </div>
 
-            <Button onClick={() => setShowFilter((prev) => !prev)} className="hidden lg:flex">
+            <Button
+                onClick={() => setShowFilter(true)}
+                className={`hidden ${!showFilter ? 'lg:flex' : 'lg:hidden'}`}
+            >
                 <CiFilter /> Filter
             </Button>
 
             <div className={`${showFilter ? 'lg:block' : 'hidden'} pt-4`}>
-                <FormFilter />
+                <FormFilterClient setShowFilter={setShowFilter} />
             </div>
         </div>
     );
