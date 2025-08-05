@@ -252,9 +252,8 @@ const CategoryManagement = () => {
             <h1 className="text-2xl font-bold mb-3">Category Management</h1>
 
             {/* category images */}
-            <div className="bg-white rounded-md border border-gray-200 py-3">
+            {/* <div className="bg-white rounded-md border border-gray-200 py-3">
                 <div className="container">
-                    {/* Nút back nếu có category cha được chọn */}
                     <div className="flex items-center space-x-2 mb-4">
                         <button
                             onClick={() => {}}
@@ -291,7 +290,7 @@ const CategoryManagement = () => {
                         </Swiper>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* filter */}
             <div className="my-3">

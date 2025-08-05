@@ -1,25 +1,28 @@
 import { Input, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { foodManager } from '@/store/reducer';
-import {
-    selectFilter,
-    selectFitlerOption,
-} from '@/store/selector/admin/food/food_manager.selector';
-import { fetchFood } from '@/store/action/admin/food/food_manager.action';
-import { filterFoodManager } from '@/defaultValue/admin/food/food_manager';
+import { food } from '@/store/reducer';
+import { selectFitlerOption } from '@/store/selector/admin/food/food_manager.selector';
+import { IoMdClose } from 'react-icons/io';
+import { initFoodFilter } from '@/defaultValue/client/collection/food';
+import { selectFilter, selectSize } from '@/store/selector/client/collection/food.selector';
+import { fetchFood } from '@/store/action/client/collection/collection.action';
 
-const FormFilter = () => {
+const FormFilterClient = ({
+    setShowFilter,
+}: {
+    setShowFilter?: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
     // selector
     const filter = useSelector(selectFilter);
     const filterOption = useSelector(selectFitlerOption);
+    const filterOptionClient = useSelector(selectSize);
+
     const dispatch = useDispatch();
 
     // event handling
     const handleChange = (value: any, field: string) => {
-        console.log({ ...filter });
-
         dispatch(
-            foodManager.actions.setFilter({
+            food.actions.setFilter({
                 ...filter,
                 [field]: value,
             })
@@ -28,12 +31,19 @@ const FormFilter = () => {
     };
 
     const handleReset = () => {
-        dispatch(foodManager.actions.setFilter(filterFoodManager));
+        dispatch(food.actions.setFilter(initFoodFilter));
     };
 
     return (
-        <div>
-            <form onSubmit={() => {}} className="p-5 bg-white rounded-xl space-y-4">
+        <div className="bg-white rounded-xl relative">
+            <div
+                onClick={() => setShowFilter(false)}
+                className="hidden absolute top-[-10px] right-[-10px] w-[30px] h-[30px] lg:flex items-center justify-center rounded-full bg-white border border-gray-100 cursor-pointer hover:shadow-md hover:text-orange-500 duration-200"
+            >
+                <IoMdClose className="size-4" />
+            </div>
+
+            <form onSubmit={() => {}} className="p-5 space-y-4">
                 {/* Grid chia nhóm */}
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                     {/* Search */}
@@ -106,38 +116,7 @@ const FormFilter = () => {
                             />
                         </div>
                     </div>
-                    {/* Size select */}
-                    <div className="flex flex-col">
-                        <label className="mb-1 text-sm font-medium text-gray-700">Status :</label>
-                        <Select
-                            mode="multiple"
-                            allowClear
-                            showSearch
-                            placeholder="Select size"
-                            options={[
-                                {
-                                    label: 'Deleted',
-                                    value: 'DELETE',
-                                },
-                                {
-                                    label: 'Out Stock',
-                                    value: 'OUT_STOCK',
-                                },
-                                {
-                                    label: 'Active',
-                                    value: 'ACTIVE',
-                                },
-                            ]}
-                            value={filter?.statusFoods?.map((item) => {
-                                return {
-                                    value: item,
-                                };
-                            })}
-                            onChange={(value) => {
-                                handleChange(value, 'statusFoods');
-                            }}
-                        />
-                    </div>
+
                     {/* Size select */}
                     <div className="flex flex-col">
                         <label className="mb-1 text-sm font-medium text-gray-700">Size</label>
@@ -146,7 +125,7 @@ const FormFilter = () => {
                             allowClear
                             showSearch
                             placeholder="Select size"
-                            options={(filterOption?.size ?? []).map((s) => ({
+                            options={(filterOptionClient || []).map((s) => ({
                                 label: (s as any).name,
                                 value: (s as any).id?.toString(),
                             }))}
@@ -167,14 +146,15 @@ const FormFilter = () => {
                     <button
                         type="button"
                         onClick={handleReset}
-                        className="w-fit px-4 py-2 cursor-pointer bg-white hover:bg-blue-50 uppercase rounded-[24px] flex items-center justify-center text-blue-700 border border-blue-700 font-normal text-sm tracking-wider font-kanit transition-all duration-500"
+                        className="w-fit px-4 py-2 cursor-pointer bg-white hover:bg-orange-50 uppercase rounded-[24px] flex items-center justify-center text-orange-500 border border-orange-primary font-normal text-sm tracking-wider font-kanit transition-all duration-500"
                     >
                         Reset
                     </button>
                     <div className="">
                         <button
-                            type="submit"
-                            className="w-fit px-4 py-2 cursor-pointer bg-blue-700 hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-normal text-sm tracking-wider font-kanit transition-all duration-500"
+                            type="button"
+                            onClick={() => dispatch(fetchFood())}
+                            className="w-fit px-4 py-2 cursor-pointer bg-orange-primary hover:bg-black uppercase rounded-[24px] flex items-center justify-center text-white font-normal text-sm tracking-wider font-kanit transition-all duration-500"
                         >
                             Apply Filter
                         </button>
@@ -185,4 +165,4 @@ const FormFilter = () => {
     );
 };
 
-export default FormFilter;
+export default FormFilterClient;
