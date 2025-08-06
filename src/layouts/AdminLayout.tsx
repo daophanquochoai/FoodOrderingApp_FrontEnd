@@ -5,16 +5,24 @@ import { MenuSider } from '../components/menu';
 import { Outlet, useLocation, useParams } from 'react-router-dom';
 import AccountDropdown from '@/components/dropdown/AccountDropdown';
 const { Sider, Content } = Layout;
-import { IoSearchOutline } from 'react-icons/io5';
 
 const AdminLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
-        if (isMobile) {
-            setCollapsed(true);
-        }
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (mobile) {
+                setCollapsed(true);
+            }
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
     return (
@@ -42,7 +50,11 @@ const AdminLayout = () => {
                                     setCollapsed(!collapsed);
                                 }}
                             >
-                                {collapsed ? <AiOutlineMenuUnfold /> : <AiOutlineMenuFold />}
+                                {collapsed ? (
+                                    <AiOutlineMenuUnfold className="size-5" />
+                                ) : (
+                                    <AiOutlineMenuFold className="size-5" />
+                                )}
                             </div>
                         </div>
                         <div className="">
@@ -50,26 +62,53 @@ const AdminLayout = () => {
                         </div>
                     </div>
                 </header>
-                <Layout className="flex flex-row flex-1 overflow-hidden">
+                <Layout
+                    className="flex flex-row flex-1"
+                    style={{
+                        overflow: 'auto',
+                        scrollbarWidth: 'thin',
+                        scrollbarColor: '#c0c0c0 transparent',
+                    }}
+                >
                     <Sider
-                        className="sider"
+                        className={`sider`}
                         collapsed={collapsed}
                         theme="light"
                         style={{
                             borderRight: '1px solid #ddd',
-                            position: 'sticky',
+                            position: 'fixed',
                             top: '60px',
                             left: '0',
                             zIndex: '30',
+                            height: 'calc(100vh - 60px)',
+                            overflowY: 'auto',
                         }}
                         width={230}
                     >
                         <MenuSider />
                     </Sider>
-                    <Content className="p-5">
+                    <Content
+                        className="p-5 transition-all duration-200 ease-in-out"
+                        style={{
+                            marginLeft: !isMobile ? (collapsed ? '80px' : '230px') : '80px',
+                            minHeight: 'calc(100vh - 60px)',
+                            overflowY: 'auto',
+                            scrollbarWidth: 'thin',
+                            scrollbarColor: '#c0c0c0 transparent',
+                        }}
+                    >
                         <Outlet />
                     </Content>
                 </Layout>
+
+                {/* overlay*/}
+                {isMobile && !collapsed && (
+                    <div
+                        className="fixed inset-0 bg-black bg-opacity-50 z-20"
+                        onClick={() => setCollapsed(true)}
+                        style={{ top: '60px' }}
+                    />
+                )}
             </Layout>
         </div>
     );

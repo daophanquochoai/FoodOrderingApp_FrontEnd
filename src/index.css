@@ -63,51 +63,12 @@ ol {
   @apply flex items-center justify-center gap-2 font-montserrat lg:px-4 lg:py-2 md:px-3 md:py-2 rounded-full bg-orange-primary hover:bg-black uppercase font-bold text-white transition-all duration-500
 }
 
-@layer utilities {
-
-  /* Thanh cuộn chung */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-track {
-    background: #33383e;
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #d1d5db;
-    /* Mặc định - màu xám */
-    border-radius: 6px;
-  }
-
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #38475b;
-    /* Màu thumb trong dark mode */
-  }
-
-  /* no scroll */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    /* IE & Edge */
-    scrollbar-width: none;
-    /* Firefox */
-  }
-}
-
 
 @layer utilities {
 
   /* Custom scrollbar chung */
   .custom-scrollbar::-webkit-scrollbar {
-    height: 6px;
+    width: 2px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -127,6 +88,18 @@ ol {
     scrollbar-width: thin;
     scrollbar-color: #c0c0c0 transparent;
     padding-bottom: 4px;
+  }
+
+  /* no scroll */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE & Edge */
+    scrollbar-width: none;
+    /* Firefox */
   }
 }
 
