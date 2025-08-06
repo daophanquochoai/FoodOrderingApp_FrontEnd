@@ -18,6 +18,7 @@ import { watchVoucherAdmin } from './admin/voucher/voucher_admin.saga';
 import { watchHistory } from './admin/history/history.saga';
 import { watchHomepage } from './admin/homepage/homepage.saga';
 import { watchOrderProfile } from './client/order_profile/order_profile.saga';
+import { watchSearch } from './client/search/search.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -39,4 +40,5 @@ export default function* rootSaga() {
     yield* fork(watchHistory);
     yield* fork(watchHomepage);
     yield* fork(watchOrderProfile);
+    yield* fork(watchSearch);
 }
