@@ -1,115 +1,143 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
 import { selectModal } from '@/store/selector/common/common.selector';
 import { ModalState } from '@/type/store/common';
-import Search, { SearchProps } from 'antd/es/input/Search';
+import Search from 'antd/es/input/Search';
 import { ConfigProvider, Image, Spin } from 'antd';
+import { useCallback } from 'react';
+import debounce from 'lodash/debounce';
+import { searchFoods, clearSearchResults } from '@/store/action/client/search/search.action';
+import { 
+    selectSearchResults, 
+    selectSearchLoading, 
+    selectSearchQuery
+} from '@/store/selector/client/search/search.selector';
+import { Link } from 'react-router-dom';
 
-const dataFakeResult = {
-    suggestions: [
-        'pizza',
-        'Pizza',
-        'Spinach Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-        'Veg Pizza',
-    ],
-    products: [
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-            priceDiscount: '80',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-            priceDiscount: '80',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-            priceDiscount: '80',
-        },
-        {
-            name: 'Vankirk Grabb Pizza Hawaiian',
-            image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-            price: '100',
-        },
-    ],
-};
+// const dataFakeResult = {
+//     suggestions: [
+//         'pizza',
+//         'Pizza',
+//         'Spinach Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//         'Veg Pizza',
+//     ],
+//     products: [
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//             priceDiscount: '80',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//             priceDiscount: '80',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//             priceDiscount: '80',
+//         },
+//         {
+//             name: 'Vankirk Grabb Pizza Hawaiian',
+//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
+//             price: '100',
+//         },
+//     ],
+// };
 
 const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
     // hook
     const dispatch = useDispatch();
     const modal = useSelector(selectModal);
 
-    const [dataSearch, setDataSearch] = useState<any>({});
-    const [loadingSearch, setLoadingSearch] = useState(false);
-    const [notFound, setNotFound] = useState(false);
+    const searchResults = useSelector(selectSearchResults) || [];
+    const loading = useSelector(selectSearchLoading) || false;
+    const searchQuery = useSelector(selectSearchQuery) || '';
+
+    const [inputValue, setInputValue] = useState("");
 
     const onClose = () => {
         dispatch(common.actions.setHiddenModal(type));
+        dispatch(clearSearchResults());
     };
 
     if (!modal.some((m) => m.type === type)) {
-        return;
+        return null;
     }
 
-    const onSearch: SearchProps['onSearch'] = (value, _e, info) => {
-        console.log(info?.source, value);
-
-        if (value.trim() == '') {
-            setDataSearch({});
-            setNotFound(false);
-            return;
-        }
-
-        setLoadingSearch(true);
-
-        setTimeout(() => {
-            if ('pizza'.includes(value.toLowerCase())) {
-                setDataSearch(dataFakeResult);
+    // Debounced search function
+    const debouncedSearch = useCallback(
+        debounce((query: string) => {
+            if (query.trim() !== '') {
+                dispatch(searchFoods(query));
             } else {
-                setDataSearch({});
-                setNotFound(true);
+                dispatch(clearSearchResults());
             }
+        }, 500),
+        [dispatch]
+    );
 
-            setLoadingSearch(false);
-        }, 1000);
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setInputValue(value);
+        debouncedSearch(value);
     };
+
+    const handleSearch = (value: string) => {
+        if (value.trim() !== '') {
+            dispatch(searchFoods(value));
+        } else {
+            dispatch(clearSearchResults());
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+            dispatch(clearSearchResults());
+        };
+    }, [debouncedSearch, dispatch]);
+
+    const suggestions = Array.isArray(searchResults) && searchResults.length > 0 
+        ? [...new Set(searchResults.map(item => item.name.toLowerCase()))]
+            .filter(name => name.includes(searchQuery.toLowerCase()))
+            .slice(0, 10)
+        : [];
 
     return (
         <ConfigProvider
@@ -138,60 +166,66 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                             </h2>
                             <div className="flex items-center justify-center mt-4">
                                 <Search
-                                    placeholder="input search text"
+                                    placeholder="Search for foods, drinks..."
                                     allowClear
-                                    onSearch={onSearch}
+                                    value={inputValue}
+                                    onChange={handleInputChange}
+                                    onSearch={handleSearch}
                                     size="large"
                                     className="w-[90%] lg:w-[75%]"
+                                    loading={loading}
                                 />
                             </div>
                         </div>
 
                         <div className="mt-4">
-                            {loadingSearch ? (
+                            {loading ? (
                                 <div className="flex justify-center mt-4">
                                     <Spin size="large" />
                                 </div>
                             ) : (
                                 <>
-                                    {Object.keys(dataSearch).length > 0 && (
+                                    {(searchResults.length > 0 || suggestions.length > 0) && (
                                         <div className="flex items-center justify-center">
                                             <div className="w-[90%] lg:w-[75%] p-4 border border-gray-200 rounded-md shadow-md mt-2">
                                                 {/* Suggestions */}
-                                                {dataSearch &&
-                                                    dataSearch?.suggestions &&
-                                                    dataSearch?.suggestions.length > 0 && (
-                                                        <div>
-                                                            <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
-                                                                SUGGESTIONS
-                                                            </h2>
-                                                            <div className="lg:max-h-[138px] max-h-[170px] overflow-y-auto">
-                                                                {dataSearch.suggestions.map(
-                                                                    (item, index) => (
-                                                                        <p
-                                                                            className={`text-sm text-gray-800 p-2 cursor-pointer hover:bg-slate-50 hover:font-medium hover:text-[#f97316]`}
-                                                                            key={index}
-                                                                        >
-                                                                            {item}
-                                                                        </p>
-                                                                    )
-                                                                )}
-                                                            </div>
+                                                {suggestions.length > 0 && (
+                                                    <div>
+                                                        <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
+                                                            SUGGESTIONS
+                                                        </h2>
+                                                        <div className="lg:max-h-[138px] max-h-[170px] overflow-y-auto">
+                                                            {suggestions.map((item, index) => (
+                                                                <p
+                                                                    className="text-sm text-gray-800 p-2 cursor-pointer hover:bg-slate-50 hover:font-medium hover:text-[#f97316]"
+                                                                    key={index}
+                                                                    onClick={() => {
+                                                                        setInputValue(item);
+                                                                        dispatch(searchFoods(item));
+                                                                    }}
+                                                                >
+                                                                    {item}
+                                                                </p>
+                                                            ))}
                                                         </div>
-                                                    )}
+                                                    </div>
+                                                )}
 
                                                 {/* Products */}
-                                                {dataSearch &&
-                                                    dataSearch?.products &&
-                                                    dataSearch.products.length > 0 && (
+                                                {searchResults.length > 0 && (
                                                         <div className="mt-5">
                                                             <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
                                                                 PRODUCTS
                                                             </h2>
                                                             <div className="lg:max-h-[240px] max-h-[300px] overflow-y-auto">
-                                                                {dataSearch.products.map(
-                                                                    (item, index) => (
-                                                                        <div className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50">
+                                                                {searchResults.map(
+                                                                    (item) => (
+                                                                        <Link 
+                                                                            to={`/products/${item.id}`}
+                                                                            key={item.id}
+                                                                            className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50"
+                                                                            onClick={onClose}
+                                                                        >
                                                                             <div>
                                                                                 <Image
                                                                                     src={item.image}
@@ -205,29 +239,26 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                                                 <p className="text-sm font-medium">
                                                                                     {item.name}
                                                                                 </p>
-                                                                                {item.priceDiscount ? (
+                                                                                {(item.foodSizes[0].discount && item.foodSizes[0].discount !== 0.0) ? (
                                                                                     <div className="flex justify-start gap-2 items-end">
                                                                                         <p className="line-through text-xs text-gray-600">
-                                                                                            $
-                                                                                            {item.price.toLocaleString()}
+                                                                                            {item.foodSizes[0].price.toLocaleString()} VND
                                                                                         </p>
                                                                                         <p
                                                                                             className={`font-medium text-sm text-[#f97316]`}
                                                                                         >
-                                                                                            $
-                                                                                            {item.priceDiscount.toLocaleString()}
+                                                                                            {(item.foodSizes[0].price - item.foodSizes[0].price * item.foodSizes[0].discount).toLocaleString()} VND
                                                                                         </p>
                                                                                     </div>
                                                                                 ) : (
                                                                                     <p
                                                                                         className={`font-medium text-sm text-[#f97316]`}
                                                                                     >
-                                                                                        $
-                                                                                        {item.price.toLocaleString()}
+                                                                                        {item.foodSizes[0].price.toLocaleString()} VND
                                                                                     </p>
                                                                                 )}
                                                                             </div>
-                                                                        </div>
+                                                                        </Link>
                                                                     )
                                                                 )}
                                                             </div>
@@ -237,9 +268,9 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                         </div>
                                     )}
 
-                                    {notFound && (
+                                    {searchQuery && searchResults.length === 0 && !loading && (
                                         <div className="text-center text-gray-500 mt-4 italic">
-                                            No matching information found.
+                                            No matching foods found.
                                         </div>
                                     )}
                                 </>

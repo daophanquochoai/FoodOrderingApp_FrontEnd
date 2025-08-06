@@ -19,7 +19,8 @@ import {
     voucher,
     documentManager,
     voucher_admin,
-    homepage
+    homepage,
+    search,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -43,6 +44,7 @@ const rootReducers = combineReducers({
     [history_import.name]: history_import.default.reducer,
     [homepage.name]: homepage.default.reducer,
     [order_profile.name]: order_profile.default.reducer,
+    [search.name]: search.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

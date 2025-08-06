@@ -36,6 +36,7 @@
     "dayjs": "^1.11.13",
     "html2pdf.js": "^0.10.3",
     "js-cookie": "^3.0.5",
+    "lodash.debounce": "^4.0.8",
     "nookies": "^2.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
