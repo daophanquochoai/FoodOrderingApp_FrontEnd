@@ -3,6 +3,7 @@ import { Button, Dropdown, Space } from 'antd';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { actionLogout } from '@/store/action/client/account/account.action';
+import { FaRegUser } from 'react-icons/fa';
 
 const AccountDropdown = () => {
     // dispatch
@@ -47,15 +48,8 @@ const AccountDropdown = () => {
         <Dropdown menu={{ items }} trigger={['click']}>
             <a onClick={(e) => e.preventDefault()}>
                 <Space>
-                    <div
-                        className="rounded-full overflow-hidden"
-                        style={{ width: '35px', height: '35px' }}
-                    >
-                        <img
-                            src="https://banobagi.vn/wp-content/uploads/2025/04/anh-avatar-dep-cho-con-trai-1.jpeg"
-                            alt=""
-                            className="w-full h-full object-cover"
-                        />
+                    <div className="mr-3 p-2 w-[40px] h-[40px] rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center">
+                        <FaRegUser className="size-5" />
                     </div>
                 </Space>
             </a>

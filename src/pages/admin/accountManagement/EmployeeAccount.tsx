@@ -27,22 +27,23 @@ import {
     changePageEmployee,
     resetPasswordEmployee,
     fetchFirst,
+    filterEmployee,
 } from '@/store/action/admin/employee/employee.action';
 import { selectEmployee, selectFilter } from '@/store/selector/admin/employee/employee.selector';
 import { Employee } from '@/type/store/admin/employee/employee.style';
 import { getCookies } from '@/utils/cookies/cookies';
+import { initFilterEmployee } from '@/defaultValue/admin/employee/employee';
 
 const EmployeeAccount = () => {
     //hook
     const dispatch = useDispatch();
 
     //state
-    const [filters, setFilters] = useState({});
+    const [filters, setFilters] = useState(initFilterEmployee);
 
     // selector
     const employeeList = useSelector(selectEmployee);
     const filter = useSelector(selectFilter);
-
     //useEffect
     useEffect(() => {
         dispatch(fetchFirst());
@@ -106,6 +107,63 @@ const EmployeeAccount = () => {
             })
         );
     };
+
+    // Filter handling
+    const handleFilterChange = (key, value) => {
+        const newFilters = { ...filters, [key]: value };
+        setFilters(newFilters);
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        dispatch(filterEmployee(filterValues));
+    };
+
+    const handleResetFilter = () => {
+        setFilters(initFilterEmployee);
+        dispatch(filterEmployee(initFilterEmployee));
+    };
+
+    // Filter fields configuration
+    const employeeFilterFields = [
+        { key: 'search', type: 'text', placeholder: 'Search name, email, CCCD...' },
+        {
+            key: 'email',
+            type: 'multiSelect',
+            placeholder: 'Select email',
+            options: [
+                { label: 'abc@gmail.com', value: 'abc@gmail.com' },
+                { label: 'xyz@gmail.com', value: 'xyz@gmail.com' },
+            ],
+        },
+        {
+            key: 'phoneNumber',
+            type: 'multiSelect',
+            placeholder: 'Select phone number',
+            options: [
+                { label: '0989123456', value: '0989123456' },
+                { label: '0123456789', value: '0123456789' },
+            ],
+        },
+        {
+            key: 'cccd',
+            type: 'multiSelect',
+            placeholder: 'Select CCCD',
+            options: [
+                { label: '012345678901', value: '012345678901' },
+                { label: '012345678902', value: '012345678902' },
+            ],
+        },
+        {
+            key: 'isActiveEmploy',
+            type: 'multiSelect',
+            placeholder: 'Select status',
+            options: [
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
+            ],
+        },
+        // { key: 'create_at', type: 'dateRange', placeholder: 'Created Date' },
+    ];
 
     // data column
     const columns: TableColumnsType<Employee> = [
@@ -259,56 +317,6 @@ const EmployeeAccount = () => {
         },
     ];
 
-    //------------------ filter ---------------------
-    const employeeAccountFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Search' },
-        {
-            key: 'email',
-            type: 'select',
-            placeholder: 'Email',
-            options: [
-                { label: 'abc@gmail.com', value: 'abc@gmail.com' },
-                { label: 'xyz@gmail.com', value: 'xyz@gmail.com' },
-            ],
-        },
-        {
-            key: 'phoneNumber', // khong thay phoneNumber trong ERD ?
-            type: 'select',
-            placeholder: 'Phone number',
-            options: [
-                { label: '0989123456', value: '0989123456' },
-                { label: '0123456789', value: '0123456789' },
-            ],
-        },
-        {
-            key: 'cccd', // khong thay phoneNumber trong ERD ?
-            type: 'select',
-            placeholder: 'Citizen ID Card',
-            options: [
-                { label: '012345678901', value: '012345678901' },
-                { label: '012345678902', value: '012345678902' },
-            ],
-        },
-        {
-            key: 'isActive',
-            type: 'select',
-            placeholder: 'Status',
-            options: [
-                { label: 'Active', value: true },
-                { label: 'Inactive', value: false },
-            ],
-        },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Created Date' },
-    ];
-
-    const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
-    };
-
-    const handleResetFilter = () => {
-        setFilters({});
-    };
-
     const handleChangePage = (e) => {
         console.log(e);
         dispatch(changePageEmployee(e - 1));
@@ -318,14 +326,15 @@ const EmployeeAccount = () => {
         <Spin spinning={employeeList.loading}>
             <h1 className="text-2xl font-bold mb-3">Quản lý tài khoản nhân viên</h1>
 
-            {/* filter */}
+            {/* Filter */}
             <div className="mb-3">
                 <FilterBar
-                    fields={employeeAccountFilterFields}
+                    fields={employeeFilterFields}
                     values={filters}
                     onChange={handleFilterChange}
                     onReset={handleResetFilter}
-                    type={ModalType.SPOIL_INGREDIENT}
+                    onApply={handleApplyFilter}
+                    type={ModalType.EMP_ACCCOUNT_MANAGEMENT}
                 />
             </div>
 

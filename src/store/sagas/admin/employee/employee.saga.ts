@@ -7,6 +7,7 @@ import {
     fetchFirst,
     updateEmployee,
     updatePasswordEmployee,
+    filterEmployee,
 } from '@/store/action/admin/employee/employee.action';
 import { common, employee } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/admin/employee/employee.selector';
@@ -142,6 +143,19 @@ function* handleUpdatePasswordEmployee({ payload }) {
     }
 }
 
+function* handleFilterEmployee({ payload }) {
+    yield put(employee.actions.setLoadingPage(true));
+    try {
+        yield put(employee.actions.setFilter(payload));
+        yield put(employee.actions.setPage(0)); // Reset to first page when filtering
+        yield handleFetchEmployee();
+    } catch (e) {
+        console.error(e);
+    } finally {
+        yield put(employee.actions.setLoadingPage(false));
+    }
+}
+
 function* watchFecthFirst() {
     yield takeEvery(fetchFirst, handleFetchFirst);
 }
@@ -170,6 +184,10 @@ function* watchUpdatePasswordEmployee() {
     yield takeEvery(updatePasswordEmployee, handleUpdatePasswordEmployee);
 }
 
+function* watchFilterEmployee() {
+    yield takeEvery(filterEmployee, handleFilterEmployee);
+}
+
 export function* watchEmployee() {
     yield all([
         fork(watchFecthFirst),
@@ -179,5 +197,6 @@ export function* watchEmployee() {
         fork(watchDeleteEmployee),
         fork(watchFetchEmployeeById),
         fork(watchUpdatePasswordEmployee),
+        fork(watchFilterEmployee),
     ]);
 }
