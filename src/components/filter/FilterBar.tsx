@@ -4,12 +4,17 @@ import FilterField from './FilterField';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CiFilter } from 'react-icons/ci';
 
-const FilterBar = ({ fields = [], values = {}, onChange, onReset, type }) => {
+const FilterBar = ({ fields = [], values = {}, onChange, onReset, type, onApply }) => {
     const [openFilter, setOpenFilter] = useState(false);
 
     const handleFilter = () => {
-        console.log(type);
-        console.log(values);
+        if (onApply) {
+            onApply(values);
+        } else {
+            console.log(type);
+            console.log(values);
+        }
+        setOpenFilter(false);
     };
 
     return (

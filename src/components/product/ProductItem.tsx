@@ -2,20 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { Rate } from 'antd';
 import { Food } from '@/type/store/client/collection/food.style';
 import chicken from '../../assets/chicken.jpg';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { common, food } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
 import { GoPlus } from 'react-icons/go';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { selectAuth } from '@/store/selector/auth/auth.selector';
 
 const ProductItem: React.FC<Food> = (foodProps) => {
     //hook
     const dispatch = useDispatch();
+
+    // selector
+    const auth = useSelector(selectAuth);
+
+    // router
+    const location = useLocation();
+    const navigate = useNavigate();
 
     // state
     const [foodSize, setFoodSize] = useState([]);
 
     // event handling
     const handleOpenModal = () => {
+        if (!auth?.user) {
+            localStorage.setItem('redirectAfterLogin', location.pathname + location.search);
+            localStorage.setItem('modalAfterLogin', JSON.stringify(foodProps));
+        }
+
         dispatch(food.actions.setFoodDetail(foodProps));
         dispatch(
             common.actions.showModal({

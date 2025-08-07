@@ -27,6 +27,20 @@ const FilterField = ({ field, value, onChange }) => {
                 />
             );
 
+        case 'multiSelect':
+            return (
+                <Select
+                    mode="multiple"
+                    showSearch
+                    placeholder={field.placeholder}
+                    value={value}
+                    onChange={(value) => onChange(field.key, value)}
+                    options={field.options}
+                    allowClear
+                    style={{ minWidth: '120px' }}
+                />
+            );
+
         case 'dateRange':
             return <RangePicker value={value} onChange={(dates) => onChange(field.key, dates)} />;
 

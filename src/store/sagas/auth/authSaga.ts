@@ -29,7 +29,15 @@ function* handleLogin({ payload }) {
         if (user?.authorities[0]?.authority == 'ROLE_USER') {
             console.log(user?.authorities[0]);
 
-            payload.action('/');
+            const redirectPath = localStorage.getItem('redirectAfterLogin');
+
+            if (redirectPath) {
+                localStorage.removeItem('redirectAfterLogin');
+                payload.action(redirectPath);
+            } else {
+                payload.action('/');
+            }
+           
         } else {
             payload.action('/admin');
         }

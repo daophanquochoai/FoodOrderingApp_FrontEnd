@@ -8,18 +8,26 @@ import { common } from '@/store/reducer';
 import { addToCart } from '@/store/action/client/cart/cart.action';
 import { Spin } from 'antd';
 import { IoCartOutline } from "react-icons/io5";
+import { selectAuth } from '@/store/selector/auth/auth.selector';
+import { useNavigate } from 'react-router-dom';
+import { ModalType } from '@/type/store/common';
 
 const ProductInfo = () => {
     //selector
     const foodDetail = useSelector(selectFoodDetail);
+    const auth = useSelector(selectAuth);
+
+    // dispatch
+    const dispatch = useDispatch();
+
     //state
     const [selectedSize, setSelectedSize] = useState<FoodSize>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [loading, setLoading] = useState(false);
     const [foodSize, setFoodSize] = useState([]);
 
-    //hook
-    const dispatch = useDispatch();
+    // router
+    const navigate = useNavigate();
 
     //useEffect
     useEffect(() => {
@@ -34,6 +42,12 @@ const ProductInfo = () => {
 
     //event handling
     const handleAddToCart = () => {
+        if(!auth?.user){
+            dispatch(common.actions.setHiddenModal(ModalType.DETAIL_PRODUCT));
+            navigate('/login');
+            return;
+        }
+
         setLoading(true);
         if (selectedSize == null || selectedSize?.id == null) {
             dispatch(common.actions.setErrorMessage('Please choose item'));
