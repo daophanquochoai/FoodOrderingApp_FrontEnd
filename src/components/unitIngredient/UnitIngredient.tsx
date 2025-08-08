@@ -4,8 +4,8 @@ export const unitData = [
     { id: 1, name: 'mg', type: 'weight', base: 'kg', ratio: 0.000001 },
     { id: 2, name: 'g', type: 'weight', base: 'kg', ratio: 0.001 },
     { id: 3, name: 'kg', type: 'weight', base: 'kg', ratio: 1 },
-    { id: 3, name: 'Quintal', type: 'weight', base: 'kg', ratio: 100 }, // Quintal (tạ)
-    { id: 3, name: 'Metric Ton', type: 'weight', base: 'kg', ratio: 1000 }, // Metric Ton (tấn)
+    { id: 3, name: 'quintal', type: 'weight', base: 'kg', ratio: 100 }, // Quintal (tạ)
+    { id: 3, name: 'metric Ton', type: 'weight', base: 'kg', ratio: 1000 }, // Metric Ton (tấn)
     { id: 4, name: 'oz', type: 'weight', base: 'kg', ratio: 0.0283495 }, // ounce (Mỹ)
     { id: 5, name: 'lb', type: 'weight', base: 'kg', ratio: 0.453592 }, // pound
 

@@ -1,7 +1,7 @@
 import FilterBar from '@/components/filter/FilterBar';
 import { fetchFirst } from '@/store/action/admin/order/order.action';
 import { common, order } from '@/store/reducer';
-import { selectOrders } from '@/store/selector/admin/order/order.selector';
+import { selectFilterOrder, selectOrders } from '@/store/selector/admin/order/order.selector';
 import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { initFilterOrder } from '@/defaultValue/admin/order/order';
 
 type DataIndex = keyof any;
 
@@ -33,13 +34,12 @@ const OrderManagement = () => {
 
     //selector
     const orderList = useSelector(selectOrders);
+    const filter = useSelector(selectFilterOrder);
 
     // useEffect
     useEffect(() => {
         dispatch(fetchFirst());
     }, []);
-
-    const [filters, setFilters] = useState({});
 
     const columns: TableColumnsType<Order> = [
         {
@@ -49,12 +49,12 @@ const OrderManagement = () => {
             sorter: (a, b) => a.id - b.id,
         },
         {
-            title: 'Khách hàng',
+            title: 'Customer',
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Ngày đặt',
+            title: 'Order time',
             dataIndex: 'createTime',
             key: 'createTime',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -86,7 +86,7 @@ const OrderManagement = () => {
             render: (createdAt) => (createdAt ? dayjs(createdAt).format('DD/MM/YYYY') : ''),
         },
         {
-            title: 'Tổng tiền',
+            title: 'Total price',
             dataIndex: 'totalPrice',
             key: 'totalPrice',
             sorter: (a, b) => a?.totalPrice - b?.totalPrice,
@@ -212,43 +212,58 @@ const OrderManagement = () => {
     };
 
     const orderFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Input search' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        { key: 'search', type: 'text', placeholder: 'Search' },
+        { key: 'startDate', type: 'date', placeholder: 'Order time' },
         {
-            key: 'status',
-            type: 'select',
+            key: 'statusOrders',
+            type: 'multiSelect',
             placeholder: 'Status',
             options: [
-                { label: 'pending', value: 'pending' },
-                { label: 'processing', value: 'processing' },
-                { label: 'completed', value: 'completed' },
-                { label: 'shipping', value: 'shipping' },
-                { label: 'received', value: 'received' },
-                { label: 'cancel', value: 'cancel' },
+                { label: 'pending', value: 'PENDING' },
+                { label: 'processing', value: 'PROCESSING' },
+                { label: 'completed', value: 'COMPLETE' },
+                { label: 'shipping', value: 'SHIPPING' },
+                { label: 'received', value: 'RECEIVE' },
+                { label: 'cancel', value: 'CANCEL' },
             ],
         },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        // console.log(key, value);
+        dispatch(
+            order.actions.setFilterOrder({
+                ...filter,
+                [key]: value
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        // console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(
+            order.actions.setFilterOrder(initFilterOrder)
+        );
+        dispatch(fetchFirst());
     };
 
     return (
         <Spin spinning={orderList.loading}>
             <div>
-                <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
+                <h1 className="text-2xl font-bold mb-3">Order Management</h1>
 
                 {/* filter */}
                 <div className="mb-3">
                     <FilterBar
                         fields={orderFilterFields}
-                        values={filters}
+                        values={filter}
                         onChange={handleFilterChange}
                         onReset={handleResetFilter}
+                        onApply={handleApplyFilter}
                         type={ModalType.ORDER_MANAGEMENT}
                     />
                 </div>

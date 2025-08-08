@@ -13,7 +13,7 @@ const initSource: Source = {
     createdAt: null,
 };
 
-const initFilter: FilterSource = filter;
+export const initFilter: FilterSource = filter;
 
 export const initSourceSlice: SourceSlice = {
     sources: {

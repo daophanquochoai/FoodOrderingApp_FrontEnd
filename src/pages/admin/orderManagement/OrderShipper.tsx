@@ -1,11 +1,14 @@
 import FilterBar from '@/components/filter/FilterBar';
-import { common } from '@/store/reducer';
+import { initFilterOrder } from '@/defaultValue/admin/order/order';
+import { fetchFirst } from '@/store/action/admin/order/order.action';
+import { common, order } from '@/store/reducer';
+import { selectFilterOrder } from '@/store/selector/admin/order/order.selector';
 import { ModalType } from '@/type/store/common';
 import { Badge, Col, Row, Tabs } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 let orders = [
     {
@@ -271,19 +274,46 @@ const ORDER_STATUSES = ['COMPLETE', 'SHIPPING', 'RECEIVE'] as const;
 const OrderShipper = () => {
     const dispatch = useDispatch();
 
-    const [filters, setFilters] = useState({});
+    const filter = useSelector(selectFilterOrder)
 
     const orderFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Input search' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        { key: 'search', type: 'text', placeholder: 'Search code' },
+        { key: 'startDate', type: 'date', placeholder: 'Order time' },
+        {
+            key: 'statusOrders',
+            type: 'multiSelect',
+            placeholder: 'Status',
+            options: [
+                { label: 'pending', value: 'PENDING' },
+                { label: 'processing', value: 'PROCESSING' },
+                { label: 'completed', value: 'COMPLETE' },
+                { label: 'shipping', value: 'SHIPPING' },
+                { label: 'received', value: 'RECEIVE' },
+                { label: 'cancel', value: 'CANCEL' },
+            ],
+        },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        // console.log(key, value);
+        dispatch(
+            order.actions.setFilterOrder({
+                ...filter,
+                [key]: value
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        // console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(
+            order.actions.setFilterOrder(initFilterOrder)
+        );
+        dispatch(fetchFirst());
     };
 
     const handleOpenViewOrder = (data) => {
@@ -304,12 +334,14 @@ const OrderShipper = () => {
                 {ORDER_STATUSES.map((status, index) => (
                     <TabPane tab={<p className="capitalize">{status.toLowerCase()}</p>} key={index}>
                         {' '}
+                        {/* filter */}
                         <div className="mb-3">
                             <FilterBar
                                 fields={orderFilterFields}
-                                values={filters}
+                                values={filter}
                                 onChange={handleFilterChange}
                                 onReset={handleResetFilter}
+                                onApply={handleApplyFilter}
                                 type={ModalType.ORDER_MANAGEMENT}
                             />
                         </div>

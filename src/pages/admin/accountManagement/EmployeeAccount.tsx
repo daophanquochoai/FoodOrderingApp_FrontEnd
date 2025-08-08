@@ -27,7 +27,6 @@ import {
     changePageEmployee,
     resetPasswordEmployee,
     fetchFirst,
-    filterEmployee,
 } from '@/store/action/admin/employee/employee.action';
 import { selectEmployee, selectFilter } from '@/store/selector/admin/employee/employee.selector';
 import { Employee } from '@/type/store/admin/employee/employee.style';
@@ -37,9 +36,6 @@ import { initFilterEmployee } from '@/defaultValue/admin/employee/employee';
 const EmployeeAccount = () => {
     //hook
     const dispatch = useDispatch();
-
-    //state
-    const [filters, setFilters] = useState(initFilterEmployee);
 
     // selector
     const employeeList = useSelector(selectEmployee);
@@ -110,26 +106,33 @@ const EmployeeAccount = () => {
 
     // Filter handling
     const handleFilterChange = (key, value) => {
-        const newFilters = { ...filters, [key]: value };
-        setFilters(newFilters);
+        dispatch(
+            employee.actions.setFilter({
+                ...filter,
+                [key]: value
+            })
+        );
     };
 
     const handleApplyFilter = (filterValues) => {
-        dispatch(filterEmployee(filterValues));
+        console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters(initFilterEmployee);
-        dispatch(filterEmployee(initFilterEmployee));
+        dispatch(
+            employee.actions.setFilter(initFilterEmployee)
+        );
+        dispatch(fetchFirst());
     };
 
     // Filter fields configuration
     const employeeFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Search name, email, CCCD...' },
+        { key: 'search', type: 'text', placeholder: 'Search' },
         {
             key: 'email',
             type: 'multiSelect',
-            placeholder: 'Select email',
+            placeholder: 'Email',
             options: [
                 { label: 'abc@gmail.com', value: 'abc@gmail.com' },
                 { label: 'xyz@gmail.com', value: 'xyz@gmail.com' },
@@ -138,7 +141,7 @@ const EmployeeAccount = () => {
         {
             key: 'phoneNumber',
             type: 'multiSelect',
-            placeholder: 'Select phone number',
+            placeholder: 'Phone',
             options: [
                 { label: '0989123456', value: '0989123456' },
                 { label: '0123456789', value: '0123456789' },
@@ -147,7 +150,7 @@ const EmployeeAccount = () => {
         {
             key: 'cccd',
             type: 'multiSelect',
-            placeholder: 'Select CCCD',
+            placeholder: 'Citizen ID',
             options: [
                 { label: '012345678901', value: '012345678901' },
                 { label: '012345678902', value: '012345678902' },
@@ -156,7 +159,7 @@ const EmployeeAccount = () => {
         {
             key: 'isActiveEmploy',
             type: 'multiSelect',
-            placeholder: 'Select status',
+            placeholder: 'Status',
             options: [
                 { label: 'Active', value: true },
                 { label: 'Inactive', value: false },
@@ -324,13 +327,13 @@ const EmployeeAccount = () => {
 
     return (
         <Spin spinning={employeeList.loading}>
-            <h1 className="text-2xl font-bold mb-3">Quản lý tài khoản nhân viên</h1>
+            <h1 className="text-2xl font-bold mb-3">Employee account management</h1>
 
             {/* Filter */}
             <div className="mb-3">
                 <FilterBar
                     fields={employeeFilterFields}
-                    values={filters}
+                    values={filter}
                     onChange={handleFilterChange}
                     onReset={handleResetFilter}
                     onApply={handleApplyFilter}

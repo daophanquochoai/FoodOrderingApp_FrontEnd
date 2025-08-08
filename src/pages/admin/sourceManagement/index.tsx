@@ -18,8 +18,10 @@ import { common, sources } from '@/store/reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { fetchFirst } from '@/store/action/admin/source/source.action';
-import { selectSource } from '@/store/selector/admin/source/source.selector';
+import { selectSource, selectFilter } from '@/store/selector/admin/source/source.selector';
 import { Source } from '@/type/store/admin/source/source.style';
+import { initFilter } from '@/defaultValue/admin/source/source';
+import FilterBar from '@/components/filter/FilterBar';
 
 type DataIndex = keyof any;
 
@@ -34,6 +36,7 @@ const SourceManagement: React.FC = () => {
 
     // selector
     const sourcesList = useSelector(selectSource);
+    const filter = useSelector(selectFilter)
 
     // useEffect
     useEffect(() => {
@@ -253,9 +256,48 @@ const SourceManagement: React.FC = () => {
         );
     };
 
+    const sourceFilterFields = [
+        { key: 'search', type: 'text', placeholder: 'Search' },
+    ];
+
+    const handleFilterChange = (key, value) => {
+        // console.log(key, value);
+        dispatch(
+            sources.actions.setFilter({
+                ...filter,
+                [key]: value
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        console.log(filterValues);
+        dispatch(fetchFirst());
+    };
+
+    const handleResetFilter = () => {
+        dispatch(
+            sources.actions.setFilter(initFilter)
+        );
+        dispatch(fetchFirst());
+    };
+
     return (
         <div>
             <h1 className="text-2xl font-bold">Source Management</h1>
+
+             {/* filter */}
+             <div className="my-3">
+                <FilterBar
+                    fields={sourceFilterFields}
+                    values={filter}
+                    onChange={handleFilterChange}
+                    onReset={handleResetFilter}
+                    onApply={handleApplyFilter}
+                    type={ModalType.SOURCE_MANAGEMENT}
+                />
+            </div>
+
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <Button type="primary" onClick={handleOpenAddIngredientModal}>
                     + New Source

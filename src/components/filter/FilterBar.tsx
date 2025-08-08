@@ -14,7 +14,6 @@ const FilterBar = ({ fields = [], values = {}, onChange, onReset, type, onApply 
             console.log(type);
             console.log(values);
         }
-        setOpenFilter(false);
     };
 
     return (

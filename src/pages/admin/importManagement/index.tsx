@@ -12,9 +12,10 @@ import {
 } from '@ant-design/icons';
 import FilterBar from '@/components/filter/FilterBar';
 import dayjs from 'dayjs';
-import { selectHistory } from '@/store/selector/admin/history/history.selector';
+import { selectFilter, selectHistory } from '@/store/selector/admin/history/history.selector';
 import { fetchFirst } from '@/store/action/admin/history/history.action';
 import { HistoryImportAdmin } from '@/type/store/admin/history/history.style';
+import { filterHistoryIngredient } from '@/defaultValue/admin/ingredients/ingredients';
 
 const ImportManagement = () => {
     // hook
@@ -22,6 +23,7 @@ const ImportManagement = () => {
 
     //selector
     const historyList = useSelector(selectHistory);
+    const filter = useSelector(selectFilter);
 
     //useEffect
     useEffect(() => {
@@ -180,25 +182,41 @@ const ImportManagement = () => {
     };
 
     const importFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Batch Code' },
+        { key: 'search', type: 'text', placeholder: 'Batch code' },
+        { key: 'startDate', type: 'date', placeholder: 'Import date' },
+        { key: 'minPrice', type: 'number', placeholder: 'Min price' },
+        { key: 'maxPrice', type: 'number', placeholder: 'Max price' },
         {
-            key: 'is_active',
+            key: 'isActive',
             type: 'select',
             placeholder: 'Status',
             options: [
                 { label: 'Active', value: true },
                 { label: 'Inactive', value: false },
             ],
-        },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Created Date' },
+        },  
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        // console.log(key, value);
+        dispatch(
+            history_import.actions.setFilter({
+                ...filter,
+                [key]: value
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        // console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(
+            history_import.actions.setFilter(filterHistoryIngredient)
+        );
+        dispatch(fetchFirst());
     };
 
     return (
@@ -210,6 +228,7 @@ const ImportManagement = () => {
                     fields={importFilterFields}
                     values={filters}
                     onChange={handleFilterChange}
+                    onApply={handleApplyFilter}
                     onReset={handleResetFilter}
                     type={ModalType.IMPORT_MANAGEMENT}
                 />
