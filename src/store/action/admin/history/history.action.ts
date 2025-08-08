@@ -13,3 +13,7 @@ export const deleteHistoryImport = createAction(historyAction.delete, (state) =>
 export const addHistoryImport = createAction(historyAction.create, (state) => ({
     payload: state,
 }));
+
+export const setHistoryFilter = createAction(`${name}/SET_FILTER`, (state) => ({
+    payload: state,
+}));

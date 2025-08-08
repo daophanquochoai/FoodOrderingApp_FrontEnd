@@ -34,6 +34,7 @@ const FormSelectAnt: React.FC<any> = ({
                         options={options}
                         onChange={(value) => field.onChange(value)}
                         value={field.value}
+                        disabled={field.disabled}
                     />
                     {error && <p className="text-xs text-red-500 mt-1">* {helperText}</p>}
                 </div>
