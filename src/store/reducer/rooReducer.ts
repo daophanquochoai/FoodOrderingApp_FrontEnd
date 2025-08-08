@@ -21,6 +21,7 @@ import {
     voucher_admin,
     homepage,
     search,
+    ingredientsError,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -45,6 +46,7 @@ const rootReducers = combineReducers({
     [homepage.name]: homepage.default.reducer,
     [order_profile.name]: order_profile.default.reducer,
     [search.name]: search.default.reducer,
+    [ingredientsError.name]: ingredientsError.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
