@@ -8,7 +8,6 @@ const CollectSlice = createSlice({
     initialState: initCollection,
     reducers: {
         setCategory(state, { payload }: PayloadAction<any>) {
-            console.log('ppppppppppppppppppppppppppppppppppppp', payload);
             state.category = payload;
         },
         setSelectedCategory(state, { payload }: PayloadAction<any>) {

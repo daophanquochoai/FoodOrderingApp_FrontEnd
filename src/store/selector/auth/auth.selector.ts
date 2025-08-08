@@ -8,7 +8,7 @@ export const selectState = (state: any) => state[name];
 /**
  * get auth
  */
-export const selectAuth = createSelector(selectState, (state: AuthState) => state);
+export const selectAuth = (state: any): AuthState => state[name];
 
 /**
  * get loading

@@ -30,8 +30,3 @@ export const fetchEmployeeByUsername = createAction(`${name}/FETCH_EMPLOYYEE_USE
 export const updatePasswordEmployee = createAction(`${name}/UPDATE_PASSWORD`, (state) => ({
     payload: state,
 }));
-
-// filter employee
-export const filterEmployee = createAction(`${name}/FILTER_EMPLOYEE`, (state) => ({
-    payload: state,
-}));

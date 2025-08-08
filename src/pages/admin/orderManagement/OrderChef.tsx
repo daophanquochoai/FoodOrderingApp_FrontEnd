@@ -1,10 +1,13 @@
 import FilterBar from '@/components/filter/FilterBar';
-import { common } from '@/store/reducer';
+import { initFilterOrder } from '@/defaultValue/admin/order/order';
+import { fetchFirst } from '@/store/action/admin/order/order.action';
+import { common, order } from '@/store/reducer';
+import { selectFilterOrder } from '@/store/selector/admin/order/order.selector';
 import { ModalType } from '@/type/store/common';
 import { Badge, Card, Col, Row } from 'antd';
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 let orders = [
     {
@@ -258,7 +261,7 @@ let orders = [
 const OrderChef = () => {
     const dispatch = useDispatch();
 
-    const [filters, setFilters] = useState({});
+    const filter = useSelector(selectFilterOrder)
 
     const handleOpenViewOrder = (data) => {
         dispatch(
@@ -271,26 +274,43 @@ const OrderChef = () => {
     };
 
     const orderFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Input search order code' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Order time' },
+        { key: 'search', type: 'text', placeholder: 'Search code' },
+        { key: 'startDate', type: 'date', placeholder: 'Order time' },
         {
-            key: 'status',
-            type: 'select',
+            key: 'statusOrders',
+            type: 'multiSelect',
             placeholder: 'Status',
             options: [
-                { label: 'pending', value: 'pending' },
-                { label: 'processing', value: 'processing' },
-                { label: 'completed', value: 'completed' },
+                { label: 'pending', value: 'PENDING' },
+                { label: 'processing', value: 'PROCESSING' },
+                { label: 'completed', value: 'COMPLETE' },
+                { label: 'shipping', value: 'SHIPPING' },
+                { label: 'received', value: 'RECEIVE' },
+                { label: 'cancel', value: 'CANCEL' },
             ],
         },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        // console.log(key, value);
+        dispatch(
+            order.actions.setFilterOrder({
+                ...filter,
+                [key]: value
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        // console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(
+            order.actions.setFilterOrder(initFilterOrder)
+        );
+        dispatch(fetchFirst());
     };
 
     return (
@@ -301,10 +321,11 @@ const OrderChef = () => {
             <div className="mb-3">
                 <FilterBar
                     fields={orderFilterFields}
-                    values={filters}
+                    values={filter}
                     onChange={handleFilterChange}
                     onReset={handleResetFilter}
-                    type={ModalType.ORDER_CHEF}
+                    onApply={handleApplyFilter}
+                    type={ModalType.ORDER_MANAGEMENT}
                 />
             </div>
 
