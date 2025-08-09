@@ -8,8 +8,10 @@ import {
     TableColumnsType,
     TableColumnType,
     Tag,
+    Spin,
+    Pagination,
 } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
@@ -17,8 +19,10 @@ import Highlighter from 'react-highlight-words';
 import { mapIngredients } from '../../../utils/mapIngredients';
 import { ModalType } from '@/type/store/common';
 import { common } from '@/store/reducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import * as actions from '@/store/action/admin/ingredients/ingredients_error.action';
+import * as selectors from '@/store/selector/admin/ingredients/ingredients_error.selector';
 import dayjs from 'dayjs';
 import FilterBar from '@/components/filter/FilterBar';
 
@@ -34,6 +38,15 @@ const SpoilIngredient = () => {
     const navigate = useNavigate();
 
     const [filters, setFilters] = useState({});
+
+    const loading = useSelector(selectors.selectLoadingPage);
+    const ingredientsErrorList = useSelector(selectors.selectIngredientsError);
+    const filter = useSelector(selectors.selectFilter);
+    const totalPage = useSelector(selectors.selectTotalPage); 
+
+    useEffect(() => {
+        dispatch(actions.fetchFirst());
+    }, []);
 
     const handleSearch = (
         selectedKeys: string[],
@@ -138,20 +151,25 @@ const SpoilIngredient = () => {
             sorter: (a, b) => a.name.localeCompare(b.name),
         },
         {
-            title: 'Import History ID',
-            dataIndex: 'importHistoryId',
-            key: 'name',
+            title: 'Import Batch Code',
+            dataIndex: ['batchCode', 'bathCode'],
+            key: 'bathCode',
             width: '200px',
-            ...getColumnSearchProps('name'),
-            sorter: (a, b) => a.name.localeCompare(b.name),
+            render:(_, record) => record.batchCode?.bathCode || 'N/A',
+            sorter: (a, b) => {
+                const aCode = a.batchCode?.bathCode || '';
+                const bCode = b.batchCode?.bathCode || '';
+                return aCode.localeCompare(bCode);
+            },    
         },
         {
             title: 'Unit',
             dataIndex: 'unit',
             key: 'unit',
             filters: [
-                { text: 'kg', value: 'kg' },
-                { text: 'liter', value: 'liter' },
+                { text: 'KG', value: 'KG' },
+                { text: 'G', value: 'G' },
+                { text: 'LITER', value: 'LITER' },
             ],
             onFilter: (value, record) => record.unit == value,
         },
@@ -178,38 +196,6 @@ const SpoilIngredient = () => {
                     {reason}
                 </p>
             ),
-        },
-        {
-            title: 'Created Time',
-            dataIndex: 'create_at',
-            key: 'create_at',
-            filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
-                <div style={{ padding: 8 }}>
-                    <DatePicker
-                        onChange={(date, dateString) =>
-                            setSelectedKeys(dateString ? [dateString as string] : [])
-                        }
-                        style={{ marginBottom: 8, display: 'block' }}
-                    />
-                    <Button
-                        type="primary"
-                        onClick={() => confirm()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Apply
-                    </Button>
-                    <Button
-                        onClick={() => clearFilters && clearFilters()}
-                        size="small"
-                        style={{ width: '100%' }}
-                    >
-                        Delete
-                    </Button>
-                </div>
-            ),
-            onFilter: (value, record) => record.create_at?.startsWith(value as string) || false,
-            render: (date) => dayjs(date).format('DD/MM/YYYY'),
         },
         {
             title: 'Actions',
@@ -243,24 +229,18 @@ const SpoilIngredient = () => {
         },
     ];
 
-    const dataSource = [
-        {
-            name: 'Dầu ăn',
-            importHistoryId: 1,
-            unit: 'liter',
-            quantity: 3,
-            reason: 'Dầu ăn bảo quản hỏng aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            create_at: '2024-09-03T10:00:00Z',
-            late_update_time: '',
-        },
-    ];
-
-    const handleOpenViewSpoilIngredientModal = (data) => {
+    const handleOpenViewSpoilIngredientModal = (spoil) => {
         dispatch(
             common.actions.showModal({
                 type: ModalType.SPOIL_INGREDIENT,
                 variant: 'view',
-                data: data,
+                data: {
+                    name: spoil.name,
+                    batchCode: spoil.batchCode?.bathCode,
+                    unit: spoil.unit,
+                    quantity: spoil.quantity,
+                    reason: spoil.reason,
+                },
             })
         );
     };
@@ -280,19 +260,37 @@ const SpoilIngredient = () => {
             common.actions.showModal({
                 type: ModalType.SPOIL_INGREDIENT,
                 variant: 'edit',
-                data: spoil,
+                data: {
+                    id: spoil.id,
+                    name: spoil.historyId,
+                    batchCode: spoil.batchCode?.id,
+                    unit: spoil.unit,
+                    quantity: spoil.quantity,
+                    reason: spoil.reason,
+                },
             })
         );
     };
 
-    const handleOpenDeleteSpoilIngredientModal = (ingredient) => {
+    const handleOpenDeleteSpoilIngredientModal = (spoil) => {
         dispatch(
             common.actions.showModal({
                 type: ModalType.SPOIL_INGREDIENT,
                 variant: 'delete',
-                data: ingredient,
+                data: {
+                    id: spoil.id,
+                    name: spoil.historyId,
+                    batchCode: spoil.batchCode?.id,
+                    unit: spoil.unit,
+                    quantity: spoil.quantity,
+                    reason: spoil.reason,
+                },
             })
         );
+    };
+
+    const handleChangePage = (page) => {
+        dispatch(actions.changePage(page - 1));
     };
 
     const spoilIngredientFilterFields = [
@@ -309,34 +307,44 @@ const SpoilIngredient = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-3">Spoil Ingredient Management</h1>
+        <Spin spinning={loading}>
+            <div>
+                <h1 className="text-2xl font-bold mb-3">Spoil Ingredient Management</h1>
 
-            {/* filter */}
-            <div className="mb-3">
-                <FilterBar
-                    fields={spoilIngredientFilterFields}
-                    values={filters}
-                    onChange={handleFilterChange}
-                    onReset={handleResetFilter}
-                    type={ModalType.SPOIL_INGREDIENT}
-                />
+                {/* filter */}
+                <div className="mb-3">
+                    <FilterBar
+                        fields={spoilIngredientFilterFields}
+                        values={filters}
+                        onChange={handleFilterChange}
+                        onReset={handleResetFilter}
+                        type={ModalType.SPOIL_INGREDIENT}
+                        onApply={() => {}}
+                    />
+                </div>
+
+                <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
+                    <Button type="primary" onClick={handleOpenAddSpoilIngredientModal}>
+                        + New Report
+                    </Button>
+
+                    <Table
+                        columns={columns}
+                        dataSource={ingredientsErrorList}
+                        rowKey="key"
+                        scroll={{ x: 'max-content' }}
+                        pagination={false}
+                    />
+
+                    <Pagination
+                        current={filter?.pageNo + 1 || 0}
+                        pageSize={10}
+                        total={totalPage}
+                        onChange={handleChangePage}
+                    />
+                </div>
             </div>
-
-            <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
-                <Button type="primary" onClick={handleOpenAddSpoilIngredientModal}>
-                    + New Report
-                </Button>
-
-                <Table
-                    columns={columns}
-                    dataSource={dataSource}
-                    rowKey="key"
-                    scroll={{ x: 'max-content' }}
-                    pagination={false}
-                />
-            </div>
-        </div>
+        </Spin>
     );
 };
 

@@ -26,6 +26,8 @@ import {
     selectTotalPage,
 } from '@/store/selector/admin/ingredients/ingredients.selector';
 import FilterBar from '@/components/filter/FilterBar';
+import { filterIngredients } from '@/defaultValue/admin/ingredients/ingredients';
+import { unitData } from '@/components/unitIngredient/UnitIngredient';
 
 type DataIndex = keyof any;
 
@@ -262,27 +264,32 @@ const IngredientManagement: React.FC = () => {
         dispatch(changePage(e - 1));
     };
 
+    const dataUnit = unitData;
+
     const ingredientFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Tên nguyên liệu' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày tạo' },
+        { key: 'search', type: 'text', placeholder: 'Search' },
         {
-            key: 'status',
-            type: 'select',
-            placeholder: 'Trạng thái',
-            options: [
-                { label: 'Còn hàng', value: 'in_stock' },
-                { label: 'Còn ít', value: 'low_stock' },
-                { label: 'Hết hàng', value: 'out_of_stock' },
-            ],
+            key: 'unit',
+            type: 'multiSelect',
+            placeholder: 'Unit',
+            options: dataUnit.map((unit) => ({label: unit.name, value: unit.name})) 
         },
+        { key: 'minThreshold', type: 'number', placeholder: 'Min threshold' },
+        { key: 'startDate', type: 'date', placeholder: 'Created at' },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        dispatch(ingredients.actions.setFilter({ ...filter, [key]: value }));
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        console.log(filterValues);
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(ingredients.actions.setFilter(filterIngredients));
+        dispatch(fetchFirst());
     };
 
     return (
@@ -294,9 +301,10 @@ const IngredientManagement: React.FC = () => {
                 <div className="mb-3">
                     <FilterBar
                         fields={ingredientFilterFields}
-                        values={filters}
+                        values={filter}
                         onChange={handleFilterChange}
                         onReset={handleResetFilter}
+                        onApply={handleApplyFilter}
                         type={ModalType.INGREDIENT}
                     />
                 </div>

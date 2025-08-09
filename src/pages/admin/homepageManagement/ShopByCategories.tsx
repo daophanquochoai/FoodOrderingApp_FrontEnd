@@ -7,15 +7,15 @@ import { FilterDropdownProps } from 'antd/es/table/interface';
 import { SearchOutlined, ArrowRightOutlined, DeleteOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 
-import { 
-  fetchCategoryHomepage, 
-  addCategoryToHomepage,
-  removeCategoryFromHomepage,
+import {
+    fetchCategoryHomepage,
+    addCategoryToHomepage,
+    removeCategoryFromHomepage,
 } from '@/store/action/admin/homepage/homepage.action';
-import { 
-  selectCategories,
-  selectHomepageCategories,
-  selectCategoriesLoading 
+import {
+    selectCategories,
+    selectHomepageCategories,
+    selectCategoriesLoading,
 } from '@/store/selector/admin/homepage/homepage.selector';
 
 type DataIndex = keyof any;
@@ -90,11 +90,11 @@ const ShopByCategories = () => {
     const handleAddCategoryToHomepage = (record: any) => {
         dispatch(addCategoryToHomepage(record));
         // Optionally, you can show a success message or update the UI
-    }
+    };
     const handleDeleteCategory = (record: any) => {
         dispatch(removeCategoryFromHomepage(record));
         // Optionally, you can show a success message or update the UI
-    }
+    };
 
     const columns: TableColumnsType = [
         {
@@ -138,10 +138,10 @@ const ShopByCategories = () => {
 
     const homepageColumns: TableColumnsType = [
         {
-        title: 'Name',
-        dataIndex: ['category', 'name'],
-        key: 'name',
-        render: (_, record) => record.category?.name || 'N/A',
+            title: 'Name',
+            dataIndex: ['category', 'name'],
+            key: 'name',
+            render: (_, record) => record.category?.name || 'N/A',
         },
         {
             title: 'Image',

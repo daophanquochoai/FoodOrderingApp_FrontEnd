@@ -9,15 +9,26 @@ import { IngredientShema } from '../yup/ingredient';
 import { Button, Col, Descriptions, DescriptionsProps, Row } from 'antd';
 import FormFloatingSelect from '../form/FormFloatingSelect';
 import { ModalState, ModalType } from '@/type/store/common';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
 import dayjs from 'dayjs';
 import { SpoilIngredientSchema } from '@/validation/spoilIngredient.validation';
 import FormSelectAnt from '../form/FormSelectAnt';
 import { FormInput } from '../form';
+import { fetchFirst as fetchHistoryBatches, setHistoryFilter } from '@/store/action/admin/history/history.action';
+import { fetchHistoryIngredients, addIngredientsError, updateIngredientsError } from '@/store/action/admin/ingredients/ingredients_error.action';
+import { selectHistory } from '@/store/selector/admin/history/history.selector';
+import { selectHistoryIngredients} from '@/store/selector/admin/ingredients/ingredients_error.selector';
 
 const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
     const dispatch = useDispatch();
+
+    const historyBatches = useSelector(selectHistory);
+    const historyIngredients = useSelector(selectHistoryIngredients);
+
+    const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null);
+    const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
+    const [maxQuantity, setMaxQuantity] = useState<number>(0);
 
     const getModalTitle = (): string => {
         switch (variant) {
@@ -38,100 +49,188 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
         control,
         handleSubmit,
         reset,
+        watch,
+        setValue,
         formState: { errors, isSubmitting },
     } = useForm({
         defaultValues: {
-            name: [],
-            importHistoryId: [],
+            name: undefined,
+            batchCode: undefined,
+            unit: "",   
             quantity: undefined,
             reason: ""
         },
         resolver: yupResolver(SpoilIngredientSchema),
+        context: { maxQuantity }
     });
 
-    const onSubmit = (data: any) => {
-        console.log('New values:', {
-            ...data,
-        });
-    };
+    const watchBatchCode = watch('batchCode');
+    const watchName = watch('name');
 
-    const optionsIngredient = [
-        { value: 1, label: 'Gạo' },
-        { value: 2, label: 'Dầu ăn' },
-    ];
+    useEffect(() => {
+        dispatch(setHistoryFilter({
+            pageNo: 1,
+            pageSize: 100,
+        }));
+        dispatch(fetchHistoryBatches());
+    }, [dispatch]);
 
-    const optionsHistoryIngredientIds = [
-        { value: 1, label: 1 },
-        { value: 2, label: 2 },
-    ];
+    useEffect(() => {
+        if (watchBatchCode) {
+            console.log('Batch code changed:', watchBatchCode);
+            const batchId = parseInt(String(watchBatchCode), 10);
+            setSelectedBatchId(batchId);
+            dispatch(fetchHistoryIngredients({ id: batchId }));
+            setValue('name', undefined);
+            setSelectedIngredientId(null);
+            setMaxQuantity(0);
+        } else {
+            setSelectedBatchId(null); // Thêm dòng này để đảm bảo reset khi watchBatchCode bị xóa
+        }
+    }, [watchBatchCode, setValue, dispatch]);
+
+    useEffect(() => {
+        if (watchName && Array.isArray(historyIngredients)) {
+            const ingredientId = parseInt(String(watchName));
+            setSelectedIngredientId(ingredientId);
+
+            const selectedHistory = historyIngredients.find(
+                (history) => history.id === ingredientId
+            );
+            
+            if (selectedHistory) {
+                setMaxQuantity(selectedHistory.quantity);
+                setValue('unit', selectedHistory.unit);
+                setValue('quantity', undefined);
+            }
+        }
+    }, [watchName, historyIngredients, setValue]);
 
     useEffect(() => {
         if (variant == 'edit' && data) {
             reset({
                 name: data.name,   /// id number not string....
-                importHistoryId: data.importHistoryId,
+                batchCode: data.batchCode,
+                unit: data.unit,
                 quantity: data.quantity,
                 reason: data.reason,
             });
         } else {
             reset({
-                name: "",
-                importHistoryId: "",
-                quantity: "",
-                reason: "",
+                name: undefined,
+                batchCode: undefined,
+                unit: "",   
+                quantity: undefined,
+                reason: ""
             });
         }
-    }, [data, reset]);
+    }, [data, reset, variant]);
+
+    const onSubmit = async (formData: any) => {
+        try {
+            console.log('Form data submitted:', formData);
+
+            const payload = {
+                unit: formData.unit,
+                quantity: Number(formData.quantity),
+                reason: formData.reason,
+                historyIngredients: {
+                    id: selectedIngredientId
+                }
+            };
+
+            switch (variant) {
+                case 'add':
+                    await dispatch(addIngredientsError({
+                        isActive: true,
+                        ...payload
+                    }));
+                    break;
+
+                case 'edit':
+                    if (!data?.id) {
+                        console.log('Cannot update: Missing ID');
+                        return;
+                    }
+                    await dispatch(updateIngredientsError({
+                        data: {
+                            isActive: true,
+                            ...payload
+                        },
+                        id: data.id,
+                    }));
+                    dispatch(common.actions.setSuccessMessage('Cập nhật nguyên liệu lỗi thành công'));
+                    break;
+                default:
+                    console.log('Unknown variant:', variant);
+                    return;
+            }
+            onClose();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+        }
+    };
 
     const onClose = () => {
-        dispatch(common.actions.setHiddenModal(ModalType.INGREDIENT));
+        dispatch(common.actions.setHiddenModal(ModalType.SPOIL_INGREDIENT));
     };
 
-    const handleDeleted = () => {
-        console.log('--------id to delete---------', data.id);
+    const handleDeleted = async () => {
+        try {
+            if (!data?.id) {
+                console.log('Cannot delete: Missing ID');
+                return;
+            }
+            
+            console.log('Deleting spoil ingredient with ID:', data.id);
+
+            await dispatch(updateIngredientsError({
+                data: {
+                    unit: data.unit,
+                    quantity: Number(data.quantity),
+                    reason: data.reason,
+                    historyIngredients: {
+                        id: data.name
+                    },
+                    isActive: false,
+                },
+                id: data.id,
+            }));
+
+            dispatch(common.actions.setSuccessMessage('Xóa nguyên liệu lỗi thành công'));
+            onClose();
+            
+        } catch (error) {
+            console.error('Error deleting spoil ingredient:', error);
+        }
     };
-
-
-            // reason: "Dầu ăn bảo quản hỏng aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-            // create_at: '2024-09-03T10:00:00Z',
-
 
     if(variant == "view"){
         const spoilIngredient: DescriptionsProps['items'] = [
             {
                 key: 'name',
                 label: 'Ingredient name',
-                children: data.name,
+                children: data?.name,
                 },
                 {
-                    key: 'importHistoryId',
+                    key: 'batchCode',
                     label: 'Import batch code',
-                    children: data.importHistoryId,
+                    children: data?.batchCode,
                 },
                 {
                     key: 'unit',
                     label: 'Unit',
-                    children: data.unit,
+                    children: data?.unit,
                 },
                 {
                     key: 'quantity',
                     label: 'Quantity',
-                    children: data.quantity,
+                    children: data?.quantity,
                 },
                 {
                     key: 'reason',
                     label: 'Reason',
-                    children: data.reason,
-                },
-                {
-                    key: 'create_at',
-                    label: 'Craeted at',
-                    children: dayjs(data.create_at).format('DD/MM/YYYY'),
-                },
-                {
-                    key: 'create_update',
-                    label: 'Updated at',
-                    children: data.late_update_time ? dayjs(data.late_update_time).format('DD/MM/YYYY') : "no date",
+                    children: data?.reason,
                 },
         ];
 
@@ -179,34 +278,54 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
                         <Row gutter={[16, 16]}>
                             <Col span={8}>
                                 <FormSelectAnt
-                                    name="name"
+                                    name="batchCode"
                                     control={control}
-                                    label="Name"
-                                    options={optionsIngredient}
-                                    error={!!errors.name}
-                                    helperText={errors.name?.message}
+                                    label="Import Batch Code"
+                                    options={historyBatches && historyBatches.data ? historyBatches.data.map(batch => ({
+                                        value: batch.id.toString(),
+                                        label: `${batch.bathCode || 'Batch'} #${batch.id}`
+                                    })) : []}
+                                    error={!!errors.batchCode}
+                                    helperText={errors.batchCode?.message}
                                 />
                             </Col>
                             <Col span={8}>
-                                <FormSelectAnt
-                                    name="importHistoryId"
-                                    control={control}
-                                    label="Import History Ids"
-                                    options={optionsHistoryIngredientIds}
-                                    error={!!errors.importHistoryId}
-                                    helperText={errors.importHistoryId?.message}
-                                />
+                                {selectedBatchId && (
+                                    <FormSelectAnt
+                                        name="name"
+                                        control={control}
+                                        label="Ingredient"
+                                        options={Array.isArray(historyIngredients) ? historyIngredients.map(item => ({
+                                            value: item.id.toString(),
+                                            label: `${item.ingredients.name || 'Ingredient'}`
+                                        })) : []}
+                                        error={!!errors.name}
+                                        helperText={errors.name?.message}
+                                        disabled={!selectedBatchId}
+                                    />
+                                )}
                             </Col>
                             <Col span={8}>
-                                <FormInput
-                                    name="quantity"
-                                    control={control}
-                                    type='number'
-                                    label="Quatity"
-                                    placeholder="e.g., 10"
-                                    error={!!errors.quantity}
-                                    helperText={errors.quantity?.message}
-                                />
+                                {selectedIngredientId && (
+                                    <FormInput
+                                        name="quantity"
+                                        control={control}
+                                        type='number'
+                                        label={`Quantity (Max: ${maxQuantity})`}
+                                        placeholder="Enter quantity"
+                                        error={!!errors.quantity}
+                                        helperText={errors.quantity?.message}
+                                        disabled={!selectedIngredientId}
+                                        rules={{
+                                            validate: value => {
+                                                const numValue = Number(value);
+                                                if (!numValue || numValue <= 0) return "Quantity must be greater than 0";
+                                                if (maxQuantity > 0 && numValue > maxQuantity) return `Quantity cannot exceed ${maxQuantity}`;
+                                                return true;
+                                            }
+                                        }}
+                                    />
+                                )}
                             </Col>
                             <Col span={24}>
                                 <FormFloatingInput
@@ -223,8 +342,11 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
 
                         {/* Action Buttons */}
                         <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                            <Button onClick={onClose}>
+                                Cancel
+                            </Button>
                             <Button
-                                onClick={handleSubmit(onSubmit)}
+                                htmlType='submit'
                                 type="primary"
                                 className="bg-blue-500 hover:bg-blue-600"
                                 disabled={isSubmitting}

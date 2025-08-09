@@ -9,7 +9,7 @@ export const SpoilIngredientSchema = yup.object().shape({
       )
       .required('Vui lòng chọn ít nhất một nguyên liệu'),
 
-    importHistoryId: yup
+    batchCode: yup
       .number()
       .nullable()
       .transform((value, originalValue) =>
@@ -23,7 +23,18 @@ export const SpoilIngredientSchema = yup.object().shape({
       .transform((value, originalValue) =>
         String(originalValue).trim() === '' ? undefined : value
       )
-      .required('Số lượng là bắt buộc'),
+      .positive('Số lượng phải lớn hơn 0')
+      .required('Số lượng là bắt buộc')
+      .test(
+            'max-quantity', 
+            'Số lượng không được vượt quá giới hạn', 
+            function(value) {
+                // Sử dụng context để lấy maxQuantity từ bên ngoài
+                const { maxQuantity } = this.options.context || {};
+                if (!maxQuantity) return true;
+                return !value || value <= maxQuantity;
+            }
+      ),
 
     reason: yup.string().optional(),
 });

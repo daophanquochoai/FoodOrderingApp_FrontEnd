@@ -23,6 +23,8 @@ import {
     search,
     ingredient_use,
     recipe,
+    ingredientsError,
+    dashboard,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -49,6 +51,8 @@ const rootReducers = combineReducers({
     [search.name]: search.default.reducer,
     [ingredient_use.name]: ingredient_use.default.reducer,
     [recipe.name]: recipe.default.reducer,
+    [ingredientsError.name]: ingredientsError.default.reducer,
+    [dashboard.name]: dashboard.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;

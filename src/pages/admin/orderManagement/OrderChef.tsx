@@ -124,7 +124,8 @@ const OrderChef = () => {
                     values={filters}
                     onChange={handleFilterChange}
                     onReset={handleResetFilter}
-                    type={ModalType.ORDER_CHEF}
+                    onApply={null}
+                    type={ModalType.ORDER_MANAGEMENT}
                 />
             </div>
 

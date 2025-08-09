@@ -31,6 +31,7 @@ export function* handleFetchFirst() {
 }
 
 function* handleUpdateOrder({ payload }) {
+    console.log(payload);
     yield put(order.actions.setLoadingComponent(true));
     try {
         const { selectedOrder } = yield all({

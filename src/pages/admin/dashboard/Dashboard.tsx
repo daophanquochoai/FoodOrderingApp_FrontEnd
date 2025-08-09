@@ -1,6 +1,6 @@
 import { CardSummary } from '@/components/card';
-import { Col, Row } from 'antd';
-import React from 'react';
+import { Col, Row, Spin } from 'antd';
+import React, { useRef, useState, useEffect } from 'react';
 import { AiOutlineDollar } from 'react-icons/ai';
 import { MdShoppingCart } from 'react-icons/md';
 import { RiBookletLine } from 'react-icons/ri';
@@ -9,28 +9,47 @@ import { MdOutlineFastfood } from 'react-icons/md';
 import TotalRevenue from '@/components/chart/dashboards/TotalRevenue';
 import { FaStoreAlt } from 'react-icons/fa';
 import RevenueFood from '@/components/chart/dashboards/RevenueFood';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDashboardTotal, fetchOrderYears, fetchMonthlyRevenue } from '@/store/action/admin/dashboard/dashboard.action';
+import { selectDashboardTotal, selectLoading, selectYearSelected } from '@/store/selector/admin/dashboard/dashboard.selector';
 
 const Dashboard = () => {
+    const dispatch = useDispatch();
+    const dashboardTotal = useSelector(selectDashboardTotal);
+    const loading = useSelector(selectLoading);
+    const yearSelected = useSelector(selectYearSelected);
+
+    useEffect(() => {
+        dispatch(fetchDashboardTotal());
+        dispatch(fetchOrderYears());
+    }, []);
+
+    useEffect(() => {
+        if (yearSelected) {
+            dispatch(fetchMonthlyRevenue({ year: yearSelected }));
+        }
+    }, [yearSelected]);
+
     return (
-        <div>
+        <Spin spinning={loading}>
             <Row gutter={[20, 20]}>
                 <Col lg={6} sm={12} span={24}>
                     <CardSummary
                         icon={AiOutlineDollar}
                         color="blue"
-                        number={23523}
+                        number={dashboardTotal?.totalRevenue || 0}
                         text="Profit"
                         type="profit"
                     />
                 </Col>
                 <Col lg={6} sm={12} span={24}>
-                    <CardSummary icon={MdOutlineFastfood} color="green" number={120} text="Foods" />
+                    <CardSummary icon={MdOutlineFastfood} color="green" number={dashboardTotal?.totalFoods || 0} text="Foods" />
                 </Col>
                 <Col lg={6} sm={12} span={24}>
-                    <CardSummary icon={RiBookletLine} color="yellow" number={3685} text="Orders" />
+                    <CardSummary icon={RiBookletLine} color="yellow" number={dashboardTotal?.totalOrders || 0} text="Orders" />
                 </Col>
                 <Col lg={6} sm={12} span={24}>
-                    <CardSummary icon={FaStoreAlt} color="purple" number={6} text="Suppiers" />
+                    <CardSummary icon={FaStoreAlt} color="purple" number={dashboardTotal?.totalSupplier || 0} text="Suppliers" />
                 </Col>
             </Row>
 
@@ -46,7 +65,7 @@ const Dashboard = () => {
                     </div>
                 </Col>
             </Row>
-        </div>
+        </Spin>
     );
 };
 

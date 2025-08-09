@@ -1,6 +1,7 @@
 import { categoryApi } from '@/api/client/category/category.api';
 import { collectionApi } from '@/api/client/collection/collection.api';
 import { filterApi } from '@/api/filter/fitler.api';
+import { filter } from '@/defaultValue/common';
 import {
     createCategory,
     deleteCategory,
@@ -9,6 +10,7 @@ import {
 } from '@/store/action/admin/category/category.action';
 import { category, common } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/admin/category/category.selector';
+import { EStatusCategory } from '@/type/store/client/collection/collection.style';
 import { ModalType } from '@/type/store/common';
 import { takeLeading } from 'redux-saga/effects';
 import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
@@ -35,9 +37,17 @@ function* handleFetchCategoryTable() {
         const { fitler } = yield all({
             fitler: select(selectFilter),
         });
-
-        const { data } = yield call(collectionApi.getCategoryByFilter, fitler);
-
+        
+        const updatedFilter = {
+            ...fitler,
+            statusCategories:
+                fitler.statusCategories.length === 0
+                    ? [EStatusCategory.ACTIVE]
+                    : [...fitler.statusCategories],
+        };
+        
+        const { data } = yield call(collectionApi.getCategoryByFilter, updatedFilter);
+        
         yield put(category.actions.setCategory(data?.data));
     } catch (e) {
         console.error(e);

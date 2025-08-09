@@ -41,8 +41,6 @@ const OrderManagement = () => {
         dispatch(fetchFirst());
     }, []);
 
-    const [filters, setFilters] = useState({});
-
     const columns: TableColumnsType<Order> = [
         {
             title: 'Order ID',
@@ -51,12 +49,12 @@ const OrderManagement = () => {
             sorter: (a, b) => a.id - b.id,
         },
         {
-            title: 'Khách hàng',
+            title: 'Customer',
             dataIndex: 'name',
             key: 'name',
         },
         {
-            title: 'Ngày đặt',
+            title: 'Order time',
             dataIndex: 'createTime',
             key: 'createTime',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -88,7 +86,7 @@ const OrderManagement = () => {
             render: (createdAt) => (createdAt ? dayjs(createdAt).format('DD/MM/YYYY') : ''),
         },
         {
-            title: 'Tổng tiền',
+            title: 'Total price',
             dataIndex: 'totalPrice',
             key: 'totalPrice',
             sorter: (a, b) => a?.totalPrice - b?.totalPrice,
@@ -256,7 +254,7 @@ const OrderManagement = () => {
     return (
         <Spin spinning={orderList.loading}>
             <div>
-                <h1 className="text-2xl font-bold mb-3">Quản lý đơn hàng</h1>
+                <h1 className="text-2xl font-bold mb-3">Order Management</h1>
 
                 {/* filter */}
                 <div className="mb-3">

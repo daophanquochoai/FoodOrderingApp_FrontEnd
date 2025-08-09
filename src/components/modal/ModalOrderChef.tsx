@@ -74,7 +74,6 @@ const ModalOrderChef: React.FC<ModalState> = ({ type, variant }) => {
     };
 
     const handleClickNextStatusExpect = (status) => {
-        console.log(status);
         dispatch(
             updateOrder({
                 message: '',
