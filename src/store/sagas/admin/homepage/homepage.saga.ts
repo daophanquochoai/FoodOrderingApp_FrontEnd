@@ -17,7 +17,14 @@ function* handleFetchCategories() {
   try {
     yield put(homepageManagementSlice.actions.setCategoriesLoading(true));
 
-    const allCategoriesResponse = yield call(collectionApi.getCategoryByFilter, { pageNo: 0, pageSize: 100 });
+    const allCategoriesResponse = yield call(collectionApi.getCategoryByFilter, { 
+      pageNo: 0, 
+      pageSize: 1000,
+      search: "",
+      sort: "asc",
+      order: "id",
+      deep: 1
+    });
     const homepageCategoriesResponse = yield call([categoryHomepageApi, categoryHomepageApi.getCategoryHomepage]);
 
     const allCategories = allCategoriesResponse.data.data.data;
@@ -63,7 +70,14 @@ function* handleFetchLatestProducts() {
   try {
     yield put(homepageManagementSlice.actions.setLatestProductsLoading(true));
     
-    const allProductsResponse = yield call(foodApi.getFoodByFilter, { pageNo: 0, pageSize: 100 });
+    const allProductsResponse = yield call(foodApi.getFoodByFilter, { 
+      pageNo: 0, 
+      pageSize: 1000,
+      search: "",
+      sort: "asc",
+      order: "id",
+      deep: 1
+    });
     const latestProductsResponse = yield call([foodHomepageApi, foodHomepageApi.getLatestFoodHomepage]);
     
     const allProducts = allProductsResponse.data.data.data;
@@ -105,7 +119,14 @@ function* handleFetchDealOfWeek() {
   try {
     yield put(homepageManagementSlice.actions.setDealOfWeekLoading(true));
     
-    const allProductsResponse = yield call(foodApi.getFoodByFilter, { pageNo: 0, pageSize: 100 });
+    const allProductsResponse = yield call(foodApi.getFoodByFilter, {
+      pageNo: 0, 
+      pageSize: 1000,
+      search: "",
+      sort: "asc",
+      order: "id",
+      deep: 1
+    });
     const dealOfWeekProductsResponse = yield call([foodHomepageApi, foodHomepageApi.getDealOfTheWeekHomepage]);
 
     const allProducts = allProductsResponse.data.data.data;
