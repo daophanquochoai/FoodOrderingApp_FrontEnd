@@ -160,8 +160,9 @@ const OrderManagement = () => {
                         label = 'Receive';
                         break;
                     case 'CANCEL':
-                        color: 'red';
-                        label: 'Cancel';
+                        color = 'red';
+                        label = 'Cancel';
+                        break;
                     default:
                         color = 'gray';
                         label = status;
@@ -212,8 +213,8 @@ const OrderManagement = () => {
     };
 
     const orderFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Search' },
-        { key: 'startDate', type: 'date', placeholder: 'Order time' },
+        { key: 'search', type: 'text', placeholder: 'Input search' },
+        { key: 'startDate', type: 'dateRange', placeholder: 'Ngày mua hàng' },
         {
             key: 'statusOrders',
             type: 'multiSelect',
@@ -234,22 +235,21 @@ const OrderManagement = () => {
         dispatch(
             order.actions.setFilterOrder({
                 ...filter,
-                [key]: value
+                [key]: value,
             })
         );
     };
 
     const handleApplyFilter = (filterValues) => {
-        // console.log(filterValues);
         dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        dispatch(
-            order.actions.setFilterOrder(initFilterOrder)
-        );
+        dispatch(order.actions.setFilterOrder(initFilterOrder));
         dispatch(fetchFirst());
     };
+
+    console.log(filter);
 
     return (
         <Spin spinning={orderList.loading}>

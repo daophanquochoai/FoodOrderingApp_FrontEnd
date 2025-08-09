@@ -1,6 +1,7 @@
 import { Voucher } from '@/type/voucher/voucher';
 import { FoodSize } from '../../client/collection/food.style';
 import { Filter } from '../../common';
+import { Employee } from '../employee/employee.style';
 
 export interface Payment {
     code: string;
@@ -34,6 +35,7 @@ export interface Order {
     orderItems: OrderItem[];
     discountApplied: Voucher;
     paymentId: Payment;
+    shipperId: Employee;
 }
 
 export interface FilterOrder extends Filter {
@@ -60,4 +62,5 @@ export interface OrderSlice {
     };
     selectedOrder: Order | null;
     loadingComponent: boolean;
+    errorStripe: string;
 }

@@ -1,0 +1,7 @@
+.row-warning td {
+    background-color: #fef3c7 !important; /* vàng nhạt */
+}
+
+.row-expired td {
+    background-color: #fecaca !important; /* đỏ nhạt */
+}

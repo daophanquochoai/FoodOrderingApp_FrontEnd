@@ -110,11 +110,6 @@ class HttpService {
                         formatError = { message: 'Internal server error', status: 500 };
                     }
                     break;
-                case 404:
-                    if (!handleErrorNavigation(404, window.location.pathname)) {
-                        formatError = { message: 'Page not found', status: 404 };
-                    }
-                    break;
                 case 503:
                     if (!isServer) deleteAllCookies();
                     if (!handleErrorNavigation(503, window.location.pathname)) {
@@ -178,9 +173,12 @@ class HttpService {
 
     delete = <T = any>(id: string | number) => this.instance.delete<T>(`/${this.entity}/${id}`);
 
-    upload = <T = any>(data: FormData, endpoint = 'upload') =>
+    upload = <T = any>(data: FormData, token: string, endpoint = 'upload') =>
         this.instance.post<T>(`/${this.entity}/${endpoint}`, data, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+                'Content-Type': 'multipart/form-data',
+            },
         });
 }
 

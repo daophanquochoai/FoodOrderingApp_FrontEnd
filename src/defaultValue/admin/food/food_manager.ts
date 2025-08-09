@@ -1,4 +1,3 @@
-import { initFoodFilter } from '@/defaultValue/client/collection/food';
 import { FoodManagerType } from '@/type/store/admin/food_manager/food_manager.style';
 import { FilterFood } from '@/type/store/client/collection/food.style';
 

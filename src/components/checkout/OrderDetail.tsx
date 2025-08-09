@@ -39,7 +39,7 @@ const OrderDetail: React.FC<any> = () => {
                     item.quantity * ((item?.foodId?.price * (100 - item?.foodId?.discount)) / 100),
                 0
             ) || 0;
-        subTotalValue = Number.parseInt(subTotalValue?.toFixed(2)) || 0;
+        subTotalValue = parseFloat(subTotalValue.toFixed(2)) || 0;
         dispatch(checkout.actions.setSubTotal(subTotalValue));
 
         // ship
@@ -58,7 +58,7 @@ const OrderDetail: React.FC<any> = () => {
 
         if (voucher != null && voucher?.data?.length > 0 && discountApply != null) {
             const discountUsing = voucher?.data?.filter((i) => i.id === discountApply)[0];
-            const totalActual = subTotalValue + shipValue > 0 ? subTotalValue - shipValue : 0;
+            const totalActual = subTotalValue + shipValue > 0 ? subTotalValue + shipValue : 0;
             let ability = 0;
             if (discountUsing) {
                 if (discountUsing.discountType.toString() == 'PERCENT') {

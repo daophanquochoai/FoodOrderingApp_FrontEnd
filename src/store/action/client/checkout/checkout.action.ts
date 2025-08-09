@@ -16,3 +16,8 @@ export const usePointAction = createAction(`${name}/USE_POINT`, (state) => ({
 export const paymentAction = createAction(`${name}/PAYMENT`, (state) => ({
     payload: state,
 }));
+
+// payment cart
+export const paymentCartAction = createAction(`${name}/PAYMENT/CART`, (state) => ({
+    payload: state,
+}));

@@ -4,8 +4,8 @@ class DocumentApi extends HttpService {
     getDocuments = (data: any) => {
         return this.post(data, 'all');
     };
-    uploadDocument = (data: FormData) => {
-        return this.upload(data);
+    uploadDocument = (data: FormData, token: string) => {
+        return this.upload(data, token);
     };
     downloadDocument = (id: string) => {
         return this.get<Blob>(`/document/download/${id}`, undefined, {}, 'blob');

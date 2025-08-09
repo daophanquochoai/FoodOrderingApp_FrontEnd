@@ -188,8 +188,8 @@ const IngredientManagement: React.FC = () => {
             ],
             onFilter: (value, record) => record.status == value,
             render: (status) => {
-                if (status) return <Tag color="green">Còn</Tag>;
-                return <Tag color="red">Hết</Tag>;
+                if (status) return <Tag color="green">Active</Tag>;
+                return <Tag color="red">InActive</Tag>;
             },
         },
         {

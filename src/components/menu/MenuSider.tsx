@@ -33,6 +33,7 @@ const MenuSider = () => {
         } else if (role == 'ROLE_CHEF') {
             setNav(chef);
         } else if (role == 'ROLE_SHIPPER') {
+            setNav(ship);
         }
     }, [user]);
 
@@ -46,6 +47,21 @@ const MenuSider = () => {
                     key: '/order-management-chef',
                     label: <Link to={`${baseAdmin}/order-management-chef`}>Order Chef</Link>,
                     icon: <GiCook />,
+                },
+            ],
+        },
+    ];
+
+    const ship = [
+        {
+            key: 'store',
+            label: 'Store Management',
+            icon: <IoStorefrontOutline />,
+            children: [
+                {
+                    key: '/order-management-shipper',
+                    label: <Link to={`${baseAdmin}/order-management-shipper`}>Order Shipper</Link>,
+                    icon: <MdOutlineLocalShipping />,
                 },
             ],
         },
@@ -93,16 +109,7 @@ const MenuSider = () => {
                     label: <Link to={`${baseAdmin}/order-management`}>Order Management</Link>,
                     icon: <LuNotebookPen />,
                 },
-                {
-                    key: '/order-management-chef',
-                    label: <Link to={`${baseAdmin}/order-management-chef`}>Order Chef</Link>,
-                    icon: <GiCook />,
-                },
-                {
-                    key: '/order-management-shipper',
-                    label: <Link to={`${baseAdmin}/order-management-shipper`}>Order Shipper</Link>,
-                    icon: <MdOutlineLocalShipping />,
-                },
+
                 {
                     key: '/voucher-management',
                     label: <Link to={`${baseAdmin}/voucher-management`}>Voucher Management</Link>,

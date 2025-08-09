@@ -1,10 +1,19 @@
 import { Button, Space } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import FilterField from './FilterField';
 import { IoCloseOutline } from 'react-icons/io5';
 import { CiFilter } from 'react-icons/ci';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectFilter } from '@/store/selector/admin/recipe/recipe.selector';
 
-const FilterBar = ({ fields = [], values = {}, onChange, onReset, type, onApply }) => {
+const FilterBar = ({ fields = [], values = {}, onChange, onReset, type, onApply = null }) => {
+    // hook
+    const dispatch = useDispatch();
+
+    //selector
+    const filter = useSelector(selectFilter);
+
+    //state
     const [openFilter, setOpenFilter] = useState(false);
 
     const handleFilter = () => {

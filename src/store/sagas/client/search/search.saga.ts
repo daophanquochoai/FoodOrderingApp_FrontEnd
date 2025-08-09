@@ -6,18 +6,14 @@ import { all, call, fork, put, takeLatest } from 'typed-redux-saga';
 function* handleSearchFoods({ payload }) {
     yield put(searchSlice.actions.setQuery(payload));
     if (!payload || payload.length < 2) {
-        yield put(searchSlice.actions.clearResults());
+        yield put(searchSlice.actions.setResults([]));
         return;
     }
 
     yield put(searchSlice.actions.setLoading(true));
     try {
-        const response = yield call([searchApi, searchApi.searchFoods], payload);
-        if (response?.data) {
-            yield put(searchSlice.actions.setResults(response.data));
-        } else {
-            yield put(searchSlice.actions.setResults([]));
-        }
+        const { data } = yield call([searchApi, searchApi.searchFoods], payload);
+        yield put(searchSlice.actions.setResults(data?.data || []));
     } catch (error) {
         console.error('Search error:', error);
         yield put(searchSlice.actions.setResults([]));
@@ -28,7 +24,7 @@ function* handleSearchFoods({ payload }) {
 
 function* handleClearSearchResults() {
     yield put(searchSlice.actions.setQuery(''));
-    yield put(searchSlice.actions.clearResults());
+    yield put(searchSlice.actions.setResults([]));
 }
 
 function* watchSearchFoods() {
@@ -39,8 +35,5 @@ function* watchClearSearchResults() {
 }
 
 export function* watchSearch() {
-    yield all([
-        fork(watchSearchFoods),
-        fork(watchClearSearchResults),
-    ]);
+    yield all([fork(watchSearchFoods), fork(watchClearSearchResults)]);
 }

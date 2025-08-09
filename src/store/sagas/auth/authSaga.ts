@@ -2,7 +2,6 @@ import { all, call, fork, put, takeLatest } from 'typed-redux-saga';
 import { createUserAction, loginAction } from '../../action/auth/auth.action';
 import { authApi } from '@/api/auth/authApi';
 import { auth, common } from '@/store/reducer';
-import { User } from '@/type/store/auth/authSlide';
 import { userApi } from '@/api/client/user/user.api';
 import { setCookies } from '@/utils/cookies/cookies';
 
@@ -24,7 +23,6 @@ function* handleLogin({ payload }) {
         setCookies('refresh_token', data?.refresh_token, 30);
         setCookies('access_token', data?.access_token, 7);
         setCookies('user', JSON.stringify(user), 7);
-        console.log(user?.authorities[0]);
 
         if (user?.authorities[0]?.authority == 'ROLE_USER') {
             console.log(user?.authorities[0]);
@@ -37,9 +35,14 @@ function* handleLogin({ payload }) {
             } else {
                 payload.action('/');
             }
-           
-        } else {
+        } else if (user?.authorities[0]?.authority == 'ROLE_ADMIN') {
             payload.action('/admin');
+        } else if (user?.authorities[0]?.authority == 'ROLE_SHIPPER') {
+            payload.action('/admin/order-management-shipper');
+        } else if (user?.authorities[0]?.authority == 'ROLE_CHEF') {
+            payload.action('/admin/order-management-chef');
+        } else {
+            payload.action('/404');
         }
     } catch (e) {
         yield* put(common.actions.setErrorMessage(e?.message));

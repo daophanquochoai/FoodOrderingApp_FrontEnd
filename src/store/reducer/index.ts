@@ -19,5 +19,7 @@ export * as history_import from './admin/history/history.reducer';
 export * as homepage from './admin/homepage/homepage.reducer';
 export * as order_profile from './client/order_profile/order_profile.reducer';
 export * as search from './client/search/search.reducer';
+export * as ingredient_use from './admin/ingredients/ingredient_use.reducer';
+export * as recipe from './admin/recipe/recipe_management.reducer';
 export * as ingredientsError from './admin/ingredients/ingredients_error.reducer';
 export * as dashboard from './admin/dashboard/dashboard.reducer';

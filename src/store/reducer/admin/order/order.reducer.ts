@@ -25,6 +25,9 @@ const OrderSlice = createSlice({
         setSelectOrder(state, { payload }: PayloadAction<any>) {
             state.selectedOrder = payload;
         },
+        setErrorStripe(state, { payload }: PayloadAction<any>) {
+            state.errorStripe = payload;
+        },
     },
 });
 

@@ -16,10 +16,7 @@ const SearchSlice = createSlice({
         setLoading(state, { payload }: PayloadAction<boolean>) {
             state.loading = payload;
         },
-        clearResults(state) {
-            state = search;
-        }
-    }
+    },
 });
 
 export const { actions } = SearchSlice;

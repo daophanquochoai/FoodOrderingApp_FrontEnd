@@ -1,43 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import {
     Button,
     DatePicker,
     Descriptions,
     DescriptionsProps,
-    Input,
-    InputRef,
-    Space,
+    Pagination,
     Spin,
     Table,
     TableColumnsType,
-    TableColumnType,
     Tag,
 } from 'antd';
-import { FilterDropdownProps } from 'antd/es/table/interface';
-import { SearchOutlined } from '@mui/icons-material';
-import Highlighter from 'react-highlight-words';
 import { IoMdArrowBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+    selectFilterHistoryIngredient,
     selectHistory,
     selectIngredientsSelected,
     selectLoadingHistory,
 } from '@/store/selector/admin/ingredients/ingredients.selector';
 import { fetchHistory } from '@/store/action/admin/ingredients/ingredient.action';
 import { HistoryImportOrExportDto } from '@/type/store/admin/history/history.style';
-
-type DataIndex = keyof any;
+import './style.css';
 
 const ViewIngredient = () => {
     // selector
     const selectedFood = useSelector(selectIngredientsSelected);
     const loadingHistory = useSelector(selectLoadingHistory);
     const historyList = useSelector(selectHistory);
+    const filterHistory = useSelector(selectFilterHistoryIngredient);
 
     // hook
-    const searchInput = useRef<InputRef>(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -49,9 +43,9 @@ const ViewIngredient = () => {
     const getStatusTag = (status: boolean) => {
         switch (status) {
             case true:
-                return <Tag color="green">Còn</Tag>;
+                return <Tag color="green">Active</Tag>;
             default:
-                return <Tag color="red">Hết</Tag>;
+                return <Tag color="red">InActive</Tag>;
         }
     };
 
@@ -87,21 +81,35 @@ const ViewIngredient = () => {
         },
         {
             title: 'Nhà cung cấp',
-            dataIndex: 'source',
             key: 'source',
+            render: (item) => <p>{item?.source?.name}</p>,
         },
         {
             title: 'Số lượng nhập',
             key: 'quantity',
             sorter: (a, b) => {
                 const aTotal =
-                    a.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                    a.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
+                        0
+                    ) || 0;
                 const bTotal =
-                    b.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+                    b.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
+                        0
+                    ) || 0;
                 return aTotal - bTotal;
             },
             render: (record) => (
-                <p>{record?.historyIngredients?.reduce((sum, item) => sum + item.quantity, 0)}</p>
+                <p>
+                    {record?.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
+                        0
+                    )}
+                </p>
             ),
         },
         {
@@ -109,15 +117,86 @@ const ViewIngredient = () => {
             key: 'used_unit',
             sorter: (a, b) => {
                 const aTotal =
-                    a.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0) || 0;
+                    a.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
+                        0
+                    ) || 0;
                 const bTotal =
-                    b.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0) || 0;
+                    b.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
+                        0
+                    ) || 0;
                 return aTotal - bTotal;
             },
             render: (record) => {
                 return (
                     <p>
-                        {record?.historyIngredients?.reduce((sum, item) => sum + item.usedUnit, 0)}
+                        {record?.historyIngredients?.reduce(
+                            (sum, item) =>
+                                sum +
+                                (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
+                            0
+                        )}
+                    </p>
+                );
+            },
+        },
+        {
+            title: 'Số lượng chế biến',
+            key: 'uses',
+            sorter: (a, b) => {
+                const aTotal =
+                    a.historyIngredients?.reduce(
+                        (sum, item) => sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
+                        0
+                    ) || 0;
+                const bTotal =
+                    b.historyIngredients?.reduce(
+                        (sum, item) => sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
+                        0
+                    ) || 0;
+                return aTotal - bTotal;
+            },
+            render: (record) => {
+                return (
+                    <p>
+                        {record?.historyIngredients?.reduce(
+                            (sum, item) =>
+                                sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
+                            0
+                        ) || 0}
+                    </p>
+                );
+            },
+        },
+        {
+            title: 'Số lượng hư hỏng',
+            key: 'error',
+            sorter: (a, b) => {
+                const aTotal =
+                    a.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
+                        0
+                    ) || 0;
+                const bTotal =
+                    b.historyIngredients?.reduce(
+                        (sum, item) =>
+                            sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
+                        0
+                    ) || 0;
+                return aTotal - bTotal;
+            },
+            render: (record) => {
+                return (
+                    <p>
+                        {record?.historyIngredients?.reduce(
+                            (sum, item) =>
+                                sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
+                            0
+                        ) || 0}
                     </p>
                 );
             },
@@ -159,10 +238,7 @@ const ViewIngredient = () => {
                 const recordDate = dayjs(record.createdAt).format('YYYY-MM-DD');
                 return recordDate === value;
             },
-            render: (date) => {
-                const parsed = typeof date === 'bigint' ? Number(date) : date;
-                return dayjs(parsed).format('DD/MM/YYYY');
-            },
+            render: (item) => <p>{dayjs(item).format('YYYY-MM-DD')}</p>,
         },
         {
             title: 'Trạng thái',
@@ -210,6 +286,13 @@ const ViewIngredient = () => {
                             scroll={{ x: 'max-content' }}
                             pagination={false}
                         />
+                        <div className="flex justify-center mt-[20px]">
+                            <Pagination
+                                current={filterHistory?.pageNo}
+                                pageSize={10}
+                                total={historyList?.totalPage}
+                            />
+                        </div>
                     </div>
                 </Spin>
             </div>

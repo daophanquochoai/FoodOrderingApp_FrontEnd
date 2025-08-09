@@ -7,3 +7,7 @@ const orderAction = getCommonActionsTypeByName(name);
 // fetch first
 export const fetchFirst = createAction(orderAction.firstFetch);
 
+// update order
+export const updateOrder = createAction(orderAction.update, (state) => ({
+    payload: state,
+}));

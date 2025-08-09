@@ -21,6 +21,8 @@ import {
     voucher_admin,
     homepage,
     search,
+    ingredient_use,
+    recipe,
     ingredientsError,
     dashboard,
 } from '.';
@@ -47,6 +49,8 @@ const rootReducers = combineReducers({
     [homepage.name]: homepage.default.reducer,
     [order_profile.name]: order_profile.default.reducer,
     [search.name]: search.default.reducer,
+    [ingredient_use.name]: ingredient_use.default.reducer,
+    [recipe.name]: recipe.default.reducer,
     [ingredientsError.name]: ingredientsError.default.reducer,
     [dashboard.name]: dashboard.default.reducer,
 });

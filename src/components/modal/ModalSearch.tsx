@@ -9,76 +9,12 @@ import { ConfigProvider, Image, Spin } from 'antd';
 import { useCallback } from 'react';
 import debounce from 'lodash/debounce';
 import { searchFoods, clearSearchResults } from '@/store/action/client/search/search.action';
-import { 
-    selectSearchResults, 
-    selectSearchLoading, 
-    selectSearchQuery
+import {
+    selectSearchResults,
+    selectSearchLoading,
+    selectSearchQuery,
 } from '@/store/selector/client/search/search.selector';
 import { Link } from 'react-router-dom';
-
-// const dataFakeResult = {
-//     suggestions: [
-//         'pizza',
-//         'Pizza',
-//         'Spinach Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//         'Veg Pizza',
-//     ],
-//     products: [
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//             priceDiscount: '80',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//             priceDiscount: '80',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//             priceDiscount: '80',
-//         },
-//         {
-//             name: 'Vankirk Grabb Pizza Hawaiian',
-//             image: 'https://img.freepik.com/free-photo/pizza-pizza-filled-with-tomatoes-salami-olives_140725-1200.jpg',
-//             price: '100',
-//         },
-//     ],
-// };
 
 const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
     // hook
@@ -89,7 +25,8 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
     const loading = useSelector(selectSearchLoading) || false;
     const searchQuery = useSelector(selectSearchQuery) || '';
 
-    const [inputValue, setInputValue] = useState("");
+    console.log(searchResults);
+    const [inputValue, setInputValue] = useState('');
 
     const onClose = () => {
         dispatch(common.actions.setHiddenModal(type));
@@ -133,11 +70,12 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
         };
     }, [debouncedSearch, dispatch]);
 
-    const suggestions = Array.isArray(searchResults) && searchResults.length > 0 
-        ? [...new Set(searchResults.map(item => item.name.toLowerCase()))]
-            .filter(name => name.includes(searchQuery.toLowerCase()))
-            .slice(0, 10)
-        : [];
+    const suggestions =
+        Array.isArray(searchResults) && searchResults.length > 0
+            ? [...new Set(searchResults.map((item) => item.name.toLowerCase()))]
+                  .filter((name) => name.includes(searchQuery.toLowerCase()))
+                  .slice(0, 10)
+            : [];
 
     return (
         <ConfigProvider
@@ -210,60 +148,87 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                         </div>
                                                     </div>
                                                 )}
-
+                                                <p>{searchResults?.length}</p>
                                                 {/* Products */}
-                                                {searchResults.length > 0 && (
-                                                        <div className="mt-5">
-                                                            <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
-                                                                PRODUCTS
-                                                            </h2>
-                                                            <div className="lg:max-h-[240px] max-h-[300px] overflow-y-auto">
-                                                                {searchResults.map(
-                                                                    (item) => (
-                                                                        <Link 
-                                                                            to={`/products/${item.id}`}
-                                                                            key={item.id}
-                                                                            className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50"
-                                                                            onClick={onClose}
-                                                                        >
-                                                                            <div>
-                                                                                <Image
-                                                                                    src={item.image}
-                                                                                    alt="Product search"
-                                                                                    width={80}
-                                                                                    height={60}
-                                                                                    className="object-contain"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="flex justify-center items-start gap-1 flex-col ">
-                                                                                <p className="text-sm font-medium">
-                                                                                    {item.name}
-                                                                                </p>
-                                                                                {(item.foodSizes[0].discount && item.foodSizes[0].discount !== 0.0) ? (
-                                                                                    <div className="flex justify-start gap-2 items-end">
-                                                                                        <p className="line-through text-xs text-gray-600">
-                                                                                            {item.foodSizes[0].price.toLocaleString()} VND
-                                                                                        </p>
-                                                                                        <p
-                                                                                            className={`font-medium text-sm text-[#f97316]`}
-                                                                                        >
-                                                                                            {(item.foodSizes[0].price - item.foodSizes[0].price * item.foodSizes[0].discount).toLocaleString()} VND
-                                                                                        </p>
-                                                                                    </div>
-                                                                                ) : (
+                                                {searchResults && searchResults?.length > 0 && (
+                                                    <div className="mt-5">
+                                                        <h2 className="text-sm font-medium pb-2 border-b border-gray-300">
+                                                            PRODUCTS
+                                                        </h2>
+                                                        <div className="lg:max-h-[240px] max-h-[300px] overflow-y-auto">
+                                                            {searchResults &&
+                                                                searchResults?.length > 0 &&
+                                                                searchResults?.map((item) => (
+                                                                    <Link
+                                                                        to={`/products/${item?.id}`}
+                                                                        key={item?.id}
+                                                                        className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50"
+                                                                        onClick={onClose}
+                                                                    >
+                                                                        <div>
+                                                                            <Image
+                                                                                src={item?.image}
+                                                                                alt="Product search"
+                                                                                width={80}
+                                                                                height={60}
+                                                                                className="object-contain"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="flex justify-center items-start gap-1 flex-col ">
+                                                                            <p className="text-sm font-medium">
+                                                                                {item?.name}
+                                                                            </p>
+                                                                            {item?.foodSizes &&
+                                                                            item?.foodSizes
+                                                                                ?.length > 0 &&
+                                                                            item?.foodSizes[0]
+                                                                                ?.discount &&
+                                                                            item?.foodSizes[0]
+                                                                                ?.discount !==
+                                                                                0.0 ? (
+                                                                                <div className="flex justify-start gap-2 items-end">
+                                                                                    <p className="line-through text-xs text-gray-600">
+                                                                                        {item?.foodSizes[0]?.price?.toLocaleString() ||
+                                                                                            '__'}{' '}
+                                                                                        VND
+                                                                                    </p>
                                                                                     <p
                                                                                         className={`font-medium text-sm text-[#f97316]`}
                                                                                     >
-                                                                                        {item.foodSizes[0].price.toLocaleString()} VND
+                                                                                        {(
+                                                                                            item
+                                                                                                ?.foodSizes[0]
+                                                                                                ?.price -
+                                                                                            item
+                                                                                                ?.foodSizes[0]
+                                                                                                ?.price *
+                                                                                                item
+                                                                                                    ?.foodSizes[0]
+                                                                                                    ?.discount
+                                                                                        )?.toLocaleString()}{' '}
+                                                                                        VND
                                                                                     </p>
-                                                                                )}
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                )}
-                                                            </div>
+                                                                                </div>
+                                                                            ) : (
+                                                                                <p
+                                                                                    className={`font-medium text-sm text-[#f97316]`}
+                                                                                >
+                                                                                    {(item?.foodSizes &&
+                                                                                        item
+                                                                                            ?.foodSizes
+                                                                                            ?.length >
+                                                                                            0 &&
+                                                                                        item?.foodSizes[0]?.price?.toLocaleString()) ||
+                                                                                        0}{' '}
+                                                                                    VND
+                                                                                </p>
+                                                                            )}
+                                                                        </div>
+                                                                    </Link>
+                                                                ))}
                                                         </div>
-                                                    )}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     )}
