@@ -22,6 +22,7 @@ import {
     homepage,
     search,
     ingredientsError,
+    dashboard,
 } from '.';
 
 const rootReducers = combineReducers({
@@ -47,6 +48,7 @@ const rootReducers = combineReducers({
     [order_profile.name]: order_profile.default.reducer,
     [search.name]: search.default.reducer,
     [ingredientsError.name]: ingredientsError.default.reducer,
+    [dashboard.name]: dashboard.default.reducer,
 });
 
 export type RootReducerType = ReturnType<typeof rootReducers>;
