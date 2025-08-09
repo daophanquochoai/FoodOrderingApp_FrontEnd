@@ -60,6 +60,7 @@ const UserOrderDetail = () => {
         },
     ];
 
+    
     let orderSteps: typeof baseOrderSteps = [];
 
     if (selectedOrder?.status === 'CANCEL') {
@@ -291,6 +292,18 @@ const UserOrderDetail = () => {
                                         {selectedOrder?.message}
                                     </span>
                                 </div>
+                            )}
+                            {selectedOrder?.shipperId && (
+                                <>
+                                    <div className="flex items-center justify-between gap-5">
+                                        <span className="font-medium text-gray-600">
+                                            Shipper Name :
+                                        </span>
+                                        <span className="ml-2 text-right font-semibold">
+                                            {selectedOrder?.shipperId?.name}
+                                        </span>
+                                    </div>
+                                </>
                             )}
                         </div>
                     </div>

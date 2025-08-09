@@ -19,6 +19,8 @@ import { watchHistory } from './admin/history/history.saga';
 import { watchHomepage } from './admin/homepage/homepage.saga';
 import { watchOrderProfile } from './client/order_profile/order_profile.saga';
 import { watchSearch } from './client/search/search.saga';
+import { watchIngredientUse } from './admin/ingredients/ingredient_use.saga';
+import { watchRecipe } from './admin/recipe/recipe.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -41,4 +43,6 @@ export default function* rootSaga() {
     yield* fork(watchHomepage);
     yield* fork(watchOrderProfile);
     yield* fork(watchSearch);
+    yield* fork(watchIngredientUse);
+    yield* fork(watchRecipe);
 }

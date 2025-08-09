@@ -27,7 +27,6 @@ function* handleFetchOrder() {
         const { filter } = yield all({
             filter: select(selectFilter),
         });
-        console.log(filter);
 
         let info = yield select(selectInfo);
         if (!info) {
@@ -44,6 +43,7 @@ function* handleFetchOrder() {
             },
             token
         );
+        console.log(data);
         yield put(order_profile.actions.setOrder(data?.data?.data));
         yield put(order_profile.actions.setTotalPage(data?.data?.totalPage));
     } catch (e) {

@@ -1,7 +1,7 @@
 import FilterBar from '@/components/filter/FilterBar';
 import { fetchFirst } from '@/store/action/admin/order/order.action';
 import { common, order } from '@/store/reducer';
-import { selectOrders } from '@/store/selector/admin/order/order.selector';
+import { selectFilterOrder, selectOrders } from '@/store/selector/admin/order/order.selector';
 import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
 import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { initFilterOrder } from '@/defaultValue/admin/order/order';
 
 type DataIndex = keyof any;
 
@@ -33,6 +34,7 @@ const OrderManagement = () => {
 
     //selector
     const orderList = useSelector(selectOrders);
+    const filter = useSelector(selectFilterOrder);
 
     // useEffect
     useEffect(() => {
@@ -160,8 +162,9 @@ const OrderManagement = () => {
                         label = 'Receive';
                         break;
                     case 'CANCEL':
-                        color: 'red';
-                        label: 'Cancel';
+                        color = 'red';
+                        label = 'Cancel';
+                        break;
                     default:
                         color = 'gray';
                         label = status;
@@ -213,29 +216,42 @@ const OrderManagement = () => {
 
     const orderFilterFields = [
         { key: 'search', type: 'text', placeholder: 'Input search' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        { key: 'startDate', type: 'dateRange', placeholder: 'Ngày mua hàng' },
         {
-            key: 'status',
-            type: 'select',
+            key: 'statusOrders',
+            type: 'multiSelect',
             placeholder: 'Status',
             options: [
-                { label: 'pending', value: 'pending' },
-                { label: 'processing', value: 'processing' },
-                { label: 'completed', value: 'completed' },
-                { label: 'shipping', value: 'shipping' },
-                { label: 'received', value: 'received' },
-                { label: 'cancel', value: 'cancel' },
+                { label: 'pending', value: 'PENDING' },
+                { label: 'processing', value: 'PROCESSING' },
+                { label: 'completed', value: 'COMPLETE' },
+                { label: 'shipping', value: 'SHIPPING' },
+                { label: 'received', value: 'RECEIVE' },
+                { label: 'cancel', value: 'CANCEL' },
             ],
         },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        // console.log(key, value);
+        dispatch(
+            order.actions.setFilterOrder({
+                ...filter,
+                [key]: value,
+            })
+        );
+    };
+
+    const handleApplyFilter = (filterValues) => {
+        dispatch(fetchFirst());
     };
 
     const handleResetFilter = () => {
-        setFilters({});
+        dispatch(order.actions.setFilterOrder(initFilterOrder));
+        dispatch(fetchFirst());
     };
+
+    console.log(filter);
 
     return (
         <Spin spinning={orderList.loading}>
@@ -246,9 +262,10 @@ const OrderManagement = () => {
                 <div className="mb-3">
                     <FilterBar
                         fields={orderFilterFields}
-                        values={filters}
+                        values={filter}
                         onChange={handleFilterChange}
                         onReset={handleResetFilter}
+                        onApply={handleApplyFilter}
                         type={ModalType.ORDER_MANAGEMENT}
                     />
                 </div>

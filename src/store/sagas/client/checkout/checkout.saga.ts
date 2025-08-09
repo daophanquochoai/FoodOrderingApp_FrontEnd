@@ -84,9 +84,9 @@ function* handlePaymentAction({ payload }) {
             },
             totalPrice: total,
             paymentId: {
-                code: payload?.payment?.selectedPaymentMethod,
+                code: payload?.payment?.code,
             },
-            transactionCode: '',
+            transactionCode: payload?.payment?.token,
             discountApplied: {
                 id: checkout?.discountApply,
             },

@@ -12,3 +12,5 @@ export const selectTotalPage = createSelector(selectState, (state) => state.orde
 export const selectLoading = createSelector(selectState, (state) => state.loadingComponent);
 
 export const selectSelectedOrder = createSelector(selectState, (state) => state.selectedOrder);
+
+export const selectErrorStripe = createSelector(selectState, (state) => state.errorStripe);

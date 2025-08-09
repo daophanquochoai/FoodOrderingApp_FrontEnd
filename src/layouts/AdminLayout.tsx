@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import { AiOutlineMenuUnfold, AiOutlineMenuFold } from 'react-icons/ai';
 import { MenuSider } from '../components/menu';
-import { Outlet, useLocation, useParams } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import AccountDropdown from '@/components/dropdown/AccountDropdown';
 const { Sider, Content } = Layout;
 

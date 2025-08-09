@@ -18,9 +18,9 @@ class HttpService {
 
     private async handleError(error: any) {
         let formatError = {};
-        // if (!error?.response) {
-        //     window.location.href = '500';
-        // }
+        if (!error?.response) {
+            // window.location.href = '500';
+        }
         if (error?.response) {
             const { data, status } = error.response;
             const isServer = typeof window === 'undefined';
@@ -69,8 +69,8 @@ class HttpService {
                                 };
                                 return Promise.reject(formatError);
                             } else {
-                                deleteAllCookies();
-                                window.location.href = 'login';
+                                // deleteAllCookies();
+                                // window.location.href = 'login';
                                 return;
                             }
                         }
@@ -78,7 +78,7 @@ class HttpService {
                     break;
                 case 503:
                     if (!isServer) deleteAllCookies();
-                    window.location.href = '500';
+                    // window.location.href = '500';
                     break;
                 default:
                     break;
@@ -137,9 +137,12 @@ class HttpService {
 
     delete = <T = any>(id: string | number) => this.instance.delete<T>(`/${this.entity}/${id}`);
 
-    upload = <T = any>(data: FormData, endpoint = 'upload') =>
+    upload = <T = any>(data: FormData, token: string, endpoint = 'upload') =>
         this.instance.post<T>(`/${this.entity}/${endpoint}`, data, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+            headers: {
+                Authorization: token ? `Bearer ${token}` : undefined,
+                'Content-Type': 'multipart/form-data',
+            },
         });
 }
 

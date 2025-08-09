@@ -1,15 +1,16 @@
 import { documentApi } from '@/api/admin/document/document.api';
 import { common } from '@/store/reducer';
-import { 
+import {
     changePage,
-    downloadDocument, 
-    fetchDocuments, 
+    downloadDocument,
+    fetchDocuments,
     fetchFirst,
-    uploadDocument 
+    uploadDocument,
 } from '@/store/action/admin/document/document_manager.action';
 import DocumentManagerSlice from '@/store/reducer/admin/document/document_manager.reducer';
 import { selectFilter } from '@/store/selector/admin/document/document_manager.selector';
 import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
+import { getCookies } from '@/utils/cookies/cookies';
 
 /**
  * Handle fetch first (initial load)
@@ -36,29 +37,29 @@ function* handleFetchDocuments() {
 
     try {
         const response = yield call(documentApi.getDocuments, filter);
-        console.log("API response:", response);
-        
+        console.log('API response:', response);
+
         let documents = [];
         let totalPage = 1;
-        
+
         // Truy cập đúng cấu trúc response.data.data
         if (response?.data?.data) {
             // Trường hợp response là { data: { message: '...', data: { page: 1, totalPage: 1, data: [...] } } }
             if (response.data.data.data && Array.isArray(response.data.data.data)) {
-                documents = response.data.data.data.map(doc => ({
+                documents = response.data.data.data.map((doc) => ({
                     ...doc,
-                    create_at: doc.createdAt // Thêm trường create_at từ createdAt
+                    create_at: doc.createdAt, // Thêm trường create_at từ createdAt
                 }));
                 totalPage = response.data.data.totalPage || 1;
-                console.log("Found documents in data.data.data:", documents.length);
-            } 
+                console.log('Found documents in data.data.data:', documents.length);
+            }
             // Nếu data là mảng trực tiếp (không có nested data.data)
             else if (Array.isArray(response.data.data)) {
                 documents = response.data.data;
-                console.log("Found documents in data.data:", documents.length);
+                console.log('Found documents in data.data:', documents.length);
             }
         }
-        
+
         yield put(DocumentManagerSlice.actions.setDocuments(documents));
         yield put(DocumentManagerSlice.actions.setTotalPage(totalPage));
     } catch (e) {
@@ -74,20 +75,21 @@ function* handleFetchDocuments() {
 function* handleUploadDocument({ payload }) {
     yield put(DocumentManagerSlice.actions.setLoadingComponent(true));
     try {
-        const { data } = yield call(documentApi.uploadDocument, payload.formData);
-        
+        const token = getCookies('access_token');
+        const { data } = yield call(documentApi.uploadDocument, payload.formData, token);
+
         yield put(common.actions.setSuccessMessage('Document uploaded successfully'));
-        
+
         // Re-fetch documents to update the list
         yield* handleFetchDocuments();
-        
+
         if (payload.onSuccess) {
             payload.onSuccess(data);
         }
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message || 'Failed to upload document'));
-        
+
         if (payload.onError) {
             payload.onError(e);
         }
@@ -103,7 +105,7 @@ function* handleDownloadDocument({ payload }) {
     yield put(DocumentManagerSlice.actions.setLoadingComponent(true));
     try {
         const response = yield call(documentApi.downloadDocument, payload.id.toString());
-        
+
         // Create blob and download
         const blob = new Blob([response.data], { type: 'application/pdf' });
         const url = window.URL.createObjectURL(blob);
@@ -114,7 +116,7 @@ function* handleDownloadDocument({ payload }) {
         link.click();
         link.remove();
         window.URL.revokeObjectURL(url);
-        
+
         yield put(common.actions.setSuccessMessage('Document downloaded successfully'));
     } catch (e) {
         console.error(e);
@@ -138,7 +140,7 @@ function* handleChangePage({ payload }) {
             pageNo: payload,
         })
     );
-    
+
     yield* handleFetchDocuments();
 }
 
@@ -169,6 +171,6 @@ export function* watchDocumentManager() {
         fork(watchFetchDocuments),
         fork(watchUploadDocument),
         fork(watchDownloadDocument),
-        fork(watchChangePage)
+        fork(watchChangePage),
     ]);
 }

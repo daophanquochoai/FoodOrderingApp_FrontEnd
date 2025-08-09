@@ -16,4 +16,5 @@ export const initOrderSlice: OrderSlice = {
     },
     selectedOrder: null,
     loadingComponent: false,
+    errorStripe: '',
 };

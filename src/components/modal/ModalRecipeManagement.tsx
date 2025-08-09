@@ -1,38 +1,42 @@
-import { ModalState, ModalType } from '@/type/store/common';
+import { ModalState } from '@/type/store/common';
 import React, { useEffect, useState } from 'react';
 import ModalBase from './ModalBase';
-import { useDispatch } from 'react-redux';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { empAccountSchema } from '@/validation/account.validation';
-import { common } from '@/store/reducer';
-import {
-    Button,
-    Col,
-    Form,
-    GetProp,
-    Input,
-    InputNumber,
-    Row,
-    Select,
-    Space,
-    Spin,
-    Tabs,
-    Upload,
-    UploadProps,
-    message,
-} from 'antd';
-import { FormInput } from '../form';
-import FormSelectAnt from '../form/FormSelectAnt';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { common, recipe } from '@/store/reducer';
+import { Button, Form, Input, InputNumber, Select, Space, Spin, Tabs } from 'antd';
 import { unitData } from '../unitIngredient/UnitIngredient';
 import TabPane from 'antd/es/tabs/TabPane';
+import {
+    selectFilterOption,
+    selectIngredient,
+    selectLoadingComponent,
+    seletSelectedFood,
+} from '@/store/selector/admin/recipe/recipe.selector';
+import {
+    createRecipe,
+    fetchFilterOption,
+    fetchIngredinetsByFoodSize,
+    updateRecipe,
+} from '@/store/action/admin/recipe/recipe.action';
 
 const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) => {
-    console.log(data);
-
+    // hook
     const dispatch = useDispatch();
+    const ingredientsList = useSelector(selectIngredient);
+    const filterOption = useSelector(selectFilterOption);
+    const selectFood = useSelector(seletSelectedFood);
+    const loading = useSelector(selectLoadingComponent);
 
+    // useEffect
+    useEffect(() => {
+        dispatch(fetchFilterOption());
+    }, []);
+
+    useEffect(() => {
+        setIngredientsOption(ingredientsList);
+    }, [ingredientsList]);
+
+    // get title
     const getModalTitle = (): string => {
         switch (variant) {
             case 'edit':
@@ -43,213 +47,224 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                 return 'Add New Recipe';
         }
     };
-
     const title = getModalTitle();
 
-    const { foods, ingredients, foodsIngredient, sizes, record } = data;
-
-    const [selectedFoodId, setSelectedFoodId] = useState(null); // lưu id food, để --> size
-    const [sizeOptions, setSizeOptions] = useState([]); // size của món ăn đã được lựa chọn
-    const [unitOptions, setUnitOptions] = useState([]); // lưu các unit tương đồng của nguyên liệu: kg, mg, g,....
-
-    // ----dùng form của antD----
+    // state
+    const [ingredientsOption, setIngredientsOption] = useState([]);
+    const [selectedFoodId, setSelectedFoodId] = useState(null);
+    const [selectedSizeId, setSelectedSizeId] = useState(null);
+    const [sizeOptions, setSizeOptions] = useState([]);
+    const [tab, setTab] = useState('0');
     const [form] = Form.useForm();
 
-    // ----xử lý khi thay đổi món thì cần thay đổi size hiện có----
+    // event handling
     const handleFoodChange = (foodId) => {
         setSelectedFoodId(foodId);
-        const selectedFood = foods.find((f) => f.id === foodId);
+        const sizeList = filterOption?.food?.find((f) => f?.id === foodId)?.foodSizes;
 
-        setSizeOptions(selectedFood?.sizes || []);
+        setSizeOptions(sizeList || []);
 
-        form.setFieldsValue({ size: undefined }); // reset size khi đổi món
+        form.setFieldsValue({ size: undefined });
+        dispatch(recipe.actions.setIngredients(null));
     };
 
-    // ----xử lý khi thay đổi hoặc thêm nguyên liệu mới --> lọc ra những đơn vị kiểu giống nhau: kg, g, mg,...---
+    const handleChangeSize = (foodsizeId) => {
+        dispatch(fetchIngredinetsByFoodSize(foodsizeId));
+    };
+
     const handleIngredientChange = (ingredientId, fieldIndex) => {
-        const selected = ingredients.find((i) => i.id === ingredientId); // lấy ra nguyên liệu
-        const currentIngredients = form.getFieldValue('ingredients') || []; // tìm tới row
+        const selected = filterOption?.ingredients?.find((i) => i.id === ingredientId);
 
-        const unitFromIngredient = unitData.find((u) => u.base == selected.unit); // từ đơn vị gốc của nguyên liệu
-        const units = unitData.filter((u) => u.base == unitFromIngredient.base); // Suy ra nhóm nguyên liệu tương đương
+        const currentIngredients = form.getFieldValue('ingredients') || [];
 
-        setUnitOptions(units);
+        // Derive allowed unit options from selected ingredient's base unit (case-insensitive)
+        if (selected?.unit) {
+            const normalizedBase = String(selected.unit).toLowerCase();
+            let units = unitData.filter((u) => String(u.base).toLowerCase() === normalizedBase);
 
-        form.setFieldsValue({ ingredients: currentIngredients });
-    };
+            // Fallback: if no matching base in unitData, at least include the ingredient's unit
+            if (units.length === 0) {
+                units = [
+                    {
+                        id: -1,
+                        name: String(selected.unit),
+                        type: 'custom',
+                        base: normalizedBase,
+                        ratio: 1,
+                    },
+                ];
+            }
 
-    const onClose = () => {
-        dispatch(common.actions.setHiddenModal(type));
+            // Choose default unit value that exists in options
+            const defaultUnitValue =
+                units.find((u) => String(u.name).toLowerCase() === normalizedBase)?.name ||
+                String(selected.unit);
+
+            // Auto-fill the unit field for the current ingredient row
+            if (Array.isArray(currentIngredients)) {
+                const updated = currentIngredients.map((item, idx) =>
+                    idx === fieldIndex ? { ...item, unit: defaultUnitValue } : item
+                );
+                form.setFieldsValue({ ingredients: updated });
+            }
+        }
     };
 
     const handleSubmitForm = (data) => {
-        console.log('-------data form-----', data);
-        if (variant == 'add') onClose();
+        dispatch(createRecipe(data));
+    };
+
+    const handleUpdateForm = (data) => {
+        data = {
+            ...data,
+            sizeId: selectedSizeId?.value,
+        };
+        dispatch(updateRecipe(data));
     };
 
     //#region add new
     if (variant == 'add') {
         return (
             <ModalBase type={type}>
-                <div>
-                    <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
-                </div>
-                <Form form={form} layout="vertical" onFinish={(data) => handleSubmitForm(data)}>
-                    {/* Chọn món ăn */}
-                    <Form.Item name="food_id" label="Tên món ăn" rules={[{ required: true }]}>
-                        <Select
-                            showSearch
-                            placeholder="Chọn món ăn"
-                            onChange={handleFoodChange}
-                            options={foods.map((food) => ({
-                                label: food.name,
-                                value: food.id,
-                            }))}
-                        />
-                    </Form.Item>
+                <Spin spinning={loading}>
+                    <div>
+                        <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
+                    </div>
+                    <Form form={form} layout="vertical" onFinish={(data) => handleSubmitForm(data)}>
+                        {/* Chọn món ăn */}
+                        <Form.Item name="food_id" label="Tên món ăn" rules={[{ required: true }]}>
+                            <Select
+                                showSearch
+                                placeholder="Chọn món ăn"
+                                onChange={handleFoodChange}
+                                options={filterOption?.food?.map((food) => ({
+                                    label: food?.name,
+                                    value: food?.id,
+                                }))}
+                            />
+                        </Form.Item>
 
-                    {/* Chọn size phụ thuộc món ăn */}
-                    <Form.Item name="sizeId" label="Size" rules={[{ required: true }]}>
-                        <Select
-                            placeholder="Chọn size"
-                            disabled={!selectedFoodId}
-                            options={sizeOptions.map((s) => ({ label: s.name, value: s.id }))}
-                        />
-                    </Form.Item>
+                        {/* Chọn size phụ thuộc món ăn */}
+                        <Form.Item name="size" label="Size" rules={[{ required: true }]}>
+                            <Select
+                                placeholder="Chọn size"
+                                disabled={!selectedFoodId}
+                                onChange={handleChangeSize}
+                                options={sizeOptions?.map((s) => ({
+                                    label: s?.sizeId?.name,
+                                    value: s?.id,
+                                }))}
+                            />
+                        </Form.Item>
 
-                    {/* Danh sách nguyên liệu */}
-                    <Form.List name="ingredients" initialValue={[{}]}>
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map(({ key, name, ...restField }, index) => (
-                                    <Space
-                                        key={key}
-                                        style={{ display: 'flex', marginBottom: 8 }}
-                                        align="baseline"
-                                    >
-                                        {/* Chọn nguyên liệu */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'ingredients_id']}
-                                            rules={[
-                                                { required: true, message: 'Chọn nguyên liệu' },
-                                            ]}
+                        {/* Danh sách nguyên liệu */}
+                        <Form.List name="ingredients" initialValue={[{}]}>
+                            {(fields, { add, remove }) => (
+                                <>
+                                    {fields.map(({ key, name, ...restField }, index) => (
+                                        <Space
+                                            key={key}
+                                            style={{ display: 'flex', marginBottom: 8 }}
+                                            align="baseline"
                                         >
-                                            <Select
-                                                style={{ width: 160 }}
-                                                placeholder="Nguyên liệu"
-                                                onChange={(value) =>
-                                                    handleIngredientChange(value, index)
-                                                }
-                                                disabled={!selectedFoodId}
-                                                options={ingredients.map((ing) => ({
-                                                    label: ing.name,
-                                                    value: ing.id,
-                                                }))}
-                                            />
-                                        </Form.Item>
+                                            {/* Chọn nguyên liệu */}
+                                            <Form.Item
+                                                {...restField}
+                                                name={[name, 'ingredients_id']}
+                                                rules={[
+                                                    { required: true, message: 'Chọn nguyên liệu' },
+                                                ]}
+                                            >
+                                                <Select
+                                                    style={{ width: 160 }}
+                                                    placeholder="Nguyên liệu"
+                                                    onChange={(value) =>
+                                                        handleIngredientChange(value, index)
+                                                    }
+                                                    disabled={!selectedFoodId}
+                                                    options={filterOption?.ingredients?.map(
+                                                        (ing) => ({
+                                                            label: ing.name,
+                                                            value: ing.id,
+                                                            disabled: (
+                                                                form.getFieldValue('ingredients') ||
+                                                                []
+                                                            ).some(
+                                                                (item) =>
+                                                                    item?.ingredients_id === ing.id
+                                                            ),
+                                                        })
+                                                    )}
+                                                />
+                                            </Form.Item>
 
-                                        {/* Số lượng */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'quantity_per_unit']}
-                                            rules={[
-                                                { required: true, message: 'Nhập số lượng' },
-                                                {
-                                                    type: 'number',
-                                                    min: 0.01,
-                                                    message: 'Phải lớn hơn 0',
-                                                },
-                                            ]}
-                                        >
-                                            <InputNumber
-                                                placeholder="Số lượng"
-                                                disabled={!selectedFoodId}
-                                            />
-                                        </Form.Item>
+                                            {/* Số lượng */}
+                                            <Form.Item
+                                                {...restField}
+                                                name={[name, 'quantity_per_unit']}
+                                                rules={[
+                                                    { required: true, message: 'Nhập số lượng' },
+                                                    {
+                                                        type: 'number',
+                                                        min: 0.01,
+                                                        message: 'Phải lớn hơn 0',
+                                                    },
+                                                ]}
+                                            >
+                                                <InputNumber
+                                                    placeholder="Số lượng"
+                                                    disabled={!selectedFoodId}
+                                                />
+                                            </Form.Item>
 
-                                        {/* Đơn vị:  */}
-                                        <Form.Item
-                                            {...restField}
-                                            name={[name, 'unit']}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Đơn vị không được bỏ tróng',
-                                                },
-                                            ]}
-                                        >
-                                            <Select
-                                                style={{ width: 160 }}
-                                                placeholder="Đơn vị"
-                                                // onChange={(value) => handleChangeUnit(value, index)}
-                                                disabled={!selectedFoodId}
-                                                options={unitOptions.map((unit) => ({
-                                                    label: unit.name,
-                                                    value: unit.name,
-                                                    // value: unit.id,
-                                                }))}
-                                            />
-                                        </Form.Item>
+                                            {/* Đơn vị (hiển thị dưới dạng input, luôn disabled) */}
+                                            <Form.Item
+                                                {...restField}
+                                                name={[name, 'unit']}
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Đơn vị không được bỏ trống',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input
+                                                    style={{ width: 160 }}
+                                                    placeholder="Đơn vị"
+                                                    disabled
+                                                />
+                                            </Form.Item>
 
+                                            <Button
+                                                danger
+                                                onClick={() => remove(name)}
+                                                disabled={!selectedFoodId}
+                                            >
+                                                X
+                                            </Button>
+                                        </Space>
+                                    ))}
+
+                                    <Form.Item>
                                         <Button
-                                            danger
-                                            onClick={() => remove(name)}
+                                            type="dashed"
+                                            onClick={() => add()}
+                                            block
                                             disabled={!selectedFoodId}
                                         >
-                                            X
+                                            + Thêm nguyên liệu
                                         </Button>
-                                    </Space>
-                                ))}
-
-                                <Form.Item>
-                                    <Button
-                                        type="dashed"
-                                        onClick={() => add()}
-                                        block
-                                        disabled={!selectedFoodId}
-                                    >
-                                        + Thêm nguyên liệu
-                                    </Button>
-                                </Form.Item>
-                            </>
-                        )}
-                    </Form.List>
-                    <Form.Item>
-                        <Button type="primary" onClick={() => form.submit()} block>
-                            Add Recipe
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </ModalBase>
-        );
-    }
-    //#endregion
-
-    //#region delete
-    const handleDeleted = () => {
-        console.log('---------delete record---------', record);
-    };
-
-    if (variant == 'delete') {
-        return (
-            <ModalBase type={type}>
-                <div>
-                    <h2 className="text-xl font-semibold mb-6 text-center">Delete recipe</h2>
-                </div>
-                <div className="">
-                    <p className="text-center text-red-600">
-                        <>
-                            Are you sure you want to delete all recipe of <b>"{record.name}"</b> ?
-                        </>
-                    </p>
-                    <div className="flex justify-end space-x-3 mt-6">
-                        <Button onClick={onClose}>Cancel</Button>
-                        <Button type="primary" danger onClick={handleDeleted}>
-                            Delete
-                        </Button>
-                    </div>
-                </div>
+                                    </Form.Item>
+                                </>
+                            )}
+                        </Form.List>
+                        <Form.Item>
+                            <Button type="primary" onClick={() => form.submit()} block>
+                                Add Recipe
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </Spin>
             </ModalBase>
         );
     }
@@ -257,218 +272,234 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
     //#region edit
     if (variant === 'edit' || variant === 'view') {
-        const currentFood = record;
-
         useEffect(() => {
-            if (variant === 'edit' && record?.sizes?.length > 0) {
-                // Gọi cho từng ingredient của từng size để thiết lập unitOptions ban đầu
-                record.sizes.forEach((size) => {
-                    size.ingredients.forEach((ingredient, index) => {
-                        const selected = ingredients.find(
-                            (i) => i.id === ingredient.ingredients_id
-                        );
-                        if (selected) {
-                            const unitFromIngredient = unitData.find(
-                                (u) => u.base == selected.unit
-                            );
-                            if (unitFromIngredient) {
-                                const units = unitData.filter(
-                                    (u) => u.base == unitFromIngredient.base
-                                );
-                                // chỉ set unitOptions nếu đúng size đang active?
-                                // Hoặc merge hết vào 1 mảng nếu dùng chung cho tất cả tab
-                                setUnitOptions((prev) => {
-                                    const map = new Map();
-                                    [...prev, ...units].forEach((u) => map.set(u.name, u));
-                                    return Array.from(map.values()); // loại trùng
-                                });
-                            }
-                        }
-                    });
+            if (selectFood?.foodSizes?.length > 0) {
+                setSelectedSizeId({
+                    label: selectFood?.foodSizes[0]?.sizeId?.name,
+                    value: selectFood?.foodSizes[0]?.id,
+                });
+                dispatch(fetchIngredinetsByFoodSize(selectFood?.foodSizes[0]?.id));
+                form.setFieldsValue({
+                    foodId: selectFood?.name,
+                    sizeId: selectFood?.foodSizes[0]?.sizeId?.name,
+                });
+                dispatch(fetchIngredinetsByFoodSize(selectFood?.foodSizes[0]?.id));
+            }
+        }, [variant, selectFood, form]);
+
+        // useEffect
+        useEffect(() => {
+            form.setFieldsValue({
+                ingredients: ingredientsOption.map((i) => ({
+                    ingredients_id: {
+                        label: i?.ingredients?.name,
+                        value: i?.ingredients?.id,
+                    },
+                    quantity_per_unit: i?.quantityPerUnit,
+                    unit: i?.ingredients?.unit,
+                })),
+            });
+        }, [ingredientsOption]);
+
+        // event handling
+        const handleChangeTab = (e) => {
+            setTab(e);
+            if (selectFood?.foodSizes?.length > 0) {
+                setSelectedSizeId({
+                    label: selectFood?.foodSizes?.filter((i) => i?.isActive == true)[e]?.sizeId
+                        ?.name,
+                    value: selectFood?.foodSizes?.filter((i) => i?.isActive == true)[e]?.id,
+                });
+                dispatch(
+                    fetchIngredinetsByFoodSize(
+                        selectFood?.foodSizes?.filter((i) => i?.isActive == true)[e]?.id
+                    )
+                );
+                form.setFieldsValue({
+                    foodId: selectFood?.name,
+                    sizeId: selectFood?.foodSizes?.filter((i) => i?.isActive == true)[e]?.sizeId
+                        ?.name,
                 });
             }
-        }, [variant, record, ingredients]);
+            dispatch(
+                fetchIngredinetsByFoodSize(
+                    selectFood?.foodSizes?.filter((i) => i?.isActive == true)[e]?.id
+                )
+            );
+        };
 
         return (
             <ModalBase type={type}>
-                <div>
-                    <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
-                </div>
+                <Spin spinning={loading}>
+                    <div>
+                        <h2 className="text-xl font-semibold mb-6 text-center">{title}</h2>
+                    </div>
 
-                <Tabs defaultActiveKey="0">
-                    {currentFood?.sizes.map(
-                        (size, index) => (
-                            <TabPane tab={size.name} key={index.toString()}>
-                                <Form
-                                    form={form}
-                                    layout="vertical"
-                                    onFinish={(data) => handleSubmitForm(data)}
-                                    initialValues={{
-                                        foodId: currentFood.id,
-                                        sizeId: size.id,
-                                        ingredients: size.ingredients,
-                                    }}
-                                >
-                                    <Form.Item label="Tên món ăn" name="foodId">
-                                        <Select
-                                            disabled
-                                            className="custom-readonly-select"
-                                            options={foodsIngredient.map((f) => ({
-                                                label: f.name,
-                                                value: f.id,
-                                            }))}
-                                        />
-                                    </Form.Item>
+                    <Tabs defaultActiveKey={tab} onChange={(e) => handleChangeTab(e)}>
+                        {selectFood?.foodSizes
+                            ?.filter((i) => i?.isActive == true)
+                            ?.map(
+                                (size, index) => (
+                                    <TabPane tab={size?.sizeId?.name} key={index.toString()}>
+                                        <Form
+                                            form={form}
+                                            layout="vertical"
+                                            onFinish={(data) => handleUpdateForm(data)}
+                                        >
+                                            <Form.Item label="Tên món ăn" name="foodId">
+                                                <Input
+                                                    disabled
+                                                    className="custom-readonly-select"
+                                                />
+                                            </Form.Item>
 
-                                    <Form.Item label="Size" name="sizeId">
-                                        <Select
-                                            disabled
-                                            className="custom-readonly-select"
-                                            options={[
-                                                {
-                                                    label: size.name,
-                                                    value: size.id,
-                                                },
-                                            ]}
-                                        />
-                                    </Form.Item>
+                                            <Form.Item label="Size" name="sizeId">
+                                                <Input
+                                                    disabled
+                                                    className="custom-readonly-select"
+                                                />
+                                            </Form.Item>
 
-                                    {/* Nguyên liệu */}
-                                    <Form.List name="ingredients">
-                                        {(fields, { add, remove }) => (
-                                            <>
-                                                {fields.map(
-                                                    ({ key, name, ...restField }, index) => (
-                                                        <Space
-                                                            key={key}
-                                                            style={{
-                                                                display: 'flex',
-                                                                marginBottom: 8,
-                                                            }}
-                                                            align="baseline"
-                                                        >
-                                                            <Form.Item
-                                                                {...restField}
-                                                                name={[name, 'ingredients_id']}
-                                                                rules={[
-                                                                    {
-                                                                        required: true,
-                                                                        message: 'Chọn nguyên liệu',
-                                                                    },
-                                                                ]}
-                                                            >
-                                                                <Select
-                                                                    placeholder="Nguyên liệu"
-                                                                    style={{ width: 160 }}
-                                                                    disabled={
-                                                                        variant == 'view'
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                    options={ingredients.map(
-                                                                        (i) => ({
-                                                                            label: i.name,
-                                                                            value: i.id,
-                                                                        })
-                                                                    )}
-                                                                    onChange={(value) =>
-                                                                        handleIngredientChange(
-                                                                            value,
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                    className="custom-readonly-select"
-                                                                />
-                                                            </Form.Item>
-
-                                                            <Form.Item
-                                                                {...restField}
-                                                                name={[name, 'quantity_per_unit']}
-                                                                rules={[
-                                                                    {
-                                                                        required: true,
-                                                                        message: 'Nhập số lượng',
-                                                                    },
-                                                                ]}
-                                                            >
-                                                                <InputNumber
-                                                                    placeholder="Số lượng"
-                                                                    readOnly={
-                                                                        variant == 'view'
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                />
-                                                            </Form.Item>
-
-                                                            <Form.Item
-                                                                {...restField}
-                                                                name={[name, 'unit']}
-                                                                rules={[
-                                                                    {
-                                                                        required: true,
-                                                                        message: 'Chọn đơn vị',
-                                                                    },
-                                                                ]}
-                                                            >
-                                                                <Select
-                                                                    placeholder="Đơn vị"
-                                                                    style={{ width: 160 }}
-                                                                    className="custom-readonly-select"
-                                                                    disabled={
-                                                                        variant == 'view'
-                                                                            ? true
-                                                                            : false
-                                                                    }
-                                                                    options={unitOptions.map(
-                                                                        (u) => ({
-                                                                            label: u.name,
-                                                                            value: u.name,
-                                                                        })
-                                                                    )}
-                                                                />
-                                                            </Form.Item>
-
-                                                            {variant == 'edit' && (
-                                                                <Button
-                                                                    danger
-                                                                    onClick={() => remove(name)}
+                                            {/* Nguyên liệu */}
+                                            <Form.List name="ingredients">
+                                                {(fields, { add, remove }) => (
+                                                    <>
+                                                        {fields.map(
+                                                            (
+                                                                { key, name, ...restField },
+                                                                index
+                                                            ) => (
+                                                                <Space
+                                                                    key={key}
+                                                                    style={{
+                                                                        display: 'flex',
+                                                                        marginBottom: 8,
+                                                                    }}
+                                                                    align="baseline"
                                                                 >
-                                                                    X
+                                                                    <Form.Item
+                                                                        {...restField}
+                                                                        name={[
+                                                                            name,
+                                                                            'ingredients_id',
+                                                                        ]}
+                                                                        rules={[
+                                                                            {
+                                                                                required: true,
+                                                                                message:
+                                                                                    'Chọn nguyên liệu',
+                                                                            },
+                                                                        ]}
+                                                                    >
+                                                                        <Select
+                                                                            placeholder="Nguyên liệu"
+                                                                            style={{ width: 160 }}
+                                                                            disabled={
+                                                                                variant == 'view'
+                                                                                    ? true
+                                                                                    : false
+                                                                            }
+                                                                            options={filterOption?.ingredients?.map(
+                                                                                (i) => ({
+                                                                                    label: i.name,
+                                                                                    value: i.id,
+                                                                                })
+                                                                            )}
+                                                                            onChange={(value) =>
+                                                                                handleIngredientChange(
+                                                                                    value,
+                                                                                    index
+                                                                                )
+                                                                            }
+                                                                            className="custom-readonly-select"
+                                                                        />
+                                                                    </Form.Item>
+
+                                                                    <Form.Item
+                                                                        {...restField}
+                                                                        name={[
+                                                                            name,
+                                                                            'quantity_per_unit',
+                                                                        ]}
+                                                                        rules={[
+                                                                            {
+                                                                                required: true,
+                                                                                message:
+                                                                                    'Nhập số lượng',
+                                                                            },
+                                                                        ]}
+                                                                    >
+                                                                        <InputNumber
+                                                                            placeholder="Số lượng"
+                                                                            readOnly={
+                                                                                variant == 'view'
+                                                                                    ? true
+                                                                                    : false
+                                                                            }
+                                                                        />
+                                                                    </Form.Item>
+
+                                                                    <Form.Item
+                                                                        {...restField}
+                                                                        name={[name, 'unit']}
+                                                                        rules={[
+                                                                            {
+                                                                                required: true,
+                                                                                message:
+                                                                                    'Đơn vị không được bỏ trống',
+                                                                            },
+                                                                        ]}
+                                                                    >
+                                                                        <Input
+                                                                            placeholder="Đơn vị"
+                                                                            style={{ width: 160 }}
+                                                                            disabled
+                                                                        />
+                                                                    </Form.Item>
+
+                                                                    {variant == 'edit' && (
+                                                                        <Button
+                                                                            danger
+                                                                            onClick={() =>
+                                                                                remove(name)
+                                                                            }
+                                                                        >
+                                                                            X
+                                                                        </Button>
+                                                                    )}
+                                                                </Space>
+                                                            )
+                                                        )}
+
+                                                        {variant == 'edit' && (
+                                                            <Form.Item>
+                                                                <Button
+                                                                    type="dashed"
+                                                                    onClick={() => add()}
+                                                                    block
+                                                                >
+                                                                    + Thêm nguyên liệu
                                                                 </Button>
-                                                            )}
-                                                        </Space>
-                                                    )
+                                                            </Form.Item>
+                                                        )}
+                                                    </>
                                                 )}
+                                            </Form.List>
 
-                                                {variant == 'edit' && (
-                                                    <Form.Item>
-                                                        <Button
-                                                            type="dashed"
-                                                            onClick={() => add()}
-                                                            block
-                                                        >
-                                                            + Thêm nguyên liệu
-                                                        </Button>
-                                                    </Form.Item>
-                                                )}
-                                            </>
-                                        )}
-                                    </Form.List>
-
-                                    {variant == 'edit' && (
-                                        <Form.Item>
-                                            <Button type="primary" htmlType="submit" block>
-                                                Cập nhật công thức
-                                            </Button>
-                                        </Form.Item>
-                                    )}
-                                </Form>
-                            </TabPane>
-                        )
-                        // console.log(size)
-                    )}
-                </Tabs>
+                                            {variant == 'edit' && (
+                                                <Form.Item>
+                                                    <Button type="primary" htmlType="submit" block>
+                                                        Cập nhật công thức
+                                                    </Button>
+                                                </Form.Item>
+                                            )}
+                                        </Form>
+                                    </TabPane>
+                                )
+                                // console.log(size)
+                            )}
+                    </Tabs>
+                </Spin>
             </ModalBase>
         );
     }
