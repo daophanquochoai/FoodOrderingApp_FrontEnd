@@ -4,6 +4,29 @@ import axios, { AxiosInstance } from 'axios';
 import { setCookie } from 'nookies';
 import type { ResponseType as AxiosResponseType } from 'axios';
 
+const navigateToPage = (path: string) => {
+    // Sử dụng history API để chuyển trang mà không reload
+    window.history.pushState({}, '', path);
+    // Trigger navigation event để React Router cập nhật
+    window.dispatchEvent(new PopStateEvent('popstate'));
+};
+
+// Hàm helper để xử lý error navigation
+const handleErrorNavigation = (status: number, currentPath: string) => {
+    const errorPages = {
+        404: '/404',
+        500: '/500',
+        503: '/500',
+    };
+
+    const targetPath = errorPages[status];
+    if (targetPath && currentPath !== targetPath) {
+        navigateToPage(targetPath);
+        return true; // Đã navigate
+    }
+    return false; // Không navigate
+};
+
 class HttpService {
     protected entity: string;
     protected instance: AxiosInstance;
@@ -17,10 +40,16 @@ class HttpService {
     }
 
     private async handleError(error: any) {
+        console.log(error);
         let formatError = {};
-        // if (!error?.response) {
-        //     window.location.href = '500';
-        // }
+        if (!error?.response) {
+            // Xử lý network error
+            if (!handleErrorNavigation(500, window.location.pathname)) {
+                formatError = { message: 'Network error or server unavailable', status: 500 };
+                return Promise.reject(formatError);
+            }
+            return;
+        }
         if (error?.response) {
             const { data, status } = error.response;
             const isServer = typeof window === 'undefined';
@@ -76,9 +105,21 @@ class HttpService {
                         }
                     }
                     break;
+                case 500:
+                    if (!handleErrorNavigation(500, window.location.pathname)) {
+                        formatError = { message: 'Internal server error', status: 500 };
+                    }
+                    break;
+                case 404:
+                    if (!handleErrorNavigation(404, window.location.pathname)) {
+                        formatError = { message: 'Page not found', status: 404 };
+                    }
+                    break;
                 case 503:
                     if (!isServer) deleteAllCookies();
-                    window.location.href = '500';
+                    if (!handleErrorNavigation(503, window.location.pathname)) {
+                        formatError = { message: 'Service unavailable', status: 503 };
+                    }
                     break;
                 default:
                     break;
