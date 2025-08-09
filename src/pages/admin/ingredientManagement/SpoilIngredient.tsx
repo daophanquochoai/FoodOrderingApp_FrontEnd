@@ -319,6 +319,7 @@ const SpoilIngredient = () => {
                         onChange={handleFilterChange}
                         onReset={handleResetFilter}
                         type={ModalType.SPOIL_INGREDIENT}
+                        onApply={() => {}}
                     />
                 </div>
 

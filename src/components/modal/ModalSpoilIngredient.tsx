@@ -186,7 +186,12 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
 
             await dispatch(updateIngredientsError({
                 data: {
-                    ...data,
+                    unit: data.unit,
+                    quantity: Number(data.quantity),
+                    reason: data.reason,
+                    historyIngredients: {
+                        id: data.name
+                    },
                     isActive: false,
                 },
                 id: data.id,
