@@ -1,8 +1,8 @@
 import HttpService from '@/config/httpService';
 
 class DashboardApi extends HttpService {
-    getDashboardTotal = (token: string) => {
-        return this.get('/dashboard/get-total', token);
+    getDashboardTotal = (year: any, token: string) => {
+        return this.get(`/dashboard/get-total/${year}`, token);
     };
     getMonthlyRevenue = (year: number, token: string) => {
         return this.get(`/dashboard/get-monthly-revenue/${year}`, token);
@@ -10,6 +10,9 @@ class DashboardApi extends HttpService {
     getOrderYears = (token: string) => {
         return this.get('/dashboard/get-years', token);
     };
+    getSellFood = (year : string, token : string) => {
+        return this.get(`/dashboard/get-sell-food/${year}`, token);
+    }
 }
 
 export const dashboardApi = new DashboardApi('dashboard');

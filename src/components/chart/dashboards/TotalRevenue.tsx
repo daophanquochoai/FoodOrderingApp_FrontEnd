@@ -1,116 +1,166 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { Line } from '@ant-design/plots';
 import { Empty, Select } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { setYearSelected, fetchMonthlyRevenue } from '@/store/action/admin/dashboard/dashboard.action';
-import { selectOrderYears, selectMonthlyRevenue, selectYearSelected } from '@/store/selector/admin/dashboard/dashboard.selector';
+import {
+  setYearSelected,
+  fetchMonthlyRevenue,
+  fetchDashboardTotal,
+} from '@/store/action/admin/dashboard/dashboard.action';
+import {
+  selectOrderYears,
+  selectMonthlyRevenue,
+  selectYearSelected,
+} from '@/store/selector/admin/dashboard/dashboard.selector';
 
 const TotalRevenue = () => {
-    const dispatch = useDispatch();
-    const orderYears = useSelector(selectOrderYears);
-    const monthlyRevenue = useSelector(selectMonthlyRevenue);
-    const yearSelected = useSelector(selectYearSelected);
+  const dispatch = useDispatch();
+  const orderYears = useSelector(selectOrderYears);
+  const monthlyRevenue = useSelector(selectMonthlyRevenue);
+  const yearSelected = useSelector(selectYearSelected);
 
-    const chartData = monthlyRevenue?.map(item => ({
-        month: item.month.toString(),
-        year: yearSelected?.toString(),
-        revenue: item.revenue || 0,
-    })) || [];  
+  const formatCurrencyShort = (value) => {
+    if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)}B`;
+    if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+    if (value >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
+    return Number(value).toString();
+  };
 
-    // useEffect(() => {
-    //     if (yearSelected) {
-    //         dispatch(fetchMonthlyRevenue({ year: yearSelected }));
-    //     }
-    // }, [yearSelected]);
+  const defaultMonths = useMemo(
+    () =>
+      Array.from({ length: 12 }, (_, i) => ({
+        month: (i + 1).toString(),
+        monthLabel: `Tháng ${i + 1}`,
+        revenue: 0,
+      })),
+    []
+  );
 
-    // const rawData = {
-    //     year: '2024',
-    //     data: [
-    //         { month: '1', year: '2024', revenue: 15000 },
-    //         { month: '2', year: '2024', revenue: 13500 },
-    //         { month: '3', year: '2024', revenue: 14500 },
-    //         { month: '4', year: '2024', revenue: 15700 },
-    //         { month: '5', year: '2024', revenue: 16300 },
-    //         { month: '6', year: '2024', revenue: 14900 },
-    //         { month: '7', year: '2024', revenue: 17200 },
-    //         { month: '8', year: '2024', revenue: 18000 },
-    //         { month: '9', year: '2024', revenue: 19000 },
-    //         { month: '10', year: '2024', revenue: 17500 },
-    //         { month: '11', year: '2024', revenue: 16000 },
-    //         { month: '12', year: '2024', revenue: 21000 },
-    //     ],
-    // };
+  const chartData = useMemo(() => {
+    return defaultMonths.map((m) => {
+      const real = monthlyRevenue?.find((it) => it?.month?.toString() === m.month);
+      let revenue = 0;
+      if (real?.revenue !== undefined && real?.revenue !== null) {
+        revenue = Number(real.revenue);
+        if (Number.isNaN(revenue)) {
+          // nếu backend trả string có ký tự khác, try clean
+          const cleaned = String(real.revenue).replace(/[^\d.-]/g, '');
+          revenue = Number(cleaned) || 0;
+        }
+      }
+      // Nếu backend trả "triệu" và bạn muốn VND, nhân ở đây:
+      // revenue = revenue * 1_000_000;
 
-    const config = {
+      return { ...m, revenue };
+    });
+  }, [defaultMonths, monthlyRevenue]);
+
+  const maxRevenue = useMemo(() => {
+    const arr = chartData.map((d) => Number(d.revenue) || 0);
+    return arr.length ? Math.max(...arr) : 0;
+  }, [chartData]);
+
+  const config = useMemo(
+    () => ({
         data: chartData,
-        xField: 'month',
+        xField: 'monthLabel',
         yField: 'revenue',
         shapeField: 'smooth',
         point: {
             shapeField: 'circle',
             sizeField: 2,
         },
-        tooltip: {
-            formatter: (datum) => {
-                return {
-                    name: `Tháng ${datum.month}`,
-                    value: new Intl.NumberFormat('vi-VN', {
-                        style: 'currency',
-                        currency: 'VND',
-                        maximumFractionDigits: 0
-                    }).format(datum.revenue)
-                };
-            }
-        },
         yAxis: {
-            label: {
-                formatter: (value) => {
-                    // Định dạng số thành dạng gọn như 10K, 20M
-                    if (value >= 1000000000) {
-                        return `${(value / 1000000000).toFixed(1)}B`;
-                    } else if (value >= 1000000) {
-                        return `${(value / 1000000).toFixed(1)}M`;
-                    } else if (value >= 1000) {
-                        return `${(value / 1000).toFixed(1)}K`;
-                    }
-                    return value;
-                }
-            }
-        }
-    };
+                min: 0,
+                max: maxRevenue > 0 ? maxRevenue * 1.1 : 1,
+                tickCount: 5,
+                label: {
+                formatter: (value) => formatCurrencyShort(Number(value) || 0),
+            },
+        },
+        interaction: {
+            tooltip: {
+              render: (e, { title, items }) => {
+                const list = items.filter((item) => item.value);
+                return (
+                  <div key={title}>
+                    <h4>{title}</h4>
+                    {list.map((item) => {
+                      const { name, value, color } = item;
+                      return (
+                        <div>
+                          <div style={{ margin: 0, display: 'flex', justifyContent: 'space-between' }}>
+                            <div>
+                              <span
+                                style={{
+                                  display: 'inline-block',
+                                  width: 6,
+                                  height: 6,
+                                  borderRadius: '50%',
+                                  backgroundColor: color,
+                                  marginRight: 6,
+                                }}
+                              ></span>
+                              <span>{name}</span>
+                            </div>
+                            <b>{value?.toFixed(2)}</b>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              },
+            },
+          },
+        // explicit meta/scale để G2 không tự normalize
+        meta: {
+            revenue: {
+            min: 0,
+            max: maxRevenue > 0 ? maxRevenue * 1.1 : 1,
+            nice: true,
+            },
+        },
+    }),
+    [chartData, maxRevenue]
+  );
 
-    const yearOptions = orderYears?.map(year => ({
-        value: year.year.toString(),
-        label: year.year.toString()
+  const yearOptions =
+    orderYears?.map((year) => ({
+      value: year.year.toString(),
+      label: year.year.toString(),
     })) || [];
 
-    const handleYearChange = (year) => {
-        dispatch(setYearSelected(Number(year)));
-        dispatch(fetchMonthlyRevenue({ year: Number(year) }));
-    };
+  const handleYearChange = (year) => {
+    dispatch(setYearSelected(Number(year)));
+    dispatch(fetchMonthlyRevenue({ year: Number(year) }));
+    dispatch(fetchDashboardTotal(Number(year)));
+  };
 
-    return (
-        <div>
-            <div className="flex items-center justify-between">
-                <p className="font-semibold text-lg pl-3">Total Revenue</p>
-                {yearOptions.length > 0 && (
-                    <Select
-                        showSearch
-                        placeholder={'Year'}
-                        value={yearSelected?.toString()}
-                        options={yearOptions}
-                        onChange={handleYearChange}
-                        style={{ minWidth: '120px' }}
-                    />
-                )}
-            </div>
-            {chartData.length > 0 ? (
-                <Line {...config} />
-            ) : (
-                <Empty description="Không có dữ liệu doanh thu" className="py-8" />
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <div className="flex items-center justify-between">
+        <p className="font-semibold text-lg pl-3">Total Revenue</p>
+        {yearOptions.length > 0 && (
+          <Select
+            showSearch
+            placeholder="Year"
+            value={yearSelected?.toString()}
+            options={yearOptions}
+            onChange={handleYearChange}
+            style={{ minWidth: '120px' }}
+          />
+        )}
+      </div>
+
+      {chartData.length > 0 ? (
+        // key giúp ép re-render khi year đổi
+        <Line key={yearSelected ?? JSON.stringify(chartData)} {...config} />
+      ) : (
+        <Empty description="Không có dữ liệu doanh thu" className="py-8" />
+      )}
+    </div>
+  );
 };
 
 export default TotalRevenue;

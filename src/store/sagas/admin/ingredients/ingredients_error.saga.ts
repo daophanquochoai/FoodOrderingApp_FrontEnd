@@ -20,7 +20,6 @@ function* handleFetchFirst() {
         });
         const token = getCookies('access_token');
         const { data } = yield call(ingredientsErrorApi.getIngredientsError, filter, token);
-        console.log(data);
         yield put(ingredientsError.actions.setTotalPage(data?.data?.totalPage));
         yield put(ingredientsError.actions.setIngredientsError(data?.data?.data));
     } catch (e) {

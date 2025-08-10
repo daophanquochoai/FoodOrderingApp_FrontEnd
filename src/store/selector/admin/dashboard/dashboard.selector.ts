@@ -28,3 +28,8 @@ export const selectYearSelected = createSelector(
     selectState,
     (state: DashboardSlice) => state.yearSelected
 );
+
+export const selectSellFood = createSelector(
+    selectState,
+    (state : DashboardSlice) => state.sellFood
+)

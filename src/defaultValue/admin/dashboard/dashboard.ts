@@ -6,4 +6,5 @@ export const dashboardInitialState: DashboardSlice = {
     orderYears: [],
     yearSelected: null,
     loading: false,
+    sellFood : []
 };

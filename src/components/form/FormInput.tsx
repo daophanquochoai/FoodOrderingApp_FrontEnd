@@ -10,6 +10,7 @@ const FormInput: React.FC<any> = ({
     type = 'text',
     helperText,
     error,
+    suffix = '',
     disabled = false,
 }) => {
     return (
@@ -19,7 +20,7 @@ const FormInput: React.FC<any> = ({
             render={({ field }) => (
                 <div className="flex flex-col gap-1">
                     <label className="mb-1 text-sm font-medium text-gray-700">{label}</label>
-                    <Input {...field} placeholder={placeholder} type={type} disabled={disabled} />
+                    <Input {...field} placeholder={placeholder} type={type} disabled={disabled} suffix={suffix}/>
                     {error && <p className="text-xs text-red-500 mt-1">* {helperText}</p>}
                 </div>
             )}

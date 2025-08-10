@@ -21,6 +21,9 @@ const DashboardSlice = createSlice({
         },
         setYearSelected(state, { payload }: PayloadAction<any>) {
             state.yearSelected = payload;
+        },
+        setSellFood(state, {payload} : PayloadAction<any>){
+            state.sellFood = payload
         }
     }
 });

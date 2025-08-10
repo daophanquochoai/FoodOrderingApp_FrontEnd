@@ -1,16 +1,22 @@
+import { selectSellFood } from '@/store/selector/admin/dashboard/dashboard.selector';
 import { Pie } from '@ant-design/plots';
+import { useSelector } from 'react-redux';
 
 const data = [
-    { food: 'Gà rán', value: 40 },
+    { food: 'Gà rán', value: 80 },
     { food: 'Hamburger', value: 30 },
     { food: 'Pizza', value: 30 },
 ];
 
 const RevenueFood = () => {
+
+    // selector 
+    const sellFood = useSelector(selectSellFood);
+
     const config = {
-        data: data,
+        data: sellFood,
         angleField: 'value',
-        colorField: 'food',
+        colorField: 'label',
         innerRadius: 0.6,
         label: {
             text: 'value',

@@ -1,15 +1,16 @@
-import { dashboardApi } from "@/api/admin/dashboard/dashboard.api";
-import * as actions from "@/store/action/admin/dashboard/dashboard.action";
-import { dashboard } from "@/store/reducer";
+import { dashboardApi } from '@/api/admin/dashboard/dashboard.api';
+import * as actions from '@/store/action/admin/dashboard/dashboard.action';
+import { dashboard } from '@/store/reducer';
 import { all, call, fork, put, takeEvery } from 'typed-redux-saga';
 import { getCookies } from '@/utils/cookies/cookies';
 
-function* fetchDashboardTotal() {
+function* fetchDashboardTotal({ payload }) {
     yield put(dashboard.actions.setDashboardLoading(true));
     try {
         const token = getCookies('access_token');
-        const { data } = yield call(dashboardApi.getDashboardTotal, token);
+        const { data } = yield call(dashboardApi.getDashboardTotal, payload, token);
         yield put(dashboard.actions.setDashboardTotal(data?.data));
+        yield handleFetchSellFood({payload});
     } catch (error) {
         console.log(error);
     } finally {
@@ -43,6 +44,21 @@ function* fetchOrderYears() {
     }
 }
 
+function* handleFetchSellFood({payload}){
+    try{
+        const token = getCookies('access_token');
+        const {data} = yield call(dashboardApi.getSellFood, payload, token);
+        console.log(data?.data)
+        const formattedData = Object.entries(data?.data || []).map(([label, value]) => ({
+            label,
+            value
+          }));
+        yield put(dashboard.actions.setSellFood(formattedData))
+    }catch(e){
+        console.error(e);
+    }
+}
+
 function* watchFetchDashBoardTotal() {
     yield* takeEvery(actions.fetchDashboardTotal, fetchDashboardTotal);
 }
@@ -53,6 +69,10 @@ function* watchFetchMonthlyRevenue() {
 
 function* watchFetchOrderYears() {
     yield* takeEvery(actions.fetchOrderYears, fetchOrderYears);
+}
+
+function* watchGetSellFood(){
+    yield* takeEvery(actions.getSellFood, handleFetchSellFood);
 }
 
 export function* watchDashboard() {

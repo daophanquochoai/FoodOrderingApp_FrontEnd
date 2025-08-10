@@ -1,53 +1,51 @@
 import {
     Button,
-    DatePicker,
     Input,
     InputRef,
     Space,
     Table,
     TableColumnsType,
     TableColumnType,
-    Tag,
     Spin,
     Pagination,
 } from 'antd';
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { FilterDropdownProps } from 'antd/es/table/interface';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import { mapIngredients } from '../../../utils/mapIngredients';
 import { ModalType } from '@/type/store/common';
 import { common } from '@/store/reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import * as actions from '@/store/action/admin/ingredients/ingredients_error.action';
 import * as selectors from '@/store/selector/admin/ingredients/ingredients_error.selector';
-import dayjs from 'dayjs';
 import FilterBar from '@/components/filter/FilterBar';
 
 type DataIndex = keyof any;
 
 const SpoilIngredient = () => {
+
+    // hook
     const dispatch = useDispatch();
 
+    // state
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef<InputRef>(null);
-
-    const navigate = useNavigate();
-
     const [filters, setFilters] = useState({});
 
+    // selector
     const loading = useSelector(selectors.selectLoadingPage);
     const ingredientsErrorList = useSelector(selectors.selectIngredientsError);
     const filter = useSelector(selectors.selectFilter);
     const totalPage = useSelector(selectors.selectTotalPage); 
 
+    // useEffect
     useEffect(() => {
         dispatch(actions.fetchFirst());
     }, []);
 
+    // event handling
     const handleSearch = (
         selectedKeys: string[],
         confirm: FilterDropdownProps['confirm'],
