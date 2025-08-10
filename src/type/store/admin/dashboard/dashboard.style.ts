@@ -4,6 +4,13 @@ export interface DashboardSlice {
     orderYears: OrderYear[];
     yearSelected: number | null;
     loading: boolean;
+    sellFood : SellFood[]
+}
+
+
+export interface SellFood {
+    label : string, 
+    value : number
 }
 
 export interface DashboardTotal {

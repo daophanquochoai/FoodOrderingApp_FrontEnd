@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ModalBase from './ModalBase';
-import { ModalIngredientProps } from '../../type/modal/modal';
 import FormFloatingInput from '../form/FormFloatingInput';
-import { Ingredient } from '../../type';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { IngredientShema } from '../yup/ingredient';
 import { Button, Col, Descriptions, DescriptionsProps, Row } from 'antd';
-import FormFloatingSelect from '../form/FormFloatingSelect';
 import { ModalState, ModalType } from '@/type/store/common';
 import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
-import dayjs from 'dayjs';
 import { SpoilIngredientSchema } from '@/validation/spoilIngredient.validation';
 import FormSelectAnt from '../form/FormSelectAnt';
 import { FormInput } from '../form';
@@ -21,15 +16,20 @@ import { selectHistory } from '@/store/selector/admin/history/history.selector';
 import { selectHistoryIngredients} from '@/store/selector/admin/ingredients/ingredients_error.selector';
 
 const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => {
+
+    // hook
     const dispatch = useDispatch();
 
+    // selector
     const historyBatches = useSelector(selectHistory);
     const historyIngredients = useSelector(selectHistoryIngredients);
 
+    // state
     const [selectedBatchId, setSelectedBatchId] = useState<number | null>(null);
     const [selectedIngredientId, setSelectedIngredientId] = useState<number | null>(null);
     const [maxQuantity, setMaxQuantity] = useState<number>(0);
 
+    // title
     const getModalTitle = (): string => {
         switch (variant) {
             case 'edit':
@@ -77,7 +77,6 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
 
     useEffect(() => {
         if (watchBatchCode) {
-            console.log('Batch code changed:', watchBatchCode);
             const batchId = parseInt(String(watchBatchCode), 10);
             setSelectedBatchId(batchId);
             dispatch(fetchHistoryIngredients({ id: batchId }));
@@ -97,10 +96,11 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
             const selectedHistory = historyIngredients.find(
                 (history) => history.id === ingredientId
             );
-            
             if (selectedHistory) {
-                setMaxQuantity(selectedHistory.quantity);
-                setValue('unit', selectedHistory.unit);
+                const sumError = selectedHistory?.errors?.reduce((sum,item) => sum += item?.quantity, 0);
+                const sumUse = selectedHistory?.uses?.reduce((sum,item) => sum += item?.quantity, 0);
+                setMaxQuantity(selectedHistory.quantity - sumError - sumUse);
+                setValue('unit', selectedHistory?.unit);
                 setValue('quantity', undefined);
             }
         }
@@ -128,7 +128,6 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
 
     const onSubmit = async (formData: any) => {
         try {
-            console.log('Form data submitted:', formData);
 
             const payload = {
                 unit: formData.unit,
@@ -316,6 +315,9 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
                                         error={!!errors.quantity}
                                         helperText={errors.quantity?.message}
                                         disabled={!selectedIngredientId}
+                                        suffix={historyIngredients.find(
+                                            (history) => history.id === selectedIngredientId
+                                        )?.unit || ''}
                                         rules={{
                                             validate: value => {
                                                 const numValue = Number(value);

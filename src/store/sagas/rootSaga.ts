@@ -21,6 +21,8 @@ import { watchOrderProfile } from './client/order_profile/order_profile.saga';
 import { watchSearch } from './client/search/search.saga';
 import { watchRecipe } from './admin/recipe/recipe.saga';
 import { watchIngredientUse } from './admin/ingredients/ingredient_use.saga';
+import { watchDashboard } from './admin/dashboard/dashboard.saga';
+import { watchIngredientsError } from './admin/ingredients/ingredients_error.saga';
 
 export default function* rootSaga() {
     yield* fork(watchAuth);
@@ -45,4 +47,6 @@ export default function* rootSaga() {
     yield* fork(watchSearch);
     yield* fork(watchRecipe);
     yield* fork(watchIngredientUse);
+    yield* fork(watchDashboard);
+    yield* fork(watchIngredientsError);
 }

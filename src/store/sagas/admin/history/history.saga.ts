@@ -30,12 +30,8 @@ function* handleFetchHistory() {
             filter: select(selectFilter),
         });
 
-        console.log(filter);
-
         const token = getCookies('access_token');
         const { data } = yield call(historyApi.getHistoryIngredientByFilter, filter, token);
-
-        console.log(data);
 
         yield put(history_import.actions.setHistory(data?.data?.data));
         yield put(history_import.actions.setTotalPage(data?.data?.totalPage));
