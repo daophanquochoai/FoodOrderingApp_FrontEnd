@@ -87,12 +87,12 @@ const ProductInfo = () => {
                             <span className="text-lg text-gray-500 line-through -mb-[3px]">
                                 ${selectedSize != null
                                     ? formatMoney(
-                                          ((selectedSize?.discount + 100) * selectedSize.price) / 100
+                                          (selectedSize.price)
                                       )
                                     : '__'}
                             </span>
                             <span className="text-xl font-bold text-orange-600">
-                                ${selectedSize != null ? formatMoney(selectedSize.price) : '__'}
+                                ${selectedSize != null ? formatMoney(selectedSize.price - ((selectedSize?.price || 0) * (selectedSize?.discount || 0) / 100)) : '__'}
                             </span>
                         </div>
                         <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-2 py-1 rounded-full shadow-sm">

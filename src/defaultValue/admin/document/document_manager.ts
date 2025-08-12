@@ -5,7 +5,9 @@ export const documentManager: DocumentManagerType = {
     documentSelected: null,
     filter: {
         pageNo: 1,
-        pageSize: 10
+        pageSize: 10,
+        sortOrder: 'DESC',
+        sortBy: 'id'
     },
     filterOption: {},
     loadingPage: false,

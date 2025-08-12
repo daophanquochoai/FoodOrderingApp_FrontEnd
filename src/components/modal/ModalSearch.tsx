@@ -80,9 +80,12 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
             : [];
 
     const handleNavigateTo = (item) => {
+        dispatch(common.actions.setHiddenModal(type));
         dispatch(food.actions.setFoodDetail(item));
-        navigate(`/products/${item?.id}`)
+        navigate(`/products/${item?.id}`);
     }
+                        console.log(searchResults)
+
     return (
         <ConfigProvider
             theme={{
@@ -121,7 +124,6 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                 />
                             </div>
                         </div>
-
                         <div className="mt-4">
                             {loading ? (
                                 <div className="flex justify-center mt-4">
@@ -190,7 +192,7 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                                                 ?.discount &&
                                                                             item?.foodSizes[0]
                                                                                 ?.discount !==
-                                                                                0.0 ? (
+                                                                                0.0 && (
                                                                                 <div className="flex justify-start gap-2 items-end">
                                                                                     <p className="line-through text-xs text-gray-600">
                                                                                         {item?.foodSizes[0]?.price?.toLocaleString() ||
@@ -209,25 +211,12 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                                                                 ?.price *
                                                                                                 item
                                                                                                     ?.foodSizes[0]
-                                                                                                    ?.discount
+                                                                                                    ?.discount/100
                                                                                         )?.toLocaleString()}{' '}
                                                                                         VND
                                                                                     </p>
                                                                                 </div>
-                                                                            ) : (
-                                                                                <p
-                                                                                    className={`font-medium text-sm text-[#f97316]`}
-                                                                                >
-                                                                                    {(item?.foodSizes &&
-                                                                                        item
-                                                                                            ?.foodSizes
-                                                                                            ?.length >
-                                                                                            0 &&
-                                                                                        item?.foodSizes[0]?.price?.toLocaleString()) ||
-                                                                                        0}{' '}
-                                                                                    VND
-                                                                                </p>
-                                                                            )}
+                                                                            ) }
                                                                         </div>
                                                                     </div>
                                                                 ))}

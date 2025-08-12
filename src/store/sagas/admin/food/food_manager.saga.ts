@@ -74,7 +74,7 @@ function* handleAddFoodSize({ payload }) {
         yield put(
             foodManager.actions.setFoodSelected({
                 ...foodSelected,
-                foodSizes: [data?.data, ...foodSelected?.foodSizes],
+                foodSizes: [data?.data, ...(foodSelected?.foodSizes || [])],
             })
         );
         yield put(common.actions.setSuccessMessage('Create food size successul'));
