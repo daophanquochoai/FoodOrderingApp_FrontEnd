@@ -7,19 +7,12 @@ import PaymentMethod from '../../../components/checkout/PaymentMethod';
 import Voucher from '../../../components/checkout/Voucher';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFirst, paymentAction } from '@/store/action/client/checkout/checkout.action';
-import { selectCheckout } from '@/store/selector/client/checkout/checkout.selector';
+import { selectCheckout, selectLoadingCheckout } from '@/store/selector/client/checkout/checkout.selector';
 import { selectAddress, selectInfo } from '@/store/selector/client/account/account.selector';
 import { selectCart } from '@/store/selector/client/cart/cart.selector';
 import { order } from '@/store/reducer';
-import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-
-interface CreditCardInfo {
-    cardholder: string;
-    cardNumber: string;
-    expiry: string;
-    cvv: string;
-}
+import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { Spin } from 'antd';
 
 const Checkout = () => {
     // hook
@@ -33,6 +26,7 @@ const Checkout = () => {
     const info = useSelector(selectInfo);
     const cart = useSelector(selectCart);
     const addressList = useSelector(selectAddress);
+    const loading = useSelector(selectLoadingCheckout);
 
     // useEffect
     useEffect(() => {
@@ -61,9 +55,6 @@ const Checkout = () => {
         setError('');
     };
 
-    // const handlePointsUsage = (points: number) => {
-    //     dispatch(usePointAction(points / 1000));
-    // };
 
     const handleCheckout = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -114,12 +105,14 @@ const Checkout = () => {
             })
         );
     };
-    const stripePromise = loadStripe(import.meta.env.VITE_REACT_APP_PUBLIC_KEY);
+
+    const handleNavigateTo = () => {
+        navigate('/');
+    }
     return (
-        <>
-            <Elements stripe={stripePromise}>
+        <Spin spinning={loading}>
                 <div className="bg-white py-6 px-6 lg:px-40 border-b flex items-center justify-between">
-                    <strong className="text-lg">GrillFood - Fast Food Store</strong>
+                    <strong className="text-lg cursor-pointer " onClick={handleNavigateTo}>GrillFood - Fast Food Store</strong>
                     <Link to={'/cart'} className="flex items-center gap-2">
                         <RiShoppingBag4Line className="text-3xl text-blue-600" />
                     </Link>
@@ -172,8 +165,7 @@ const Checkout = () => {
                         <OrderDetail />
                     </div>
                 </div>
-            </Elements>
-        </>
+        </Spin>
     );
 };
 

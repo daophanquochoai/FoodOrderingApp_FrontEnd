@@ -7,6 +7,8 @@ import LoadingPage from '@/pages/LoadingPage';
 import ServerError500 from '@/pages/500';
 import ScrollToTop from '../components/common/ScrollToTop';
 import OrderManagement from '@/pages/admin/orderManagement';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 
 const Home = lazy(() => import('../pages/client/home/Home'));
 const About = lazy(() => import('../pages/client/about/About'));
@@ -61,6 +63,7 @@ const LatestProduct = lazy(() => import('@/pages/admin/homepageManagement/Latest
 const DealOfTheWeek = lazy(() => import('@/pages/admin/homepageManagement/DealOfTheWeek'));
 
 const AppRoutes = () => {
+    const stripePromise = loadStripe(import.meta.env.VITE_REACT_APP_PUBLIC_KEY);
     return (
         <Suspense fallback={<LoadingPage />}>
             <ScrollToTop />
@@ -109,7 +112,11 @@ const AppRoutes = () => {
                 </Route>
 
                 {/* checkout route */}
-                <Route path="/checkouts" element={<Checkout />} />
+                <Route path="/checkouts" element={
+                    <Elements stripe={stripePromise}>
+                        <Checkout />
+                    </Elements>
+                } />
 
                 {/* admin routes */}
                 <Route

@@ -36,6 +36,7 @@ export interface Order {
     discountApplied: Voucher;
     paymentId: Payment;
     shipperId: Employee;
+    cogs : number;
 }
 
 export interface FilterOrder extends Filter {

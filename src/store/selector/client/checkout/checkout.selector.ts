@@ -21,3 +21,5 @@ export const selectSubTotal = createSelector(selectState, (state: CheckoutSlice)
 export const selectShip = createSelector(selectState, (state: CheckoutSlice) => state.ship);
 
 export const selectTotal = createSelector(selectState, (state: CheckoutSlice) => state.total);
+
+export const selectLoadingCheckout = createSelector(selectState, (state : CheckoutSlice) => state.loading);

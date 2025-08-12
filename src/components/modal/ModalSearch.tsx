@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdClose } from 'react-icons/io';
 import { useDispatch, useSelector } from 'react-redux';
-import { common } from '@/store/reducer';
+import { common, food } from '@/store/reducer';
 import { selectModal } from '@/store/selector/common/common.selector';
 import { ModalState } from '@/type/store/common';
 import Search from 'antd/es/input/Search';
@@ -14,18 +14,20 @@ import {
     selectSearchLoading,
     selectSearchQuery,
 } from '@/store/selector/client/search/search.selector';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
     // hook
     const dispatch = useDispatch();
     const modal = useSelector(selectModal);
+    const navigate = useNavigate();
 
+    // selector
     const searchResults = useSelector(selectSearchResults) || [];
     const loading = useSelector(selectSearchLoading) || false;
     const searchQuery = useSelector(selectSearchQuery) || '';
 
-    console.log(searchResults);
+    // state
     const [inputValue, setInputValue] = useState('');
 
     const onClose = () => {
@@ -77,6 +79,10 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                   .slice(0, 10)
             : [];
 
+    const handleNavigateTo = (item) => {
+        dispatch(food.actions.setFoodDetail(item));
+        navigate(`/products/${item?.id}`)
+    }
     return (
         <ConfigProvider
             theme={{
@@ -159,11 +165,10 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                             {searchResults &&
                                                                 searchResults?.length > 0 &&
                                                                 searchResults?.map((item) => (
-                                                                    <Link
-                                                                        to={`/products/${item?.id}`}
+                                                                    <div
+                                                                        onClick={() => handleNavigateTo(item)} 
                                                                         key={item?.id}
                                                                         className="p-1 my-1 flex gap-2 justify-start cursor-pointer hover:bg-slate-50"
-                                                                        onClick={onClose}
                                                                     >
                                                                         <div>
                                                                             <Image
@@ -224,7 +229,7 @@ const ModalSearch: React.FC<ModalState> = ({ data, type, variant }) => {
                                                                                 </p>
                                                                             )}
                                                                         </div>
-                                                                    </Link>
+                                                                    </div>
                                                                 ))}
                                                         </div>
                                                     </div>

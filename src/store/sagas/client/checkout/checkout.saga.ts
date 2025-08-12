@@ -69,6 +69,7 @@ function* handleFetchPoint() {
 }
 
 function* handlePaymentAction({ payload }) {
+    yield put(checkout.actions.setLoading(true));
     try {
         const { info, total, cart, ship, checkout } = yield all({
             info: select(selectInfo),
@@ -120,6 +121,8 @@ function* handlePaymentAction({ payload }) {
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(checkout.actions.setLoading(false));
     }
 }
 

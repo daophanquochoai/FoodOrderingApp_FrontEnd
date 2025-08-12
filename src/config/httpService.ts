@@ -90,7 +90,7 @@ class HttpService {
                             }
                             return await axios(newRequest);
                         } catch (error) {
-                            if (error.response.status == 400 || error.response.status == 404) {
+                            if (error.response.status >= 400 && error.response.status <= 600) {
                                 // BAD request
                                 formatError = {
                                     status: error.response.status,

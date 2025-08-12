@@ -47,9 +47,16 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
         name: '',
     });
     const [formError, setFormError] = useState('');
-
     const { provinces, getProvinceByCode } = useProvinces();
     const { wards, getWardByCode } = useWards(newAddressData.province);
+    const [search, setSearch] = useState("");
+
+    // Lọc theo search
+    const filteredAddresses = addressList?.data
+        ?.filter((item) => item.isActive)
+        ?.filter((item) =>
+            formatFullAddress(item).toLowerCase().includes(search.toLowerCase())
+        );
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setNewAddressData({ ...newAddressData, [e.target.id]: e.target.value });
@@ -113,12 +120,9 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
             return;
         }
 
-        const selectedProvince = getProvinceByCode(newAddressData.province);
-        const selectedCommue = getWardByCode(newAddressData?.commune);
-
         const data = {
-            province: selectedProvince.name,
-            commune: selectedCommue.ward_name,
+            province: newAddressData.province,
+            commune: newAddressData?.commune,
             address: newAddressData?.address,
             isDefault: false,
             isActive: true,
@@ -159,15 +163,27 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                 {!showAddAddressForm ? (
                     /* Saved Addresses Selection */
                     <div className="space-y-3">
-                        {addressList?.data
-                            ?.filter((item) => item.isActive)
-                            .map((address) => (
+                    {/* Ô tìm kiếm */}
+                    <input
+                        type="text"
+                        placeholder="Search address..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+        
+                  {/* Danh sách địa chỉ, giới hạn chiều cao + scroll */}
+                    <div className="max-h-64 overflow-y-auto space-y-3 pr-2">
+                        {filteredAddresses
+                            ?.slice() // tạo bản sao để không mutate dữ liệu gốc
+                            ?.sort((a, b) => (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0)) // đưa default lên đầu
+                            ?.map((address) => (
                                 <div
                                     key={address.id}
                                     className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
                                         selectedAddressId === address.id
-                                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                                     }`}
                                     onClick={() => handleAddressSelect(address.id)}
                                 >
@@ -182,7 +198,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                                         />
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-1">
-                                                {address.isDefault === true && (
+                                                {address.isDefault && (
                                                     <span className="px-2 py-1 bg-green-100 text-xs rounded-full text-green-700">
                                                         Default
                                                     </span>
@@ -196,6 +212,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                                 </div>
                             ))}
                     </div>
+                </div>
                 ) : (
                     /* Add New Address Form */
                     <div className="border rounded-lg p-6 bg-gray-50">

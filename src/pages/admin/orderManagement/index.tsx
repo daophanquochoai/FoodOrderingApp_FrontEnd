@@ -4,29 +4,24 @@ import { common, order } from '@/store/reducer';
 import { selectFilterOrder, selectOrders } from '@/store/selector/admin/order/order.selector';
 import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
-import { EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
-import { LuTrendingUp, LuTrendingDown } from 'react-icons/lu';
+import { EyeOutlined } from '@ant-design/icons';
 import {
     Button,
     DatePicker,
-    Input,
-    InputRef,
+    Pagination,
     Space,
     Spin,
     Table,
     TableColumnsType,
-    TableColumnType,
     Tag,
 } from 'antd';
-import { FilterDropdownProps } from 'antd/es/table/interface';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
-import Highlighter from 'react-highlight-words';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { initFilterOrder } from '@/defaultValue/admin/order/order';
+import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
+import { PiApproximateEqualsFill } from 'react-icons/pi';
 
-type DataIndex = keyof any;
 
 const OrderManagement = () => {
     // hook
@@ -90,32 +85,25 @@ const OrderManagement = () => {
             dataIndex: 'totalPrice',
             key: 'totalPrice',
             sorter: (a, b) => a?.totalPrice - b?.totalPrice,
-            render: (total) => <p>{total ? total.toLocaleString() : 0}đ</p>,
+            render: (total) => <p>{total ? total.toLocaleString() : 0} USD</p>,
         },
-        // {
-        //     title: 'Cost',
-        //     dataIndex: 'totalCost',
-        //     key: 'totalCost',
-        //     render: (totalCost) => <p>{totalCost.toLocaleString()}đ</p>,
-        // },
-        // {
-        //     title: 'Price Difference',
-        //     key: 'priceDifference',
-        //     render: (_, record) => {
-        //         const profit = record.total - record.totalCost;
-
-        //         return (
-        //             <div
-        //                 className={`flex items-center justify-center gap-2 px-3 py-1.5 rounded-md ${
-        //                     profit > 0 ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'
-        //                 }`}
-        //             >
-        //                 <h6 className="text-xs font-medium">${profit.toLocaleString()}</h6>
-        //                 {profit > 0 ? <LuTrendingUp /> : <LuTrendingDown />}
-        //             </div>
-        //         );
-        //     },
-        // },
+        {
+            title: 'COGS',
+            key: 'cogs',
+            sorter: (a, b) => a?.totalPrice - b?.totalPrice,
+            render: (item) =>{
+                return <div className='flex gap-4 items-center'>
+                    <p>{item && item?.cogs? item?.cogs?.toLocaleString() : '0'} USD</p>
+                    {
+                        ((item?.totalPrice || 0 ) < (item?.cogs || 0)) ?
+                        <div className='text-2xl text-red-700'><FaArrowTrendDown /></div> :
+                        ((item?.totalPrice || 0 ) == (item?.cogs || 0)) ?
+                        <div className='text-2xl text-blue-600'><PiApproximateEqualsFill /></div> : 
+                        <div className='text-2xl text-green-500'><FaArrowTrendUp /></div>
+                    }
+                </div>
+            },
+        },
         {
             title: 'Status',
             dataIndex: 'status',
@@ -231,7 +219,6 @@ const OrderManagement = () => {
     ];
 
     const handleFilterChange = (key, value) => {
-        // console.log(key, value);
         dispatch(
             order.actions.setFilterOrder({
                 ...filter,
@@ -240,7 +227,7 @@ const OrderManagement = () => {
         );
     };
 
-    const handleApplyFilter = (filterValues) => {
+    const handleApplyFilter = () => {
         dispatch(fetchFirst());
     };
 
@@ -249,7 +236,14 @@ const OrderManagement = () => {
         dispatch(fetchFirst());
     };
 
-    console.log(filter);
+    const handleChangePage = (e) => {
+        console.log(e);
+        dispatch(order.actions.setFilterOrder({
+            ...filter,
+            pageNo : e-1
+        }))
+        dispatch(fetchFirst());
+    }
 
     return (
         <Spin spinning={orderList.loading}>
@@ -276,6 +270,9 @@ const OrderManagement = () => {
                         scroll={{ x: 'max-content' }}
                         pagination={false}
                     />
+                    <div className='flex justify-center mt-[20px] mb-[10px]'>
+                        <Pagination showSizeChanger={false} onChange={(e) => handleChangePage(e)} current={filter.pageNo + 1} pageSize={10} total={orderList.totalPage}/>
+                    </div>
                 </div>
             </div>
         </Spin>

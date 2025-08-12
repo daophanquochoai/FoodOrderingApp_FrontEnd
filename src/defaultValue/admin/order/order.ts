@@ -5,6 +5,7 @@ export const initFilterOrder: FilterOrder = {
     ...filter,
     statusOrders: [],
     type: null,
+    sort: 'desc'
 };
 
 export const initOrderSlice: OrderSlice = {

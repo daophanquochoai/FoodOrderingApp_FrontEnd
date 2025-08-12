@@ -18,7 +18,6 @@ const ProductItem: React.FC<Food> = (foodProps) => {
 
     // router
     const location = useLocation();
-    const navigate = useNavigate();
 
     // state
     const [foodSize, setFoodSize] = useState([]);

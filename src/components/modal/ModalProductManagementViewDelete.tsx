@@ -5,10 +5,19 @@ import dayjs from 'dayjs';
 import React from 'react';
 import ModalBase from './ModalBase';
 import { common } from '@/store/reducer';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectFoodSelected
+} from '@/store/selector/admin/food/food_manager.selector';
+import { updateFood } from '@/store/action/admin/food/food_manager.action';
 
 const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, variant }) => {
+
+    // hook
     const dispatch = useDispatch();
+
+    // selector
+    const selectedFood = useSelector(selectFoodSelected);
 
     const foodInfo: DescriptionsProps['items'] = [
         {
@@ -66,7 +75,15 @@ const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, va
     };
 
     const handleDeleted = () => {
-        console.log('--------id to delete---------', data.id);
+        dispatch(
+            updateFood({
+                id: selectedFood?.id,
+                data: {
+                    ...selectedFood,
+                    isActive: false
+                },
+            })
+        );
     };
 
     return (
