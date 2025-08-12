@@ -99,14 +99,14 @@ const ProductDetail: React.FC = () => {
                 </div>
             </div>
 
-            <div className="p-4 m-4 lg:m-12">
+            {/* <div className="p-4 m-4 lg:m-12">
                 <div className="bg-yellow-500 rounded-t-md w-[200px] text-white text-center p-3 font-bold">
                     <p>RATING</p>
                 </div>
                 <div className="p-6 bg-white rounded-b-md shadow-lg flex flex-col gap-4">
                     <ProductRating />
                 </div>
-            </div>
+            </div> */}
         </>
     );
 };

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 // Đường dẫn ảnh, thay bằng ảnh thật của bạn
 import burgerImg from '../assets/burger.jpg';
@@ -8,8 +7,13 @@ import friesImg from '../assets/fries.jpg';
 import icecreamImg from '../assets/icecream.jpg';
 import drinkImg from '../assets/drink.jpg';
 import chickenImg from '../assets/chicken.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const ServerError500: React.FC = () => {
+
+    // hook
+    const navigate = useNavigate();
+
     return (
         <div className="min-h-screen flex flex-col justify-center bg-neutral-100 px-4">
             {/* Main content */}
@@ -101,8 +105,8 @@ const ServerError500: React.FC = () => {
                         trang chính.
                     </p>
                     <div className="flex gap-4">
-                        <Link
-                            to="/"
+                        <div
+                            onClick={()=> navigate(-1)}
                             className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg font-semibold shadow hover:bg-orange-600 transition"
                         >
                             <svg
@@ -124,7 +128,7 @@ const ServerError500: React.FC = () => {
                                 <path d="M9 11V7a3 3 0 1 1 6 0v4" stroke="white" strokeWidth="2" />
                             </svg>
                             Quay lại trang chính
-                        </Link>
+                        </div>
                         <a
                             href="mailto:thaivcvl2002@gmail.com"
                             className="flex items-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-100 transition"

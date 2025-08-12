@@ -2,7 +2,6 @@ import React from 'react';
 import ModalBase from './ModalBase';
 import img_hamburger_1 from '../../assets/ham-1.webp';
 import { Col, Row } from 'antd';
-import { ModalOptionProductProps } from '../../type/modal/modal';
 import ProductInfo from '../product/ProductInfo';
 import { FaArrowRight } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';

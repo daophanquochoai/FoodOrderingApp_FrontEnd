@@ -11,11 +11,13 @@ import { IoCartOutline } from "react-icons/io5";
 import { selectAuth } from '@/store/selector/auth/auth.selector';
 import { useNavigate } from 'react-router-dom';
 import { ModalType } from '@/type/store/common';
+import { selectLoadingPage } from '@/store/selector/client/cart/cart.selector';
 
 const ProductInfo = () => {
     //selector
     const foodDetail = useSelector(selectFoodDetail);
     const auth = useSelector(selectAuth);
+    const loading = useSelector(selectLoadingPage);
 
     // dispatch
     const dispatch = useDispatch();
@@ -23,7 +25,6 @@ const ProductInfo = () => {
     //state
     const [selectedSize, setSelectedSize] = useState<FoodSize>(null);
     const [quantity, setQuantity] = useState<number>(1);
-    const [loading, setLoading] = useState(false);
     const [foodSize, setFoodSize] = useState([]);
 
     // router
@@ -48,7 +49,6 @@ const ProductInfo = () => {
             return;
         }
 
-        setLoading(true);
         if (selectedSize == null || selectedSize?.id == null) {
             dispatch(common.actions.setErrorMessage('Please choose item'));
             return;
@@ -63,7 +63,6 @@ const ProductInfo = () => {
         };
 
         dispatch(addToCart(cartItem));
-        setLoading(false);
     };
 
     return (
