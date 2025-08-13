@@ -48,6 +48,7 @@ const IngredientManagement: React.FC = () => {
     const filter = useSelector(selectFilter);
     const totalPage = useSelector(selectTotalPage);
 
+
     //useEffect
     useEffect(() => {
         dispatch(fetchFirst());

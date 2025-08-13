@@ -124,13 +124,13 @@ const FormFoodSize = ({ name }) => {
                                 <Select
                                     style={{ width: 120 }}
                                     placeholder="Select size"
-                                    value={field.value}
+                                    value={field?.value}
                                     onChange={(value) => field.onChange(value)}
                                 >
                                     {selectedFood?.foodSizes &&
                                     selectedFood?.foodSizes.length > 0 &&
-                                    filterOption.size
-                                        ? filterOption.size
+                                    filterOption?.size
+                                        ? filterOption?.size?.filter(i => i.isActive)
                                               ?.filter(
                                                   (s) =>
                                                       !selectedFood?.foodSizes.some(
@@ -144,7 +144,7 @@ const FormFoodSize = ({ name }) => {
                                                       {s.name}
                                                   </Select.Option>
                                               ))
-                                        : filterOption.size.map((s) => (
+                                        : filterOption?.size?.filter(i => i.isActive)?.map((s) => (
                                               <Select.Option key={s.id} value={s.id}>
                                                   {s.name}
                                               </Select.Option>

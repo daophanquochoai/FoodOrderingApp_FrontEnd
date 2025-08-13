@@ -275,15 +275,16 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
         useEffect(() => {
             if (selectFood?.foodSizes?.length > 0) {
                 setSelectedSizeId({
-                    label: selectFood?.foodSizes[0]?.sizeId?.name,
-                    value: selectFood?.foodSizes[0]?.id,
+                    label: selectFood?.foodSizes?.filter(i => i.isActive)[0]?.sizeId?.name,
+                    value: selectFood?.foodSizes?.filter(i => i.isActive)[0]?.id,
                 });
-                dispatch(fetchIngredinetsByFoodSize(selectFood?.foodSizes[0]?.id));
+               
                 form.setFieldsValue({
                     foodId: selectFood?.name,
-                    sizeId: selectFood?.foodSizes[0]?.sizeId?.name,
+                    sizeId: selectFood?.foodSizes?.filter(i => i.isActive)[0]?.sizeId?.name,
                 });
-                dispatch(fetchIngredinetsByFoodSize(selectFood?.foodSizes[0]?.id));
+                dispatch(fetchIngredinetsByFoodSize(selectFood?.foodSizes?.filter(i => i.isActive)[0]?.id));
+
             }
         }, [variant, selectFood, form]);
 

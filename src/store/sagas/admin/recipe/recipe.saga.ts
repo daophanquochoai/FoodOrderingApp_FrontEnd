@@ -87,6 +87,7 @@ function* handleFetchIngredients({ payload }) {
     try {
         const token = getCookies('access_token');
         const { data } = yield call(ingredientApi.getIngredientByFilter, payload, token);
+        console.log(data);
         yield put(recipe.actions.setIngredients(data?.data));
     } catch (e) {
         console.error(e);

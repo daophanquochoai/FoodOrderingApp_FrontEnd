@@ -94,6 +94,7 @@ const ProductManagement = () => {
     };
 
     const handleOpenDeleteProductModal = (data) => {
+        dispatch(foodManager.actions.setFoodSelected(data));
         dispatch(
             common.actions.showModal({
                 type: ModalType.PRODUCT_MANAGEMENT,
@@ -216,8 +217,9 @@ const ProductManagement = () => {
             dataIndex: 'status',
             key: 'status',
             filters: [
-                { text: 'Active', value: true },
-                { text: 'Inactive', value: false },
+                { text: 'Active', value: 'ACTIVE' },
+                { text: 'Out Of Stock', value: 'OUT_STOCK' },
+                { text: 'Delete', value: 'DELETE' },
             ],
             onFilter: (value, record) => record.status === value,
             render: (status) => {
@@ -230,12 +232,13 @@ const ProductManagement = () => {
                         </>
                     );
                 } else if (status == 'OUT_STOCK') {
-                    return;
-                    <>
-                        <Tag icon={<BorderOuterOutlined />} color="error">
+                    return (
+                        <>
+                        <Tag icon={<BorderOuterOutlined />} color="yellow">
                             Out Stock
                         </Tag>
-                    </>;
+                    </>
+                    )
                 } else {
                     return (
                         <>
@@ -268,7 +271,8 @@ const ProductManagement = () => {
                         className=""
                         size="small"
                     />
-                    <Button
+                    {record?.status == 'ACTIVE' &&<>
+                        <Button
                         type="primary"
                         icon={<EditOutlined />}
                         onClick={() => handleEdit(record)}
@@ -281,6 +285,7 @@ const ProductManagement = () => {
                         onClick={() => handleOpenDeleteProductModal(record)}
                         size="small"
                     />
+                    </>}
                 </Space>
             ),
         },

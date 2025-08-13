@@ -112,9 +112,9 @@ const ModalCategory: React.FC<any> = ({ data, type, variant }) => {
             image: image,
             desc: e.description,
             status: 'ACTIVE',
-            parent: {
+            parentId : parentId == null || parentId == '' ? {} : {
                 id: parentId,
-            },
+            }
         };
         if (variant == 'edit') {
             info = {

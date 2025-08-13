@@ -19,7 +19,6 @@ import { filterCategory } from '@/defaultValue/client/collection/collection';
 const CategoryManagement = () => {
     // hook
     const dispatch = useDispatch();
-    const modal = useSelector(selectModal);
 
     //selector
     const filter = useSelector(selectFilter);
@@ -148,7 +147,6 @@ const CategoryManagement = () => {
     ];
 
     const handleFilterChange = (key, value) => {
-        // console.log(key, value);
         dispatch(
             categoryReducer.actions.setFilter({
                 ...filter,

@@ -21,7 +21,7 @@ import {
     selectLoadingHistory,
 } from '@/store/selector/admin/ingredients/ingredients.selector';
 import { fetchHistory } from '@/store/action/admin/ingredients/ingredient.action';
-import { HistoryImportOrExportDto } from '@/type/store/admin/history/history.style';
+import { HistoryImportOrExportDto, HistoryIngredientsDto } from '@/type/store/admin/history/history.style';
 import './style.css';
 
 const ViewIngredient = () => {
@@ -88,57 +88,40 @@ const ViewIngredient = () => {
             title: 'Số lượng nhập',
             key: 'quantity',
             sorter: (a, b) => {
-                const aTotal =
-                    a.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
-                        0
-                    ) || 0;
-                const bTotal =
-                    b.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
-                        0
-                    ) || 0;
-                return aTotal - bTotal;
+                const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let quantityA = historyOfIngredinetA?.quantity || 0;
+
+                const historyOfIngredinetB : HistoryIngredientsDto = b?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let quantityB = historyOfIngredinetB?.quantity || 0;
+                return quantityA - quantityB;
             },
-            render: (record) => (
-                <p>
-                    {record?.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + (item?.ingredients?.id == selectedFood?.id ? item.quantity : 0),
-                        0
-                    )}
+            render: (record) => {
+                const historyOfIngredinet : HistoryIngredientsDto = record?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let quantity = historyOfIngredinet?.quantity || 0;
+                return (
+                    <p>
+                    {quantity}
                 </p>
-            ),
+                )
+            },
         },
         {
             title: 'Số lượng dùng',
             key: 'used_unit',
             sorter: (a, b) => {
-                const aTotal =
-                    a.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
-                        0
-                    ) || 0;
-                const bTotal =
-                    b.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
-                        0
-                    ) || 0;
-                return aTotal - bTotal;
+                const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let usedCountA = historyOfIngredinetA?.usedUnit || 0;
+
+                 const historyOfIngredinetB : HistoryIngredientsDto = b?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let usedCountB = historyOfIngredinetB?.usedUnit || 0;
+                return usedCountA - usedCountB;
             },
-            render: (record) => {
+            render: (record : HistoryImportOrExportDto) => {
+                const historyOfIngredinet : HistoryIngredientsDto = record?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                let usedCount = historyOfIngredinet?.usedUnit || 0;
                 return (
                     <p>
-                        {record?.historyIngredients?.reduce(
-                            (sum, item) =>
-                                sum +
-                                (item?.ingredients?.id == selectedFood?.id ? item?.usedUnit : 0),
-                            0
-                        )}
+                        {usedCount}
                     </p>
                 );
             },
@@ -147,26 +130,19 @@ const ViewIngredient = () => {
             title: 'Số lượng chế biến',
             key: 'uses',
             sorter: (a, b) => {
-                const aTotal =
-                    a.historyIngredients?.reduce(
-                        (sum, item) => sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
-                        0
-                    ) || 0;
-                const bTotal =
-                    b.historyIngredients?.reduce(
-                        (sum, item) => sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
-                        0
-                    ) || 0;
-                return aTotal - bTotal;
+                const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumUseForOrderA = historyOfIngredinetA?.uses?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
+
+                const historyOfIngredinetB : HistoryIngredientsDto = b?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumUseForOrderB = historyOfIngredinetB?.uses?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
+                return sumUseForOrderA - sumUseForOrderB;
             },
             render: (record) => {
+                const historyOfIngredinet : HistoryIngredientsDto = record?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumUseForOrder = historyOfIngredinet?.uses?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
                 return (
                     <p>
-                        {record?.historyIngredients?.reduce(
-                            (sum, item) =>
-                                sum + item?.uses?.reduce((s, i) => s + i?.quantity || 0, 0),
-                            0
-                        ) || 0}
+                        {sumUseForOrder || 0}
                     </p>
                 );
             },
@@ -175,28 +151,31 @@ const ViewIngredient = () => {
             title: 'Số lượng hư hỏng',
             key: 'error',
             sorter: (a, b) => {
-                const aTotal =
-                    a.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
-                        0
-                    ) || 0;
-                const bTotal =
-                    b.historyIngredients?.reduce(
-                        (sum, item) =>
-                            sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
-                        0
-                    ) || 0;
-                return aTotal - bTotal;
+                const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumErrorA = historyOfIngredinetA?.errors?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
+                
+                const historyOfIngredinetB : HistoryIngredientsDto = b?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumErrorB = historyOfIngredinetB?.errors?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
+                return sumErrorA - sumErrorB;
             },
             render: (record) => {
+                const historyOfIngredinet : HistoryIngredientsDto = record?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                const sumError = historyOfIngredinet?.errors?.reduce( (sum, item) => sum + (item?.isActive ? item?.quantity : 0), 0);
                 return (
                     <p>
-                        {record?.historyIngredients?.reduce(
-                            (sum, item) =>
-                                sum + item?.errors?.reduce((s, i) => s + i?.quantity || 0, 0),
-                            0
-                        ) || 0}
+                        {sumError || 0}
+                    </p>
+                );
+            },
+        },
+        {
+            title: 'Đơn vị nhập',
+            key: 'Đơn vị nhập',
+            render: (record) => {
+                const historyOfIngredinet : HistoryIngredientsDto = record?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
+                return (
+                    <p>
+                        { historyOfIngredinet?.ingredients?.unit || 'Unknown'}
                     </p>
                 );
             },

@@ -17,7 +17,7 @@ import {
     selectLoadingComponent,
 } from '@/store/selector/admin/food/food_manager.selector';
 import { common } from '@/store/reducer';
-import { addFood, addSize, updateFood } from '@/store/action/admin/food/food_manager.action';
+import { addFood, addSize, updateFood, updateSize } from '@/store/action/admin/food/food_manager.action';
 import FormSelectAnt from '@/components/form/FormSelectAnt';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -70,7 +70,6 @@ const AddEditProductManagement = () => {
 
     // event handling
     const onSubmit = (data: any) => {
-        console.log(data);
         if (selectedFood) {
             dispatch(
                 updateFood({
@@ -104,6 +103,7 @@ const AddEditProductManagement = () => {
             name: newSizeName.trim(),
         };
         dispatch(addSize(newSize));
+        setNewSizeName('')
     };
     const beforeUpload = (file: FileType) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -118,12 +118,15 @@ const AddEditProductManagement = () => {
     };
 
     const optionsStatus = [
-        { value: true, label: 'Active' },
-        { value: false, label: 'Inactive' },
+        { value: 'ACTIVE', label: 'Active' },
+        { value: 'OUT_STOCK', label: 'Out Of Stock' },
     ]
 
     const handleDeleteSize = (record) => {
-        console.log(record);
+        dispatch(updateSize({
+            ...record,
+            isActive : false
+        }))
     }
 
     const uploadButton = (
@@ -268,7 +271,7 @@ const AddEditProductManagement = () => {
                                             ),
                                         },
                                     ]}
-                                    dataSource={filterOption?.size.map((s) => ({
+                                    dataSource={filterOption?.size?.filter(i => i.isActive).map((s) => ({
                                         ...s,
                                         key: s?.name,
                                     }))}
