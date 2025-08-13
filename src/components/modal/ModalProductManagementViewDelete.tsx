@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     selectFoodSelected
 } from '@/store/selector/admin/food/food_manager.selector';
-import { updateFood } from '@/store/action/admin/food/food_manager.action';
+import { deleteFood } from '@/store/action/admin/food/food_manager.action';
 
 const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, variant }) => {
 
@@ -76,11 +76,11 @@ const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, va
 
     const handleDeleted = () => {
         dispatch(
-            updateFood({
+            deleteFood({
                 id: selectedFood?.id,
                 data: {
                     ...selectedFood,
-                    isActive: false
+                    status: 'DELETE'
                 },
             })
         );

@@ -11,6 +11,7 @@ import {
     fetchFood,
     removeFoodSize,
     updateFood,
+    updateSize,
 } from '@/store/action/admin/food/food_manager.action';
 import { common, foodManager } from '@/store/reducer';
 import FoodManagerSlice from '@/store/reducer/admin/food/food_manager.reducer';
@@ -19,6 +20,9 @@ import {
     selectFoodSelected,
 } from '@/store/selector/admin/food/food_manager.selector';
 import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
+import { deleteFood } from '../../../action/admin/food/food_manager.action';
+import { ModalType } from '@/type/store/common';
+import { getCookies } from '@/utils/cookies/cookies';
 
 function* handleFetchFirst() {
     yield put(FoodManagerSlice.actions.setLoading(true));
@@ -63,7 +67,6 @@ function* handleFetchSize() {
 
 //add food size
 function* handleAddFoodSize({ payload }) {
-    console.log(payload);
     yield put(foodManager.actions.setLoadingComponent(true));
     try {
         const { data } = yield call(foodSizeApi.createFoodSize, payload.data);
@@ -135,7 +138,7 @@ function* handleUpdateFood({ payload }) {
 function* handleAddSize({ payload }) {
     yield put(foodManager.actions.setLoadingComponent(true));
     try {
-        const { data } = yield call(sizeApi.addSize, payload);
+        yield call(sizeApi.addSize, payload);
         yield* handleFetchSize();
 
         yield* put(common.actions.setSuccessMessage('Create size successful'));
@@ -183,6 +186,41 @@ function* handleChangePage({ payload }) {
     yield* handleFetchFirst();
 }
 
+/**
+ * delete food
+ */
+function* handleDeleteFood({payload}){
+    yield put(foodManager.actions.setLoadingComponent(true));
+    try {
+        yield call(foodApi.updateFoodById, payload?.id, payload.data);
+
+        yield put(common.actions.setSuccessMessage('Delete food successful'));
+        yield put(common.actions.setHiddenModal( ModalType.PRODUCT_MANAGEMENT));
+        yield* handleFetchFood();
+        } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(foodManager.actions.setLoadingComponent(false));
+    }
+}
+
+function* handleUpdateSize({payload}){
+    yield put(foodManager.actions.setLoadingComponent(true));
+    try {
+        const token = getCookies('access_token');
+        yield call(sizeApi.updateSize, payload, payload?.id, token);
+        yield* handleFetchSize();
+
+        yield* put(common.actions.setSuccessMessage('Remove size successful'));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(foodManager.actions.setLoadingComponent(false));
+    }
+}
+
 // watch fetch first
 function* watchFetchFirst() {
     yield takeEvery(fetchFirst, handleFetchFirst);
@@ -223,6 +261,16 @@ function* watchChangePage() {
     yield* takeEvery(changePage, handleChangePage);
 }
 
+// watch food
+function* watchDeleteFood(){
+    yield* takeEvery(deleteFood, handleDeleteFood);
+}
+
+// watch update size 
+function* watchUpdateSize(){
+    yield* takeEvery(updateSize, handleUpdateSize);
+}
+
 export function* watchFoodManager() {
     yield all([
         fork(watchFetchFood),
@@ -233,5 +281,7 @@ export function* watchFoodManager() {
         fork(watchUpdateFood),
         fork(watchAddFood),
         fork(watchChangePage),
+        fork(watchDeleteFood),
+        fork(watchUpdateSize)
     ]);
 }

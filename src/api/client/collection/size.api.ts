@@ -6,6 +6,9 @@ class SizeApi extends HttpService {
     };
     addSize = (data : any) => {
         return this.post(data, 'add');
+    };
+    updateSize = (data : any, id : any, token : string) => {
+        return this.put(id, data, 'update', token);
     }
 }
 

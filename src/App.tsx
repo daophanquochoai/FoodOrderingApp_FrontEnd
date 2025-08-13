@@ -24,38 +24,31 @@ function App() {
 
     useEffect(() => {
         try {
-            console.log(1);
             const user = getCookies('user');
             if (user == undefined) {
                 if (location?.pathname.includes('/admin')) {
-                    console.log(2);
                     navigate('/404');
                 }
             } else if ( comonPath.includes(location?.pathname)){
-                console.log(3);
                 return
             }
             else {
                 const userObj = JSON.parse(user);
                 if (userObj?.authorities[0]?.authority == 'ROLE_ADMIN') {
                     if (!location?.pathname?.includes('/admin')) {
-                        console.log(4);
                         navigate('/404');
                     }
                 } else if (userObj?.authorities[0]?.authority == 'ROLE_SHIPPER') {
                     if (!shipAuth.includes(location?.pathname)) {
-                        console.log(5);
                         navigate('/404');
                     }
                 } else if (userObj?.authorities[0]?.authority == 'ROLE_CHEF') {
                     if (!chefAuth.includes(location?.pathname)) {
-                        console.log(6);
                         navigate('/404');
                     }
                 }
             }
         } catch (e) {
-            console.log(7);
             navigate('/500');
         }
     });

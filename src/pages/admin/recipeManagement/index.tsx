@@ -37,16 +37,6 @@ const RecipeManagement = () => {
         dispatch(fetchFirst());
     }, []);
 
-    //#region function modal
-    // const handleAddRecipe = () => {
-    //     dispatch(
-    //         common.actions.showModal({
-    //             type: ModalType.RECIPE_MANAGEMENT,
-    //             variant: 'add',
-    //         })
-    //     );
-    // };
-
     const handleEditRecipe = (record) => {
         dispatch(recipe.actions.setSelectedFood(record));
         dispatch(
@@ -142,14 +132,6 @@ const RecipeManagement = () => {
                         className="bg-blue-500 hover:bg-blue-600"
                         size="small"
                     />
-                    {/* <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => {
-                            handleDeleteAllRecipe(record);
-                        }}
-                        size="small"
-                    /> */}
                 </Space>
             ),
         },

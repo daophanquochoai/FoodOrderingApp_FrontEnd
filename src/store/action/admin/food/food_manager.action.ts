@@ -12,6 +12,11 @@ export const addSize = createAction(foodManageraction.create + '/SIZE', (state) 
     payload: state,
 }));
 
+// update size 
+export const updateSize = createAction(foodManageraction.update + '/SIZE', (state) => ({
+    payload : state
+}) )
+
 // remove food size
 export const removeFoodSize = createAction(foodManageraction.delete + '/FOOD_SIZE', (state) => ({
     payload: state,
@@ -34,6 +39,11 @@ export const updateFood = createAction(foodManageraction.update, (state) => ({
 export const addFood = createAction(foodManageraction.create, (state) => ({
     payload: state,
 }));
+
+// delete food 
+export const deleteFood = createAction(`${name}/DELETE_FOOD`, (state) => ({
+    payload : state
+}))
 
 // change
 export const changePage = createAction(`${name}/CHANGE_PAGE`, (state) => ({
