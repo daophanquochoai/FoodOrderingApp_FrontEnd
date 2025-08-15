@@ -6,4 +6,6 @@ export const ProductSchema = yup.object().shape({
     status: yup.string().required('Description is required').optional(),
 
     desc: yup.string().required('Description is required').optional(),
+
+    // category_id:
 });

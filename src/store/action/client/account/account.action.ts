@@ -35,3 +35,13 @@ export const updateAddressInProfile = createAction(`${name}/UPDATE_ADDRESS/PROFI
 export const setDefaultAddress = createAction(`${name}/SET_DEFAULT`, (state) => ({
     payload: state,
 }));
+
+// change password
+export const changePassword = createAction(`${name}/CHANGE_PASSWORD`, (state) => ({
+    payload: state,
+}));
+
+// forget password
+export const forgetPassword = createAction(`${name}/FORGET_PASSWORD`, (state) => ({
+    payload: state,
+}));

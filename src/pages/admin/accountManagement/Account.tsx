@@ -75,7 +75,10 @@ const Account = () => {
                                 label="Old Password"
                                 name="oldPassword"
                                 rules={[
-                                    { required: true, message: 'Please enter your old password' },
+                                    {
+                                        required: true,
+                                        message: 'Please enter your current password',
+                                    },
                                 ]}
                             >
                                 <Input.Password />

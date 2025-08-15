@@ -11,6 +11,9 @@ class UserApi extends HttpService {
     updateUser = (data: any, id: any, token) => {
         return this.put(id, data, 'update', token);
     };
+    changePassword = (data: any, token: string) => {
+        return this.put(data?.id, data, 'update/passoword', token);
+    };
 }
 
 export const userApi = new UserApi('user');

@@ -74,7 +74,8 @@ const ExportVoucher = () => {
                 categoryNew,
                 categoryOld,
             };
-            dispatch(exportVoucher(data));
+            console.log(data);
+            // dispatch(exportVoucher(data));
         } catch (error) {
             dispatch(common.actions.setErrorMessage(error?.message));
         }
@@ -240,6 +241,7 @@ const ExportVoucher = () => {
                                     type="primary"
                                     icon={<IdcardOutlined />}
                                     onClick={handleSubmit}
+                                    disabled={!selectedVoucher?.id}
                                 >
                                     Export Vouchers
                                 </Button>
