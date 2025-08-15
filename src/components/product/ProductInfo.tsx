@@ -58,7 +58,7 @@ const ProductInfo = () => {
                 id: selectedSize?.id,
             },
             quantity: quantity,
-            priceAtTime: selectedSize?.discount * selectedSize?.price,
+            priceAtTime: (selectedSize?.discount || 1) * selectedSize?.price,
             isActive: true,
         };
 

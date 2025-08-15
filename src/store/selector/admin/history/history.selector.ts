@@ -29,3 +29,8 @@ export const selectFilterOption = createSelector(
     selectState,
     (state: HistoryImportAdminSlice) => state.filterOption
 );
+
+export const selectLoadingPage = createSelector(
+    selectState,
+    (state : HistoryImportAdminSlice) => state.history.loading
+)
