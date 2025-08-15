@@ -5,23 +5,13 @@ import { selectFilterOrder, selectOrders } from '@/store/selector/admin/order/or
 import { Order } from '@/type/store/admin/order/order.style';
 import { ModalType } from '@/type/store/common';
 import { EyeOutlined } from '@ant-design/icons';
-import {
-    Button,
-    DatePicker,
-    Pagination,
-    Space,
-    Spin,
-    Table,
-    TableColumnsType,
-    Tag,
-} from 'antd';
+import { Button, DatePicker, Pagination, Space, Spin, Table, TableColumnsType, Tag } from 'antd';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { initFilterOrder } from '@/defaultValue/admin/order/order';
 import { FaArrowTrendDown, FaArrowTrendUp } from 'react-icons/fa6';
 import { PiApproximateEqualsFill } from 'react-icons/pi';
-
 
 const OrderManagement = () => {
     // hook
@@ -91,17 +81,25 @@ const OrderManagement = () => {
             title: 'COGS',
             key: 'cogs',
             sorter: (a, b) => a?.totalPrice - b?.totalPrice,
-            render: (item) =>{
-                return <div className='flex gap-4 items-center'>
-                    <p>{item && item?.cogs? item?.cogs?.toLocaleString() : '0'} USD</p>
-                    {
-                        ((item?.totalPrice || 0 ) < (item?.cogs || 0)) ?
-                        <div className='text-2xl text-red-700'><FaArrowTrendDown /></div> :
-                        ((item?.totalPrice || 0 ) == (item?.cogs || 0)) ?
-                        <div className='text-2xl text-blue-600'><PiApproximateEqualsFill /></div> : 
-                        <div className='text-2xl text-green-500'><FaArrowTrendUp /></div>
-                    }
-                </div>
+            render: (item) => {
+                return (
+                    <div className="flex gap-4 items-center">
+                        <p>{item && item?.cogs ? item?.cogs?.toLocaleString() : '0'} USD</p>
+                        {(item?.totalPrice || 0) < (item?.cogs || 0) ? (
+                            <div className="text-2xl text-red-700">
+                                <FaArrowTrendDown />
+                            </div>
+                        ) : (item?.totalPrice || 0) == (item?.cogs || 0) ? (
+                            <div className="text-2xl text-blue-600">
+                                <PiApproximateEqualsFill />
+                            </div>
+                        ) : (
+                            <div className="text-2xl text-green-500">
+                                <FaArrowTrendUp />
+                            </div>
+                        )}
+                    </div>
+                );
             },
         },
         {
@@ -202,7 +200,8 @@ const OrderManagement = () => {
 
     const orderFilterFields = [
         { key: 'search', type: 'text', placeholder: 'Input search' },
-        { key: 'startDate', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        // { key: 'startDate', type: 'dateRange', placeholder: 'Ngày mua hàng' },
+        { key: 'startDate', type: 'date', placeholder: 'Order date' },
         {
             key: 'statusOrders',
             type: 'multiSelect',
@@ -238,12 +237,14 @@ const OrderManagement = () => {
 
     const handleChangePage = (e) => {
         console.log(e);
-        dispatch(order.actions.setFilterOrder({
-            ...filter,
-            pageNo : e-1
-        }))
+        dispatch(
+            order.actions.setFilterOrder({
+                ...filter,
+                pageNo: e - 1,
+            })
+        );
         dispatch(fetchFirst());
-    }
+    };
 
     return (
         <Spin spinning={orderList.loading}>
@@ -270,8 +271,14 @@ const OrderManagement = () => {
                         scroll={{ x: 'max-content' }}
                         pagination={false}
                     />
-                    <div className='flex justify-center mt-[20px] mb-[10px]'>
-                        <Pagination showSizeChanger={false} onChange={(e) => handleChangePage(e)} current={filter.pageNo + 1} pageSize={10} total={orderList.totalPage}/>
+                    <div className="flex justify-center mt-[20px] mb-[10px]">
+                        <Pagination
+                            showSizeChanger={false}
+                            onChange={(e) => handleChangePage(e)}
+                            current={filter.pageNo + 1}
+                            pageSize={10}
+                            total={orderList.totalPage}
+                        />
                     </div>
                 </div>
             </div>

@@ -8,11 +8,29 @@ import icecreamImg from '../assets/icecream.jpg';
 import drinkImg from '../assets/drink.jpg';
 import chickenImg from '../assets/chicken.jpg';
 import { useNavigate } from 'react-router-dom';
+import { getCookies } from '@/utils/cookies/cookies';
 
 const ServerError500: React.FC = () => {
-
     // hook
     const navigate = useNavigate();
+
+    const handleBack = () => {
+        const user = getCookies('user');
+        if (user == undefined) {
+            navigate('/');
+        } else {
+            const userObj = JSON.parse(user);
+            if (userObj?.authorities[0]?.authority == 'ROLE_ADMIN') {
+                navigate('/admin');
+            } else if (userObj?.authorities[0]?.authority == 'ROLE_SHIPPER') {
+                navigate('/admin/order-management-shipper');
+            } else if (userObj?.authorities[0]?.authority == 'ROLE_CHEF') {
+                navigate('/admin/order-management-chef');
+            } else {
+                navigate('/');
+            }
+        }
+    };
 
     return (
         <div className="min-h-screen flex flex-col justify-center bg-neutral-100 px-4">
@@ -98,15 +116,15 @@ const ServerError500: React.FC = () => {
                     </div>
                     <h1 className="text-7xl font-extrabold text-gray-800 mb-2">500</h1>
                     <h2 className="text-xl font-semibold text-gray-700 mb-2">
-                        Đã xảy ra lỗi nội bộ!
+                        An internal error occurred!
                     </h2>
                     <p className="text-gray-500 mb-7 text-center max-w-md">
-                        Có vẻ như chúng tôi đang gặp chút sự cố. Vui lòng thử lại sau hoặc quay lại
-                        trang chính.
+                        Looks like we're having some trouble. Please try again later or return to
+                        the main page.
                     </p>
                     <div className="flex gap-4">
                         <div
-                            onClick={()=> navigate(-1)}
+                            onClick={handleBack}
                             className="flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-lg font-semibold shadow hover:bg-orange-600 transition"
                         >
                             <svg
@@ -127,7 +145,7 @@ const ServerError500: React.FC = () => {
                                 />
                                 <path d="M9 11V7a3 3 0 1 1 6 0v4" stroke="white" strokeWidth="2" />
                             </svg>
-                            Quay lại trang chính
+                            Back to main page
                         </div>
                         <a
                             href="mailto:thaivcvl2002@gmail.com"
@@ -147,7 +165,7 @@ const ServerError500: React.FC = () => {
                                 />
                                 <path d="M22 6.5 12 13 2 6.5" stroke="#666" strokeWidth="2" />
                             </svg>
-                            Liên hệ hỗ trợ
+                            Contact support
                         </a>
                     </div>
                 </div>

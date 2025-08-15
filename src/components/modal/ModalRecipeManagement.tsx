@@ -132,10 +132,10 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                     </div>
                     <Form form={form} layout="vertical" onFinish={(data) => handleSubmitForm(data)}>
                         {/* Chọn món ăn */}
-                        <Form.Item name="food_id" label="Tên món ăn" rules={[{ required: true }]}>
+                        <Form.Item name="food_id" label="Food name" rules={[{ required: true }]}>
                             <Select
                                 showSearch
-                                placeholder="Chọn món ăn"
+                                placeholder="Select food"
                                 onChange={handleFoodChange}
                                 options={filterOption?.food?.map((food) => ({
                                     label: food?.name,
@@ -147,7 +147,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                         {/* Chọn size phụ thuộc món ăn */}
                         <Form.Item name="size" label="Size" rules={[{ required: true }]}>
                             <Select
-                                placeholder="Chọn size"
+                                placeholder="Select size"
                                 disabled={!selectedFoodId}
                                 onChange={handleChangeSize}
                                 options={sizeOptions?.map((s) => ({
@@ -172,12 +172,17 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                 {...restField}
                                                 name={[name, 'ingredients_id']}
                                                 rules={[
-                                                    { required: true, message: 'Chọn nguyên liệu' },
+                                                    {
+                                                        required: true,
+                                                        message: 'Select ingredient',
+                                                    },
                                                 ]}
                                             >
                                                 <Select
                                                     style={{ width: 160 }}
-                                                    placeholder="Nguyên liệu"
+                                                    showSearch
+                                                    optionFilterProp="label"
+                                                    placeholder="Ingredient"
                                                     onChange={(value) =>
                                                         handleIngredientChange(value, index)
                                                     }
@@ -203,16 +208,16 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                 {...restField}
                                                 name={[name, 'quantity_per_unit']}
                                                 rules={[
-                                                    { required: true, message: 'Nhập số lượng' },
+                                                    { required: true, message: 'Enter quantity' },
                                                     {
                                                         type: 'number',
                                                         min: 0.01,
-                                                        message: 'Phải lớn hơn 0',
+                                                        message: 'Must be greater than 0',
                                                     },
                                                 ]}
                                             >
                                                 <InputNumber
-                                                    placeholder="Số lượng"
+                                                    placeholder="Quantity"
                                                     disabled={!selectedFoodId}
                                                 />
                                             </Form.Item>
@@ -224,13 +229,13 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                 rules={[
                                                     {
                                                         required: true,
-                                                        message: 'Đơn vị không được bỏ trống',
+                                                        message: 'Unit cannot be empty',
                                                     },
                                                 ]}
                                             >
                                                 <Input
                                                     style={{ width: 160 }}
-                                                    placeholder="Đơn vị"
+                                                    placeholder="Unit"
                                                     disabled
                                                 />
                                             </Form.Item>
@@ -252,7 +257,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                             block
                                             disabled={!selectedFoodId}
                                         >
-                                            + Thêm nguyên liệu
+                                            + Add ingredient
                                         </Button>
                                     </Form.Item>
                                 </>
@@ -347,7 +352,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                             layout="vertical"
                                             onFinish={(data) => handleUpdateForm(data)}
                                         >
-                                            <Form.Item label="Tên món ăn" name="foodId">
+                                            <Form.Item label="Food name" name="foodId">
                                                 <Input
                                                     disabled
                                                     className="custom-readonly-select"
@@ -388,12 +393,14 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                                             {
                                                                                 required: true,
                                                                                 message:
-                                                                                    'Chọn nguyên liệu',
+                                                                                    'Select ingredient',
                                                                             },
                                                                         ]}
                                                                     >
                                                                         <Select
-                                                                            placeholder="Nguyên liệu"
+                                                                            placeholder="Ingredient"
+                                                                            showSearch
+                                                                            optionFilterProp="label"
                                                                             style={{ width: 160 }}
                                                                             disabled={
                                                                                 variant == 'view'
@@ -426,12 +433,12 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                                             {
                                                                                 required: true,
                                                                                 message:
-                                                                                    'Nhập số lượng',
+                                                                                    'Enter quantity',
                                                                             },
                                                                         ]}
                                                                     >
                                                                         <InputNumber
-                                                                            placeholder="Số lượng"
+                                                                            placeholder="Quantity"
                                                                             readOnly={
                                                                                 variant == 'view'
                                                                                     ? true
@@ -447,12 +454,12 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                                             {
                                                                                 required: true,
                                                                                 message:
-                                                                                    'Đơn vị không được bỏ trống',
+                                                                                    'Unit cannot be empty',
                                                                             },
                                                                         ]}
                                                                     >
                                                                         <Input
-                                                                            placeholder="Đơn vị"
+                                                                            placeholder="Unit"
                                                                             style={{ width: 160 }}
                                                                             disabled
                                                                         />
@@ -479,7 +486,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                                     onClick={() => add()}
                                                                     block
                                                                 >
-                                                                    + Thêm nguyên liệu
+                                                                    + Add ingredient
                                                                 </Button>
                                                             </Form.Item>
                                                         )}
@@ -490,7 +497,7 @@ const ModalRecipeManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                             {variant == 'edit' && (
                                                 <Form.Item>
                                                     <Button type="primary" htmlType="submit" block>
-                                                        Cập nhật công thức
+                                                        Update recipe
                                                     </Button>
                                                 </Form.Item>
                                             )}

@@ -44,7 +44,7 @@ const Dashboard = () => {
                         icon={AiOutlineDollar}
                         color="blue"
                         number={dashboardTotal?.totalRevenue || 0}
-                        text="Profit"
+                        text="Revenue"
                         type="profit"
                     />
                 </Col>

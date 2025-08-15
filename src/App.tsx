@@ -10,10 +10,9 @@ import { fetchFirst } from './store/action/common/common.action';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getCookies } from './utils/cookies/cookies';
 import { chefAuth, comonPath, shipAuth } from './defaultValue/admin/auth/auth';
-
+import FallbackError from './sentry/FallBackError';
 
 function App() {
-
     // selector
     const loadingPage = useSelector(selectLoading);
 
@@ -29,10 +28,9 @@ function App() {
                 if (location?.pathname.includes('/admin')) {
                     navigate('/404');
                 }
-            } else if ( comonPath.includes(location?.pathname)){
-                return
-            }
-            else {
+            } else if (comonPath.includes(location?.pathname)) {
+                return;
+            } else {
                 const userObj = JSON.parse(user);
                 if (userObj?.authorities[0]?.authority == 'ROLE_ADMIN') {
                     if (!location?.pathname?.includes('/admin')) {
@@ -54,7 +52,7 @@ function App() {
     });
 
     // load cookie
-    useEffect(() => {   
+    useEffect(() => {
         dispatch(fetchFirst((e) => navigateToPath(e)));
     }, [dispatch]);
 
@@ -64,7 +62,7 @@ function App() {
     };
 
     return (
-        <ErrorBoundary fallback={<p className="text-red-500">Đã xảy ra lỗi!</p>}>
+        <ErrorBoundary fallback={({ resetError }) => <FallbackError resetError={resetError} />}>
             {loadingPage && <LoadingPage />}
             <AppRoutes />
             <ModalRenderer />

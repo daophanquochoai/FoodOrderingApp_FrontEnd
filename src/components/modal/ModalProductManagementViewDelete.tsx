@@ -22,38 +22,38 @@ const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, va
     const foodInfo: DescriptionsProps['items'] = [
         {
             key: 'name',
-            label: 'Tên món',
+            label: 'Food name',
             children: data.name,
         },
         {
             key: 'desc',
-            label: 'Mô tả',
+            label: 'Describe',
             children: data.desc,
         },
         {
             key: 'status',
-            label: 'Trạng thái',
-            children: data.status ? 'Còn bán' : 'Ngừng bán',
+            label: 'Status',
+            children: data.status ? 'For sale' : 'Stop selling',
         },
         {
             key: 'image',
-            label: 'Hình ảnh',
+            label: 'Image',
             children: <Image width={100} src={data.image} />,
         },
         {
             key: 'create_date',
-            label: 'Ngày tạo',
+            label: 'Created date',
             children: dayjs(data.create_date).format('DD/MM/YYYY'),
         },
-        {
-            key: 'rate',
-            label: 'Đánh giá',
-            children: data.rate ? (
-                <Rate value={data.rate} allowHalf={true} style={{ fontSize: '16px' }} />
-            ) : (
-                'Chưa có'
-            ),
-        },
+        // {
+        //     key: 'rate',
+        //     label: 'Rate',
+        //     children: data.rate ? (
+        //         <Rate value={data.rate} allowHalf={true} style={{ fontSize: '16px' }} />
+        //     ) : (
+        //         'Chưa có'
+        //     ),
+        // },
     ];
 
     const sizeColumns = [
@@ -63,7 +63,7 @@ const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, va
             key: 'size',
         },
         {
-            title: 'Giá',
+            title: 'Price',
             dataIndex: 'price',
             key: 'price',
             render: (price: number) => <p>${price}</p>,
@@ -111,14 +111,14 @@ const ModalProductManagementViewDelete: React.FC<ModalState> = ({ data, type, va
                     </div>
                     <div>
                         <Descriptions
-                            title="Thông tin món ăn"
+                            title="Food information"
                             bordered
                             column={1}
                             items={foodInfo}
                         />
 
                         <h3 style={{ marginTop: 24 }} className="text-[14px] font-medium mb-2">
-                            Kích thước và giá tiền
+                            Size and price
                         </h3>
                         <Table
                             dataSource={data.sizes?.map((item, index) => ({ ...item, key: index }))}

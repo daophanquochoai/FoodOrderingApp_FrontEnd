@@ -207,7 +207,16 @@ const FormFoodSize = ({ name }) => {
                             )}
                         />
 
-                        <Button onClick={handleSubmit(handleAddFoodSize)} type="dashed">
+                        <Button
+                            onClick={handleSubmit(handleAddFoodSize)}
+                            type="dashed"
+                            style={{
+                                borderColor: '#1890ff',
+                                color: '#1890ff',
+                                fontWeight: 'bold',
+                                backgroundColor: '#e6f7ff', // nền nhẹ để nổi bật
+                            }}
+                        >
                             + Add Food Size
                         </Button>
                     </div>
