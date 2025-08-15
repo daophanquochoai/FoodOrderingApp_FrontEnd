@@ -4,6 +4,7 @@ import { AiOutlineMenuUnfold, AiOutlineMenuFold } from 'react-icons/ai';
 import { MenuSider } from '../components/menu';
 import { Outlet } from 'react-router-dom';
 import AccountDropdown from '@/components/dropdown/AccountDropdown';
+import imgLogo from '@/assets/logoo.png';
 const { Sider, Content } = Layout;
 
 const AdminLayout = () => {
@@ -33,14 +34,47 @@ const AdminLayout = () => {
                         className="flex items-center justify-center border-r border-[#ddd] transition-all duration-200 ease-in-out"
                         style={{ width: collapsed ? '80px' : '230px', height: '60px' }}
                     >
-                        <img
+                        {/* <img
                             src={
                                 collapsed
                                     ? 'https://enlink.themenate.net/assets/images/logo/logo-fold.png'
-                                    : 'https://enlink.themenate.net/assets/images/logo/logo.png'
+                                    : imgLogo
                             }
                             className="w-full h-full object-contain"
-                        />
+                        /> */}
+                        {collapsed ? (
+                            <>
+                                <div className="flex flex-col items-center w-[80px]">
+                                    <h1 className="text-sm font-bold text-gray-900 text-center leading-tight select-none">
+                                        GrillFood
+                                    </h1>
+                                    <p
+                                        style={{ color: '#ca8a04' }}
+                                        className="italic text-xs font-semibold select-none text-center leading-tight"
+                                    >
+                                        Cafe &amp; Restro
+                                    </p>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="flex flex-col items-start">
+                                    <h1 className="text-3xl font-bold text-gray-900 select-none">
+                                        GrillFood
+                                    </h1>
+                                    <p
+                                        style={{
+                                            color: '#ca8a04',
+                                            textAlign: 'center',
+                                            width: '100%',
+                                        }}
+                                        className="text-yellow-600 italic text-sm font-semibold select-none text-center"
+                                    >
+                                        Cafe &amp; Restro
+                                    </p>
+                                </div>
+                            </>
+                        )}
                     </div>
                     <div className="p-2 flex flex-1 items-center justify-between">
                         <div className="flex items-center justify-center gap-4">

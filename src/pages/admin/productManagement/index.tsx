@@ -234,11 +234,11 @@ const ProductManagement = () => {
                 } else if (status == 'OUT_STOCK') {
                     return (
                         <>
-                        <Tag icon={<BorderOuterOutlined />} color="yellow">
-                            Out Stock
-                        </Tag>
-                    </>
-                    )
+                            <Tag icon={<BorderOuterOutlined />} color="yellow">
+                                Out Stock
+                            </Tag>
+                        </>
+                    );
                 } else {
                     return (
                         <>
@@ -271,21 +271,23 @@ const ProductManagement = () => {
                         className=""
                         size="small"
                     />
-                    {record?.status == 'ACTIVE' &&<>
-                        <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        onClick={() => handleEdit(record)}
-                        className="bg-blue-500 hover:bg-blue-600"
-                        size="small"
-                    />
-                    <Button
-                        danger
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleOpenDeleteProductModal(record)}
-                        size="small"
-                    />
-                    </>}
+                    {record?.status == 'ACTIVE' && (
+                        <>
+                            <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                onClick={() => handleEdit(record)}
+                                className="bg-blue-500 hover:bg-blue-600"
+                                size="small"
+                            />
+                            <Button
+                                danger
+                                icon={<DeleteOutlined />}
+                                onClick={() => handleOpenDeleteProductModal(record)}
+                                size="small"
+                            />
+                        </>
+                    )}
                 </Space>
             ),
         },
@@ -293,11 +295,11 @@ const ProductManagement = () => {
 
     return (
         <Spin spinning={loading}>
-            <h1 className="text-2xl font-bold">Product Management</h1>
+            <h1 className="text-2xl font-bold">Foods Management</h1>
             <div className="bg-white p-6 border border-gray-300 mt-4 rounded-lg shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <Button type="primary" onClick={handleAddFood}>
-                        + New Product
+                        + New Food
                     </Button>
 
                     <Button onClick={() => setShowFilter((prev) => !prev)} className="flex">

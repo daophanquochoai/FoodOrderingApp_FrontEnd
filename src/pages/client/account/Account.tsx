@@ -7,6 +7,7 @@ import { Avatar } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout } from '@/store/action/client/account/account.action';
 import { selectInfo } from '@/store/selector/client/account/account.selector';
+import { BiLogOut } from 'react-icons/bi';
 
 const Account = () => {
     // hook
@@ -95,7 +96,14 @@ const Account = () => {
                         <LuCircleDollarSign className="text-2xl" />
                         <p>Points</p>
                     </NavLink> */}
-                    <button onClick={handleLogout}>Logout</button>
+
+                    <div
+                        className="w-full flex items-center gap-2 hover:text-orange-600 pt-3 border-t-2 border-gray-300 cursor-pointer font-bold"
+                        onClick={handleLogout}
+                    >
+                        <BiLogOut className="size-6" />
+                        <p className="">Logout</p>
+                    </div>
                 </div>
                 <div>
                     <Outlet />

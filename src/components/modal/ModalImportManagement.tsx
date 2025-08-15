@@ -27,6 +27,7 @@ import {
 import { HistoryIngredientsDto } from '@/type/store/admin/history/history.style';
 import { addHistoryImport, deleteHistoryImport } from '@/store/action/admin/history/history.action';
 import Editor from '../editor/editor';
+import DOMPurify from 'dompurify';
 
 const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) => {
     // hook
@@ -49,7 +50,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
             case 'delete':
                 return 'Delete Import';
             case 'view':
-                return 'Detail Import';
+                return 'Import Detail';
             default:
                 return 'Add New Import';
         }
@@ -80,13 +81,13 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                 title: 'Import Price',
                 key: 'price_per_unit',
                 sorter: (a, b) => a?.pricePerUnit - b?.pricePerUnit,
-                render: (price) => <p>{price?.pricePerUnit?.toLocaleString() || 0}đ</p>,
+                render: (price) => <p>${price?.pricePerUnit?.toLocaleString() || 0}</p>,
             },
             {
                 title: 'Avg Price',
                 key: 'avg_price',
                 sorter: (a, b) => a?.avgPrice - b?.avgPrice,
-                render: (price) => <p>{price?.avgPrice?.toLocaleString() || 0}đ</p>,
+                render: (price) => <p>${price?.avgPrice?.toLocaleString() || 0}</p>,
             },
             {
                 title: 'Quantity',
@@ -101,8 +102,8 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                     a?.quantity * a?.pricePerUnit || 0 - b?.quantity || 0 * b?.pricePerUnit || 0,
                 render: (_, record) => (
                     <p>
+                        $
                         {(record?.quantity || 0 * record?.pricePerUnit || 0)?.toLocaleString() || 0}
-                        đ
                     </p>
                 ),
             },
@@ -117,7 +118,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
         const totalPrice =
             selectedHistory?.historyIngredients?.reduce(
-                (total, item) => total + item?.pricePerUnit || 0 * item?.quantity || 0,
+                (total, item) => total + (item?.pricePerUnit || 0) * (item?.quantity || 0),
                 0
             ) || 0;
 
@@ -149,8 +150,13 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                             </Col>
 
                             <Col span={24}>
-                                <p>
-                                    <i>Note: </i> {selectedHistory?.note}
+                                <p className="flex gap-1">
+                                    <i>Note: </i>{' '}
+                                    <span
+                                        dangerouslySetInnerHTML={{
+                                            __html: DOMPurify.sanitize(selectedHistory?.note || ''),
+                                        }}
+                                    />
                                 </p>
                             </Col>
                         </Row>
@@ -208,7 +214,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                             pagination={false}
                         />
                         <p className="mt-3 text-sm font-semibold text-right mr-3">
-                            Total: {totalPrice.toLocaleString()}đ
+                            Total: ${totalPrice.toLocaleString()}
                         </p>
                     </div>
                 </div>
@@ -345,6 +351,8 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                 (ing) => !selectedIds.includes(ing.id)
                                             );
 
+                                            console.log(availableOptions);
+
                                             return (
                                                 <Space
                                                     key={key}
@@ -364,6 +372,8 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                     >
                                                         <Select
                                                             style={{ width: 150 }}
+                                                            showSearch
+                                                            optionFilterProp="label"
                                                             placeholder="Ingredient"
                                                             onChange={(value) => {
                                                                 const selected =
@@ -435,7 +445,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                         rules={[
                                                             {
                                                                 required: true,
-                                                                message: 'Enter price',
+                                                                message: 'Enter price/unit',
                                                             },
                                                             {
                                                                 type: 'number',
@@ -499,7 +509,7 @@ const ModalImportManagement: React.FC<ModalState> = ({ data, type, variant }) =>
                                                         );
                                                     if (available.length === 0) {
                                                         message.warning(
-                                                            'Tất cả nguyên liệu đã được chọn'
+                                                            'All ingredients have been selected'
                                                         );
                                                         return;
                                                     }

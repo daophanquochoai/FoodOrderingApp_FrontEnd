@@ -52,40 +52,40 @@ const ViewIngredient = () => {
     const foodInfo: DescriptionsProps['items'] = [
         {
             key: 'name',
-            label: 'Tên nguyên liệu',
+            label: 'Ingredient name',
             children: selectedFood?.name,
         },
         {
             key: 'unit',
-            label: 'Đơn vị',
+            label: 'Unit',
             children: selectedFood?.unit,
         },
         {
             key: 'low_threshold',
-            label: 'Ngưỡng cảnh báo',
+            label: 'Threshold',
             children: selectedFood?.lowThreshold,
         },
         {
             key: 'status',
-            label: 'Trạng thái',
+            label: 'Status',
             children: getStatusTag(selectedFood?.isActive),
         },
     ];
 
     const columns: TableColumnsType<HistoryImportOrExportDto> = [
         {
-            title: 'Lô nhập',
+            title: 'Import lot',
             dataIndex: 'id',
             key: 'id',
             sorter: (a, b) => a.id - b.id,
         },
         {
-            title: 'Nhà cung cấp',
+            title: 'Supplier',
             key: 'source',
             render: (item) => <p>{item?.source?.name}</p>,
         },
         {
-            title: 'Số lượng nhập',
+            title: 'import quantity',
             key: 'quantity',
             sorter: (a, b) => {
                 const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
@@ -106,7 +106,7 @@ const ViewIngredient = () => {
             },
         },
         {
-            title: 'Số lượng dùng',
+            title: 'Number of use',
             key: 'used_unit',
             sorter: (a, b) => {
                 const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
@@ -127,7 +127,7 @@ const ViewIngredient = () => {
             },
         },
         {
-            title: 'Số lượng chế biến',
+            title: 'Number of processing',
             key: 'uses',
             sorter: (a, b) => {
                 const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
@@ -148,7 +148,7 @@ const ViewIngredient = () => {
             },
         },
         {
-            title: 'Số lượng hư hỏng',
+            title: 'Number of damages',
             key: 'error',
             sorter: (a, b) => {
                 const historyOfIngredinetA : HistoryIngredientsDto = a?.historyIngredients?.find( item => item?.ingredients?.id == selectedFood?.id);
@@ -187,7 +187,7 @@ const ViewIngredient = () => {
             sorter: (a, b) => a.bathCode.localeCompare(b.bathCode),
         },
         {
-            title: 'Ngày nhập',
+            title: 'Import at',
             dataIndex: 'createdAt',
             key: 'createdAt',
             filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -220,7 +220,7 @@ const ViewIngredient = () => {
             render: (item) => <p>{dayjs(item).format('YYYY-MM-DD')}</p>,
         },
         {
-            title: 'Trạng thái',
+            title: 'Status',
             dataIndex: 'isActive',
             key: 'status',
             filters: [
@@ -248,7 +248,7 @@ const ViewIngredient = () => {
             <div className="pt-12">
                 <div className="bg-white px-2 py-2 rounded-md">
                     <Descriptions
-                        title="Thông tin nguyên liệu"
+                        title="Ingredient Information"
                         bordered
                         column={1}
                         items={foodInfo}
@@ -257,7 +257,9 @@ const ViewIngredient = () => {
 
                 <Spin spinning={loadingHistory}>
                     <div className="bg-white px-2 py-2 rounded-md mt-6 ">
-                        <h2 className="text-[14px] mb-6 font-semibold">Lịch sử nhập nguyên liệu</h2>
+                        <h2 className="text-[14px] mb-6 font-semibold">
+                            Ingredient History Import
+                        </h2>
                         <Table
                             columns={columns}
                             dataSource={historyList?.history}

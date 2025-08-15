@@ -30,8 +30,8 @@ const CardSummary = ({
             </div>
             <div className="flex justify-start flex-col gap-1">
                 <p className="text-2xl font-medium">
+                    {type == 'profit' ? '$' : ''}
                     {number.toLocaleString()}
-                    {type == 'profit' ? ' đ' : ''}
                 </p>
                 <p className="text-sm text-slate-400 tracking-wider">{text}</p>
             </div>

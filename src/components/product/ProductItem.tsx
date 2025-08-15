@@ -10,6 +10,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { selectAuth } from '@/store/selector/auth/auth.selector';
 
 const ProductItem: React.FC<Food> = (foodProps) => {
+    // console.log(foodProps);
+
     //hook
     const dispatch = useDispatch();
 

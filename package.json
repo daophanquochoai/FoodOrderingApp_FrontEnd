@@ -36,6 +36,7 @@
     "antd": "^5.26.3",
     "axios": "^1.10.0",
     "dayjs": "^1.11.13",
+    "dompurify": "^3.2.6",
     "html-to-pdfmake": "^2.5.30",
     "html2pdf.js": "^0.10.3",
     "js-cookie": "^3.0.5",

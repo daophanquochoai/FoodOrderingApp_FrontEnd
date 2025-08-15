@@ -2,7 +2,19 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from 'react-icons/io';
 
-import { Button, Col, GetProp, Input, Popconfirm, Row, Space, Spin, Table, Upload, UploadProps } from 'antd';
+import {
+    Button,
+    Col,
+    GetProp,
+    Input,
+    Popconfirm,
+    Row,
+    Space,
+    Spin,
+    Table,
+    Upload,
+    UploadProps,
+} from 'antd';
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -17,7 +29,12 @@ import {
     selectLoadingComponent,
 } from '@/store/selector/admin/food/food_manager.selector';
 import { common } from '@/store/reducer';
-import { addFood, addSize, updateFood, updateSize } from '@/store/action/admin/food/food_manager.action';
+import {
+    addFood,
+    addSize,
+    updateFood,
+    updateSize,
+} from '@/store/action/admin/food/food_manager.action';
 import FormSelectAnt from '@/components/form/FormSelectAnt';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -103,7 +120,7 @@ const AddEditProductManagement = () => {
             name: newSizeName.trim(),
         };
         dispatch(addSize(newSize));
-        setNewSizeName('')
+        setNewSizeName('');
     };
     const beforeUpload = (file: FileType) => {
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -120,14 +137,16 @@ const AddEditProductManagement = () => {
     const optionsStatus = [
         { value: 'ACTIVE', label: 'Active' },
         { value: 'OUT_STOCK', label: 'Out Of Stock' },
-    ]
+    ];
 
     const handleDeleteSize = (record) => {
-        dispatch(updateSize({
-            ...record,
-            isActive : false
-        }))
-    }
+        dispatch(
+            updateSize({
+                ...record,
+                isActive: false,
+            })
+        );
+    };
 
     const uploadButton = (
         <button style={{ border: 0, background: 'none' }} type="button">
@@ -217,8 +236,7 @@ const AddEditProductManagement = () => {
 
                                     {selectedFood && <FormFoodSize name="sizes" />}
 
-
-                                    <div className='w-[22%]'>
+                                    <div className="w-[22%]">
                                         <FormSelectAnt
                                             name="status"
                                             control={control}
@@ -226,7 +244,6 @@ const AddEditProductManagement = () => {
                                             options={optionsStatus}
                                         />
                                     </div>
-                                  
 
                                     {/* Action Buttons */}
                                     <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
@@ -244,38 +261,48 @@ const AddEditProductManagement = () => {
                             </div>
                         </Col>
                         <Col span={8} className="">
-                            <div className="bg-white rounded-md p-4">
+                            <div className="bg-white rounded-md p-4 max-h-[calc(100vh-154px)] flex flex-col">
                                 <h2 className="text-lg font-semibold mb-4">
-                                    Danh sách Size hiện có
+                                    List of Available Sizes
                                 </h2>
 
                                 <Table
                                     size="small"
+                                    className="flex-1 overflow-hidden"
                                     columns={[
-                                        { title: 'ID', dataIndex: 'id', key: 'id'},
-                                        { title: 'Tên Size', dataIndex: 'name', key: 'name', align: "center" },
+                                        { title: 'ID', dataIndex: 'id', key: 'id' },
+                                        {
+                                            title: 'Size name',
+                                            dataIndex: 'name',
+                                            key: 'name',
+                                            align: 'center',
+                                        },
                                         {
                                             title: 'Actions',
                                             key: 'actions',
-                                             align: "center",
+                                            align: 'center',
                                             render: (_, record) => (
                                                 <Space size="small">
                                                     <Popconfirm
                                                         title={`Remove size ${record.name} ?`}
-                                                        onConfirm={() =>  handleDeleteSize(record)}
+                                                        onConfirm={() => handleDeleteSize(record)}
                                                     >
-                                                        <Button danger size="small">Delete</Button>
+                                                        <Button danger size="small">
+                                                            Delete
+                                                        </Button>
                                                     </Popconfirm>
-                                                    
                                                 </Space>
                                             ),
                                         },
                                     ]}
-                                    dataSource={filterOption?.size?.filter(i => i.isActive).map((s) => ({
-                                        ...s,
-                                        key: s?.name,
-                                    }))}
+                                    dataSource={filterOption?.size
+                                        ?.filter((i) => i.isActive)
+                                        .map((s) => ({
+                                            ...s,
+                                            key: s?.name,
+                                        }))}
                                     pagination={false}
+                                    scroll={{ y: 'calc(100vh - 320px)' }}
                                 />
 
                                 <Space
@@ -284,12 +311,12 @@ const AddEditProductManagement = () => {
                                     style={{ width: '100%' }}
                                 >
                                     <Input
-                                        placeholder="Tên size mới"
+                                        placeholder="New size name"
                                         value={newSizeName}
                                         onChange={(e) => setNewSizeName(e.target.value)}
                                     />
                                     <Button onClick={handleCreateNewSize} block>
-                                        Thêm size mới
+                                        Add new size
                                     </Button>
                                 </Space>
                             </div>

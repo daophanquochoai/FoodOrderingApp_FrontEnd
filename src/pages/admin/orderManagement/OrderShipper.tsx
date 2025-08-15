@@ -256,9 +256,9 @@ const OrderShipper = () => {
                                                                         <div className="flex items-start justify-start gap-2 mt-1">
                                                                             <i>Total:</i>
                                                                             <b>
+                                                                                $
                                                                                 {order?.totalPrice?.toLocaleString() ||
                                                                                     'Unknown'}
-                                                                                đ
                                                                             </b>
                                                                         </div>
                                                                     </div>

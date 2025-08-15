@@ -26,7 +26,7 @@ const UserOrderDetail = () => {
             icon: <TfiReload />,
             description:
                 'Order created on ' +
-                new Date(selectedOrder.createTime).toLocaleDateString('vi-VN'),
+                new Date(selectedOrder?.createTime).toLocaleDateString('vi-VN'),
         },
         {
             key: 'PROCESSING',
@@ -60,7 +60,6 @@ const UserOrderDetail = () => {
         },
     ];
 
-    
     let orderSteps: typeof baseOrderSteps = [];
 
     if (selectedOrder?.status === 'CANCEL') {

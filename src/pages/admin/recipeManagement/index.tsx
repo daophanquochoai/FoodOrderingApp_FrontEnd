@@ -143,7 +143,7 @@ const RecipeManagement = () => {
         {
             key: 'statusFoods',
             type: 'select',
-            placeholder: 'Trạng thái',
+            placeholder: 'Status',
             options: [
                 { label: 'Active', value: 'ACTIVE' },
                 { label: 'Out of Stock', value: 'OUT_STOCK' },

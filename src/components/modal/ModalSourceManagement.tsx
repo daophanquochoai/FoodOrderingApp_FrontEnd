@@ -73,26 +73,29 @@ const ModalSourceManagement: React.FC<ModalState> = ({ data, type, variant }) =>
         );
     };
 
+    console.log(selectedSource);
+    console.log(data);
+
     if (variant == 'view') {
         const sourceInfo: DescriptionsProps['items'] = [
             {
                 key: 'name',
-                label: 'Tên nhà cung cấp',
+                label: 'Supplier name',
                 children: selectedSource?.name,
             },
             {
                 key: 'taxCode',
-                label: 'Mã thuế',
+                label: 'Tax code',
                 children: selectedSource?.taxCode,
             },
             {
                 key: 'address',
-                label: 'Địa chỉ',
+                label: 'Address',
                 children: selectedSource?.address,
             },
             {
                 key: 'phoneNumber',
-                label: 'Số điện thoại',
+                label: 'Phone number',
                 children: selectedSource?.phoneNumber,
             },
             {
@@ -111,12 +114,12 @@ const ModalSourceManagement: React.FC<ModalState> = ({ data, type, variant }) =>
             },
             {
                 key: 'create_at',
-                label: 'Ngày tạo',
+                label: 'Create at',
                 children: dayjs(selectedSource?.createdAt).format('DD/MM/YYYY'),
             },
             {
                 key: 'late_update_time',
-                label: 'Ngày cập nhật',
+                label: 'Update at',
                 children: selectedSource?.createdAt
                     ? dayjs(selectedSource?.createdAt).format('DD/MM/YYYY')
                     : 'No update',
@@ -125,12 +128,7 @@ const ModalSourceManagement: React.FC<ModalState> = ({ data, type, variant }) =>
 
         return (
             <ModalBase type={type}>
-                <Descriptions
-                    title="Thông tin nhà cung cấp"
-                    bordered
-                    column={1}
-                    items={sourceInfo}
-                />
+                <Descriptions title="Supplier Information" bordered column={1} items={sourceInfo} />
             </ModalBase>
         );
     }

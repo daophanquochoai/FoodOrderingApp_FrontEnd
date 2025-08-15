@@ -186,7 +186,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
 
     const columns: TableColumnsType<OrderItem> = [
         {
-            title: 'Tên món',
+            title: 'Food name',
             key: 'name',
             render: (e: OrderItem) => <p>{e?.foodId?.foodId?.name}</p>,
         },
@@ -206,22 +206,23 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
             ),
         },
         {
-            title: 'Đơn giá',
+            title: 'Price at time',
             key: 'price_at_time',
             render: (price: OrderItem) => (
-                <p>{price?.priceAtTime ? price?.priceAtTime.toLocaleString() : 0}đ</p>
+                <p>${price?.priceAtTime ? price?.priceAtTime.toLocaleString() : 0}</p>
             ),
         },
         {
-            title: 'Số lượng',
+            title: 'Quantity',
             key: 'quantity',
             render: (quantity: OrderItem) => <p>{quantity?.quantity}</p>,
         },
         {
-            title: 'Tổng tiền',
+            title: 'Total item',
             key: 'total',
             render: (_, record: OrderItem) => (
-                <p>{(record?.quantity || 0 * record?.priceAtTime || 0).toLocaleString()}đ</p>
+                // <p>${selectOrder?.totalPrice ? selectOrder?.totalPrice.toLocaleString() : 0}</p>
+                <p>${((record?.quantity || 0) * (record?.priceAtTime || 0)).toLocaleString()}</p>
             ),
         },
     ];
@@ -249,7 +250,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
     const orderSummary: DescriptionsProps['items'] = [
         {
             key: 'status',
-            label: 'Trạng thái đơn hàng',
+            label: 'Order status',
             children:
                 variant === 'edit' ? (
                     <div className="w-[180px]">
@@ -265,52 +266,52 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
         },
         {
             key: 'id',
-            label: 'Mã đơn hàng',
+            label: 'Order code',
             children: <p className="font-medium">{selectOrder?.id}</p>,
         },
         {
             key: 'clientName',
-            label: 'Tên khách hàng',
+            label: 'Customer name',
             children: <p className="font-medium">{selectOrder?.name}</p>,
         },
         {
             key: 'clientPhone',
-            label: 'Số điện thoại',
+            label: 'Number phone',
             children: <p className="font-medium">{selectOrder?.phoneNumber}</p>,
         },
         {
             key: 'address',
-            label: 'Địa chỉ',
+            label: 'Address',
             children: <p className="font-medium">{selectOrder?.address}</p>,
         },
         {
             key: 'createdAt',
-            label: 'Ngày đặt',
+            label: 'Order at',
             children: (
                 <p className="font-medium">{dayjs(selectOrder?.createTime).format('DD/MM/YYYY')}</p>
             ),
         },
         {
             key: 'shippingFee',
-            label: 'Phí ship',
+            label: 'Shipping fee',
             children: (
                 <p className="font-medium">
-                    {selectOrder?.shipFee ? selectOrder?.shipFee.toLocaleString() : 0}đ
+                    ${selectOrder?.shipFee ? selectOrder?.shipFee.toLocaleString() : 0}
                 </p>
             ),
         },
         {
             key: 'total',
-            label: 'Tổng đơn',
+            label: 'Total price',
             children: (
                 <p className="font-medium">
-                    {selectOrder?.totalPrice ? selectOrder?.totalPrice.toLocaleString() : 0}đ
+                    ${selectOrder?.totalPrice ? selectOrder?.totalPrice.toLocaleString() : 0}
                 </p>
             ),
         },
         {
             key: 'paymentMethod',
-            label: 'Phương thức thanh toán',
+            label: 'Payment method',
             children: <p className="font-medium">{selectOrder?.paymentId?.methodName}</p>,
         },
     ];
@@ -319,7 +320,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
     return (
         <ModalBase type={type}>
             <Descriptions
-                title={variant == 'edit' ? 'Cập nhật đơn hàng' : 'Thông tin đơn hàng'}
+                title={variant == 'edit' ? 'Update order' : 'Order infomation'}
                 bordered
                 column={1}
                 items={orderSummary}
@@ -327,7 +328,7 @@ const ModalOrderManagement: React.FC<ModalState> = ({ data, type, variant }) => 
             />
 
             <div className="pt-6 mt-6 mb-1 border-t-2 border-dashed border-gray-300">
-                <h3 className="text-[14px] font-semibold mb-4">Chi tiết đơn hàng</h3>
+                <h3 className="text-[14px] font-semibold mb-4">Oder details</h3>
                 <Table
                     columns={columns}
                     dataSource={selectOrder.orderItems}

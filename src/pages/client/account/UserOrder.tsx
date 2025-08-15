@@ -191,7 +191,7 @@ const UserOrder: React.FC = () => {
                                                 ${order?.totalPrice?.toFixed(2) || '0'}
                                             </span>
                                         </p>
-                                        <p className="text-xs">
+                                        <p className="text-xs cursor-pointer">
                                             View Details <RightOutlined />
                                         </p>
                                     </div>

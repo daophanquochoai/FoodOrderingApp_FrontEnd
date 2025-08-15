@@ -6,8 +6,9 @@ import AdminLayout from '../layouts/AdminLayout';
 import LoadingPage from '@/pages/LoadingPage';
 import ServerError500 from '@/pages/500';
 import ScrollToTop from '../components/common/ScrollToTop';
-import OrderManagement from '@/pages/admin/orderManagement';
+import TitleRoute from './TitleRoute';
 
+// ===== Lazy imports =====
 const CheckoutWrapper = lazy(() => import('../pages/client/checkout/CheckoutWrapper'));
 const Home = lazy(() => import('../pages/client/home/Home'));
 const About = lazy(() => import('../pages/client/about/About'));
@@ -27,7 +28,6 @@ const TermsOfService = lazy(() => import('../pages/policy/TermsOfService'));
 const PolicyForBuyers = lazy(() => import('../pages/policy/PolicyForBuyers'));
 const Collections = lazy(() => import('../pages/client/collection/Collections'));
 const ProductDetail = lazy(() => import('../pages/client/product/ProductDetail'));
-const Checkout = lazy(() => import('../pages/client/checkout/Checkout'));
 const Cart = lazy(() => import('../pages/client/cart/Cart'));
 const Account = lazy(() => import('../pages/client/account/Account'));
 const UserInfo = lazy(() => import('../pages/client/account/UserInfo'));
@@ -49,6 +49,7 @@ const SourceManagement = lazy(() => import('@/pages/admin/sourceManagement'));
 const RecipeManagement = lazy(() => import('@/pages/admin/recipeManagement'));
 const AccountAdmin = lazy(() => import('@/pages/admin/accountManagement/Account'));
 const IngredientStatistics = lazy(() => import('@/pages/admin/statistics/ingredientStatistics'));
+const OrderManagement = lazy(() => import('@/pages/admin/orderManagement'));
 const OrderManagementChef = lazy(() => import('@/pages/admin/orderManagement/OrderChef'));
 const OrderManagementShipper = lazy(() => import('@/pages/admin/orderManagement/OrderShipper'));
 const EmployeeAccountManagement = lazy(
@@ -61,61 +62,145 @@ const ShopByCategories = lazy(() => import('@/pages/admin/homepageManagement/Sho
 const LatestProduct = lazy(() => import('@/pages/admin/homepageManagement/LatestProduct'));
 const DealOfTheWeek = lazy(() => import('@/pages/admin/homepageManagement/DealOfTheWeek'));
 
+const clientRoutes = [
+    { path: '/', title: 'Home', element: <Home /> },
+    { path: '/login', title: 'Login', element: <Login /> },
+    { path: '/about', title: 'About Us', element: <About /> },
+    { path: '/contact', title: 'Contact', element: <Contact /> },
+    { path: '/privacy-policy', title: 'Privacy Policy', element: <PrivacyPolicy /> },
+    { path: '/refund-policy', title: 'Refund Policy', element: <RefundPolicy /> },
+    { path: '/shipping-policy', title: 'Shipping Policy', element: <ShippingPolicy /> },
+    { path: '/terms-of-service', title: 'Terms of Service', element: <TermsOfService /> },
+    { path: '/policy-for-buyers', title: 'Policy for Buyers', element: <PolicyForBuyers /> },
+    { path: '/account/register', title: 'Register', element: <Register /> },
+    { path: '/account/login', title: 'Login', element: <Login /> },
+    { path: '/account/forgot-password', title: 'Forgot Password', element: <ForgotPassword /> },
+    { path: '/account/reset/:token', title: 'Reset Password', element: <ResetPassword /> },
+    { path: '/collections', title: 'Collections', element: <Collections /> },
+    { path: '/products/:id', title: 'Product Details', element: <ProductDetail /> },
+    { path: '/cart', title: 'Shopping Cart', element: <Cart /> },
+    {
+        path: '/account',
+        title: 'My Account',
+        element: <Account />,
+        children: [
+            { path: 'customer', title: 'Account Information', element: <UserInfo /> },
+            { path: 'addresses', title: 'Address Book', element: <UserAddress /> },
+            { path: 'orders', title: 'My Orders', element: <UserOrder /> },
+            { path: 'orders/order-detail', title: 'Order Details', element: <UserOrderDetail /> },
+            { path: 'vouchers', title: 'My Vouchers', element: <UserVoucher /> },
+            { path: 'points', title: 'My Points', element: <UserPoint /> },
+        ],
+    },
+    { path: '*', title: 'Page Not Found', element: <NotFound /> },
+];
+
+const adminRoutes = [
+    { path: '', title: 'Dashboard', element: <Dashboard /> },
+    { path: 'settings', title: 'Settings', element: <Setting /> },
+    { path: 'category-management', title: 'Category Management', element: <CategoryManagement /> },
+    {
+        path: 'ingredient-management',
+        title: 'Ingredient Management',
+        element: <IngredientManagement />,
+    },
+    { path: 'ingredient-management/:id', title: 'View Ingredient', element: <ViewIngredient /> },
+    { path: 'spoil-ingredient', title: 'Spoil Ingredient', element: <SpoilIngredient /> },
+    { path: 'product-management', title: 'Product Management', element: <ProductManagement /> },
+    { path: 'voucher-management', title: 'Voucher Management', element: <VoucherManagement /> },
+    { path: 'voucher-management/export', title: 'Export Voucher', element: <ExportVoucher /> },
+    {
+        path: 'product-management/add',
+        title: 'Add Product',
+        element: <AddAndEditProductManagement />,
+    },
+    {
+        path: 'product-management/edit',
+        title: 'Edit Product',
+        element: <AddAndEditProductManagement />,
+    },
+    { path: 'source-management', title: 'Source Management', element: <SourceManagement /> },
+    { path: 'import-management', title: 'Import Management', element: <ImportManagement /> },
+    { path: 'order-management', title: 'Order Management', element: <OrderManagement /> },
+    { path: 'order-management-chef', title: 'Chef Orders', element: <OrderManagementChef /> },
+    {
+        path: 'order-management-shipper',
+        title: 'Shipper Orders',
+        element: <OrderManagementShipper />,
+    },
+    { path: 'recipe-management', title: 'Recipe Management', element: <RecipeManagement /> },
+    { path: 'account', title: 'Account Management', element: <AccountAdmin /> },
+    {
+        path: 'ingredient-statistics',
+        title: 'Ingredient Statistics',
+        element: <IngredientStatistics />,
+    },
+    {
+        path: 'employee-account-management',
+        title: 'Employee Account Management',
+        element: <EmployeeAccountManagement />,
+    },
+    { path: 'store-information', title: 'Store Information', element: <StoreInformation /> },
+    { path: 'homepage-management', title: 'Homepage Management', element: <HomepageManagement /> },
+    {
+        path: 'homepage-management/shop-by-categories',
+        title: 'Shop by Categories',
+        element: <ShopByCategories />,
+    },
+    {
+        path: 'homepage-management/latest-products',
+        title: 'Latest Products',
+        element: <LatestProduct />,
+    },
+    {
+        path: 'homepage-management/deal-of-the-week',
+        title: 'Deal of the Week',
+        element: <DealOfTheWeek />,
+    },
+];
+
+// ===== routes =====
 const AppRoutes = () => {
-   
     return (
         <Suspense fallback={<LoadingPage />}>
             <ScrollToTop />
             <Routes>
-                {/* client routes */}
+                {/* Client routes */}
                 <Route element={<ClientLayout />}>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
-
-                    {/* policy routes */}
-                    <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-                    <Route path="/refund-policy" element={<RefundPolicy />} />
-                    <Route path="/shipping-policy" element={<ShippingPolicy />} />
-                    <Route path="/terms-of-service" element={<TermsOfService />} />
-                    <Route path="/policy-for-buyers" element={<PolicyForBuyers />} />
-
-                    {/* auth routes */}
-                    <Route path="/account/register" element={<Register />} />
-                    <Route path="/account/login" element={<Login />} />
-                    <Route path="/account/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/account/reset/:token" element={<ResetPassword />} />
-
-                    {/* collection route */}
-                    <Route path="/collections" element={<Collections />} />
-
-                    {/* product detail route */}
-                    <Route path="/products/:id" element={<ProductDetail />} />
-
-                    {/* cart */}
-                    <Route path="/cart" element={<Cart />} />
-
-                    {/* account route */}
-                    <Route path="/account/" element={<Account />}>
-                        <Route path="customer" element={<UserInfo />} />
-                        <Route path="addresses" element={<UserAddress />} />
-                        <Route path="orders" element={<UserOrder />} />
-                        <Route path="orders/order-detail" element={<UserOrderDetail />} />
-                        <Route path="vouchers" element={<UserVoucher />} />
-                        <Route path="points" element={<UserPoint />} />
-                    </Route>
-
-                    {/* 404 */}
-                    <Route path="*" element={<NotFound />} />
+                    {clientRoutes.map(({ path, title, element, children }) =>
+                        children ? (
+                            <Route key={path} element={<TitleRoute title={title} />}>
+                                <Route path={path} element={element}>
+                                    {children.map(
+                                        ({
+                                            path: childPath,
+                                            title: childTitle,
+                                            element: childElement,
+                                        }) => (
+                                            <Route
+                                                key={`${path}/${childPath}`}
+                                                element={<TitleRoute title={childTitle} />}
+                                            >
+                                                <Route path={childPath} element={childElement} />
+                                            </Route>
+                                        )
+                                    )}
+                                </Route>
+                            </Route>
+                        ) : (
+                            <Route key={path} element={<TitleRoute title={title} />}>
+                                <Route path={path} element={element} />
+                            </Route>
+                        )
+                    )}
                 </Route>
 
-                {/* checkout route */}
-                <Route path="/checkouts" element={
-                    <CheckoutWrapper />
-                } />
+                {/* Checkout route */}
+                <Route element={<TitleRoute title="Checkout" />}>
+                    <Route path="/checkouts" element={<CheckoutWrapper />} />
+                </Route>
 
-                {/* admin routes */}
+                {/* Admin routes */}
                 <Route
                     path="/admin"
                     element={
@@ -124,57 +209,20 @@ const AppRoutes = () => {
                         </RequireAuth>
                     }
                 >
-                    <Route index element={<Dashboard />} />
-                    <Route path="settings" element={<Setting />} />
-                    <Route path="category-management" element={<CategoryManagement />} />
-                    <Route path="ingredient-management" element={<IngredientManagement />} />
-                    <Route path="ingredient-management/:id" element={<ViewIngredient />} />
-                    <Route path="spoil-ingredient" element={<SpoilIngredient />} />
-
-                    <Route path="product-management" element={<ProductManagement />} />
-                    <Route path="voucher-management" element={<VoucherManagement />} />
-                    <Route path="voucher-management/export" element={<ExportVoucher />} />
-                    <Route
-                        path="product-management/add"
-                        element={<AddAndEditProductManagement />}
-                    />
-                    <Route
-                        path="product-management/edit"
-                        element={<AddAndEditProductManagement />}
-                    />
-
-                    <Route path="source-management" element={<SourceManagement />} />
-
-                    <Route path="import-management" element={<ImportManagement />} />
-
-                    <Route path="order-management" element={<OrderManagement />} />
-
-                    <Route path="order-management-chef" element={<OrderManagementChef />} />
-
-                    <Route path="order-management-shipper" element={<OrderManagementShipper />} />
-
-                    <Route path="recipe-management" element={<RecipeManagement />} />
-
-                    <Route path="account" element={<AccountAdmin />} />
-
-                    <Route path="ingredient-statistics" element={<IngredientStatistics />} />
-
-                    <Route
-                        path="employee-account-management"
-                        element={<EmployeeAccountManagement />}
-                    />
-
-                    <Route path="store-information" element={<StoreInformation />} />
-                    
-                    <Route path="homepage-management" element={<HomepageManagement />} />
-                    <Route path="homepage-management/shop-by-categories" element={<ShopByCategories />} />
-                    <Route path="homepage-management/latest-products" element={<LatestProduct />} />
-                    <Route path="homepage-management/deal-of-the-week" element={<DealOfTheWeek />} />
+                    {adminRoutes.map(({ path, title, element }) => (
+                        <Route key={path} element={<TitleRoute title={title} />}>
+                            <Route path={path} element={element} />
+                        </Route>
+                    ))}
                 </Route>
 
-                <Route path="/500" element={<ServerError500 />} />
-                {/* 404 */}
-                <Route path="*" element={<NotFound />} />
+                {/* Error routes */}
+                <Route element={<TitleRoute title="Server Error" />}>
+                    <Route path="/500" element={<ServerError500 />} />
+                </Route>
+                <Route element={<TitleRoute title="Page Not Found" />}>
+                    <Route path="*" element={<NotFound />} />
+                </Route>
             </Routes>
         </Suspense>
     );

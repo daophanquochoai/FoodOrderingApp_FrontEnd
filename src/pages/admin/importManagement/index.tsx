@@ -16,6 +16,7 @@ import { selectFilter, selectHistory, selectLoadingPage } from '@/store/selector
 import { fetchFirst } from '@/store/action/admin/history/history.action';
 import { HistoryImportAdmin } from '@/type/store/admin/history/history.style';
 import { filterHistoryIngredient } from '@/defaultValue/admin/ingredients/ingredients';
+import DOMPurify from 'dompurify'; // thu vien chuyen note -> html
 
 const ImportManagement = () => {
     // hook
@@ -52,7 +53,11 @@ const ImportManagement = () => {
                         textOverflow: 'ellipsis',
                     }}
                 >
-                    {note}
+                    <span
+                        dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(note || ''),
+                        }}
+                    />
                 </p>
             ),
         },
@@ -195,7 +200,7 @@ const ImportManagement = () => {
                 { label: 'Active', value: true },
                 { label: 'Inactive', value: false },
             ],
-        },  
+        },
     ];
 
     const handleFilterChange = (key, value) => {
@@ -203,7 +208,7 @@ const ImportManagement = () => {
         dispatch(
             history_import.actions.setFilter({
                 ...filter,
-                [key]: value
+                [key]: value,
             })
         );
     };
@@ -214,9 +219,7 @@ const ImportManagement = () => {
     };
 
     const handleResetFilter = () => {
-        dispatch(
-            history_import.actions.setFilter(filterHistoryIngredient)
-        );
+        dispatch(history_import.actions.setFilter(filterHistoryIngredient));
         dispatch(fetchFirst());
     };
 

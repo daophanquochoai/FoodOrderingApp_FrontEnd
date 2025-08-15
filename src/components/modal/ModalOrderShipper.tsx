@@ -198,7 +198,7 @@ const ModalOrderShipper: React.FC<ModalState> = ({ type, variant }) => {
                                                 {i?.foodId?.foodId?.name || 'Unknown'}
                                             </p>
                                             <p className="font-medium">
-                                                {i?.priceAtTime?.toLocaleString() || '__'}đ x{' '}
+                                                ${i?.priceAtTime?.toLocaleString() || '__'} x{' '}
                                                 {i?.quantity || '__'}
                                             </p>
                                         </div>
@@ -210,7 +210,7 @@ const ModalOrderShipper: React.FC<ModalState> = ({ type, variant }) => {
                     <Col span={24}>
                         <div className="text-right mr-6">
                             <span className="font-medium bg-red-100">
-                                Total: {selectOrder?.totalPrice?.toLocaleString() || '__'}đ
+                                Total: ${selectOrder?.totalPrice?.toLocaleString() || '__'}
                             </span>
                         </div>
                     </Col>

@@ -8,7 +8,7 @@ import { MdOutlineCategory, MdOutlineManageAccounts, MdOutlineReport } from 'rea
 import { CiDiscount1 } from 'react-icons/ci';
 import { LuNotebookPen } from 'react-icons/lu';
 import { CgSmartHomeRefrigerator } from 'react-icons/cg';
-import { RiHome3Line } from "react-icons/ri";
+import { RiHome3Line } from 'react-icons/ri';
 import { Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { GiChart } from 'react-icons/gi';
@@ -129,7 +129,7 @@ const MenuSider = () => {
                 },
                 {
                     key: '/product-management',
-                    label: <Link to={`${baseAdmin}/product-management`}>Product Management</Link>,
+                    label: <Link to={`${baseAdmin}/product-management`}>Food Management</Link>,
                     icon: <IoFastFoodOutline />,
                 },
                 {
@@ -172,30 +172,30 @@ const MenuSider = () => {
                 },
             ],
         },
-        {
-            key: 'statistics',
-            label: 'Statistics',
-            icon: <AiOutlineBarChart />,
-            children: [
-                {
-                    key: '/profit-statistics',
-                    label: <Link to={`${baseAdmin}`}>Profit Statistics</Link>,
-                    icon: <GiChart />,
-                },
-                {
-                    key: '/product-statistics',
-                    label: <Link to={`${baseAdmin}`}>Product Statistics</Link>,
-                    icon: <AiOutlineBarChart />,
-                },
-                {
-                    key: '/ingredient-statistics',
-                    label: (
-                        <Link to={`${baseAdmin}/ingredient-statistics`}>Ingredient Statistics</Link>
-                    ),
-                    icon: <SiMaterialformkdocs />,
-                },
-            ],
-        },
+        // {
+        //     key: 'statistics',
+        //     label: 'Statistics',
+        //     icon: <AiOutlineBarChart />,
+        //     children: [
+        //         {
+        //             key: '/profit-statistics',
+        //             label: <Link to={`${baseAdmin}`}>Profit Statistics</Link>,
+        //             icon: <GiChart />,
+        //         },
+        //         {
+        //             key: '/product-statistics',
+        //             label: <Link to={`${baseAdmin}`}>Product Statistics</Link>,
+        //             icon: <AiOutlineBarChart />,
+        //         },
+        //         {
+        //             key: '/ingredient-statistics',
+        //             label: (
+        //                 <Link to={`${baseAdmin}/ingredient-statistics`}>Ingredient Statistics</Link>
+        //             ),
+        //             icon: <SiMaterialformkdocs />,
+        //         },
+        //     ],
+        // },
     ];
     return (
         <div>
