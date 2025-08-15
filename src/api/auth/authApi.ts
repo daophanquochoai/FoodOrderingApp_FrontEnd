@@ -6,6 +6,9 @@ class AuthApi extends HttpService {
     logout = (data: { accessToken: string; refreshToken: string }) => {
         this.post(data, 'logout');
     };
+    forget = (email: string) => {
+        this.get(`forget/${email}`);
+    };
 }
 
 export const authApi = new AuthApi('auth');

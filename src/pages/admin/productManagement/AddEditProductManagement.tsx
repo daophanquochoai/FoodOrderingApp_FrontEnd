@@ -12,6 +12,8 @@ import {
     Space,
     Spin,
     Table,
+    TreeSelect,
+    TreeSelectProps,
     Upload,
     UploadProps,
 } from 'antd';
@@ -36,6 +38,9 @@ import {
     updateSize,
 } from '@/store/action/admin/food/food_manager.action';
 import FormSelectAnt from '@/components/form/FormSelectAnt';
+import { selectCategory } from '@/store/selector/client/collection/collection.selector';
+import { firstFetch } from '@/store/action/client/collection/collection.action';
+import FormTreeSelect from '@/components/form/FormTreeSelect';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
@@ -44,15 +49,45 @@ const AddEditProductManagement = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    useEffect(() => {
+        dispatch(firstFetch());
+    }, []);
+
     //select
     const selectedFood = useSelector(selectFoodSelected);
     const filterOption = useSelector(selectFitlerOption);
     const loadingComponent = useSelector(selectLoadingComponent);
+    const category = useSelector(selectCategory);
 
     //state
     const [newSizeName, setNewSizeName] = useState('');
     const [image, setImage] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+
+    // console.log(category);
+
+    const buildTree = (items) => {
+        const map = {};
+        const roots = [];
+
+        items.forEach((item) => {
+            map[item.id] = { value: item.id, title: item.name, parent: item.parent, children: [] };
+        });
+
+        items.forEach((item) => {
+            if (item.parent && map[item.parent.id]) {
+                map[item.parent.id].children.push(map[item.id]);
+            } else {
+                roots.push(map[item.id]);
+            }
+        });
+
+        return roots;
+    };
+
+    const treeData = buildTree(category || []);
+
+    // console.log(treeData);
 
     const {
         control,
@@ -65,6 +100,7 @@ const AddEditProductManagement = () => {
             name: selectedFood?.name,
             status: 'ACTIVE',
             desc: selectedFood?.desc,
+            category_id: selectedFood?.category?.id,
         },
     });
     useEffect(() => {
@@ -80,10 +116,13 @@ const AddEditProductManagement = () => {
                 name: selectedFood?.name,
                 desc: selectedFood?.desc,
                 sizes: selectedFood?.foodSizes,
+                category_id: selectedFood?.category?.id,
             });
             setImage(selectedFood?.image);
         }
     }, [selectedFood]);
+
+    console.log(selectedFood);
 
     // event handling
     const onSubmit = (data: any) => {
@@ -167,6 +206,7 @@ const AddEditProductManagement = () => {
             setImage(info?.file?.response);
         }
     };
+
     return (
         <Spin spinning={loadingComponent}>
             <div className="relative">
@@ -236,13 +276,24 @@ const AddEditProductManagement = () => {
 
                                     {selectedFood && <FormFoodSize name="sizes" />}
 
-                                    <div className="w-[22%]">
-                                        <FormSelectAnt
-                                            name="status"
-                                            control={control}
-                                            label="Status"
-                                            options={optionsStatus}
-                                        />
+                                    <div className="flex items-center gap-4">
+                                        <div className="min-w-[200px] flex flex-col gap-1">
+                                            <FormTreeSelect
+                                                name="category_id"
+                                                control={control}
+                                                label="Category"
+                                                treeData={treeData}
+                                            />
+                                        </div>
+
+                                        <div className="w-[22%]">
+                                            <FormSelectAnt
+                                                name="status"
+                                                control={control}
+                                                label="Status"
+                                                options={optionsStatus}
+                                            />
+                                        </div>
                                     </div>
 
                                     {/* Action Buttons */}

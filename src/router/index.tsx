@@ -32,6 +32,7 @@ const Cart = lazy(() => import('../pages/client/cart/Cart'));
 const Account = lazy(() => import('../pages/client/account/Account'));
 const UserInfo = lazy(() => import('../pages/client/account/UserInfo'));
 const UserAddress = lazy(() => import('../pages/client/account/UserAddress'));
+const UserChangePassword = lazy(() => import('../pages/client/account/UserChangePassword'));
 const UserOrder = lazy(() => import('../pages/client/account/UserOrder'));
 const UserOrderDetail = lazy(() => import('../pages/client/account/UserOrderDetail'));
 const UserVoucher = lazy(() => import('../pages/client/account/UserVoucher'));
@@ -75,7 +76,7 @@ const clientRoutes = [
     { path: '/account/register', title: 'Register', element: <Register /> },
     { path: '/account/login', title: 'Login', element: <Login /> },
     { path: '/account/forgot-password', title: 'Forgot Password', element: <ForgotPassword /> },
-    { path: '/account/reset/:token', title: 'Reset Password', element: <ResetPassword /> },
+    { path: '/account/reset', title: 'Reset Password', element: <ResetPassword /> },
     { path: '/collections', title: 'Collections', element: <Collections /> },
     { path: '/products/:id', title: 'Product Details', element: <ProductDetail /> },
     { path: '/cart', title: 'Shopping Cart', element: <Cart /> },
@@ -86,6 +87,7 @@ const clientRoutes = [
         children: [
             { path: 'customer', title: 'Account Information', element: <UserInfo /> },
             { path: 'addresses', title: 'Address Book', element: <UserAddress /> },
+            { path: 'change-password', title: 'Change Password', element: <UserChangePassword /> },
             { path: 'orders', title: 'My Orders', element: <UserOrder /> },
             { path: 'orders/order-detail', title: 'Order Details', element: <UserOrderDetail /> },
             { path: 'vouchers', title: 'My Vouchers', element: <UserVoucher /> },

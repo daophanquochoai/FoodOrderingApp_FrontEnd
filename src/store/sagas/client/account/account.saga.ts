@@ -7,6 +7,7 @@ import {
     createAddressInProfile,
     fetchAddress,
     fetchFirst,
+    forgetPassword,
     setDefaultAddress,
     updateAccount,
     updateAddressInProfile,
@@ -16,6 +17,8 @@ import { selectFilterAddress, selectInfo } from '@/store/selector/client/account
 import { ModalType } from '@/type/store/common';
 import { deleteAllCookies, getCookies } from '@/utils/cookies/cookies';
 import { all, call, fork, put, select, takeEvery } from 'typed-redux-saga';
+import { changePassword } from '../../../action/client/account/account.action';
+import { take } from 'redux-saga/effects';
 
 function* handleFetchFirst() {
     yield put(account.actions.setLoading(true));
@@ -188,6 +191,42 @@ function* handleSetDefault({ payload }) {
     }
 }
 
+function* handleChangePassword({ payload }) {
+    console.log(payload);
+    yield put(account.actions.setLoading(true));
+    try {
+        let info = yield select(selectInfo);
+        if (!info) {
+            yield call(handleFetchInfo);
+            info = yield select(selectInfo);
+        }
+        const token = getCookies('access_token');
+        const data = {
+            id: info?.id,
+            passwordNew: payload?.newPassword,
+            passwordOld: payload?.currentPassword,
+        };
+        yield call(userApi.changePassword, data, token);
+        payload?.action();
+        yield put(common.actions.setSuccessMessage('Update successful'));
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(account.actions.setLoading(false));
+    }
+}
+
+function* handleForgetPassword({ payload }) {
+    try {
+        yield call(authApi.forget, payload?.email);
+        payload?.action();
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    }
+}
+
 function* watchLogout() {
     yield takeEvery(actionLogout, handleLogout);
 }
@@ -220,8 +259,17 @@ function* watchSetDefaultAddress() {
     yield takeEvery(setDefaultAddress, handleSetDefault);
 }
 
+function* watchChangePassword() {
+    yield takeEvery(changePassword, handleChangePassword);
+}
+
+function* watchForgetPassword() {
+    yield takeEvery(forgetPassword, handleForgetPassword);
+}
+
 export function* watchAccount() {
     yield all([
+        fork(watchChangePassword),
         fork(watchFetchFirst),
         fork(watchLogout),
         fork(watchUpdateAccount),

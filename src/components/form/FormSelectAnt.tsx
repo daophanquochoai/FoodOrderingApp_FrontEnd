@@ -28,9 +28,9 @@ const FormSelectAnt: React.FC<any> = ({
                         filterOption={(input, option) =>
                             (option?.label ?? '').toString().toLowerCase().includes(input.toLowerCase())
                         }
-                        filterSort={(a, b) =>
-                            (a?.label ?? '').toString().toLowerCase().localeCompare((b?.label ?? '').toString().toLowerCase())
-                        }
+                        // filterSort={(a, b) =>
+                        //     (a?.label ?? '').toString().toLowerCase().localeCompare((b?.label ?? '').toString().toLowerCase())
+                        // }
                         options={options}
                         onChange={(value) => field.onChange(value)}
                         value={field.value}

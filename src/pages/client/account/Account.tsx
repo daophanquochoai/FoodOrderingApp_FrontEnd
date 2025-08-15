@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actionLogout } from '@/store/action/client/account/account.action';
 import { selectInfo } from '@/store/selector/client/account/account.selector';
 import { BiLogOut } from 'react-icons/bi';
+import { MdOutlinePassword } from 'react-icons/md';
 
 const Account = () => {
     // hook
@@ -51,6 +52,17 @@ const Account = () => {
                     >
                         <FaRegUser className="text-2xl" />
                         <p>Personal profile</p>
+                    </NavLink>
+                    <NavLink
+                        to={'/account/change-password'}
+                        className={({ isActive }) =>
+                            `w-fit flex items-center gap-2 hover:text-orange-600${
+                                isActive ? ' text-orange-600 font-semibold' : ''
+                            }`
+                        }
+                    >
+                        <MdOutlinePassword className="text-2xl" />
+                        <p>Change password</p>
                     </NavLink>
                     <NavLink
                         to={'/account/addresses'}
