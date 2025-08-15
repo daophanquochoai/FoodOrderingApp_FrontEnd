@@ -280,7 +280,7 @@ const ModalSpoilIngredient: React.FC<ModalState> = ({ data, type, variant }) => 
                                     name="batchCode"
                                     control={control}
                                     label="Import Batch Code"
-                                    options={historyBatches && historyBatches.data ? historyBatches.data.map(batch => ({
+                                    options={historyBatches && historyBatches?.data ? historyBatches?.data?.filter( i => i.isActive)?.map(batch => ({
                                         value: batch.id.toString(),
                                         label: `${batch.bathCode || 'Batch'} #${batch.id}`
                                     })) : []}

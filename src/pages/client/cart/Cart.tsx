@@ -1,6 +1,4 @@
-import React from 'react';
 import { ClientBreadcrumb } from '../../../components/breadcrumb';
-import { CartItemProps } from '../../../type';
 import { Col, Row } from 'antd';
 import CartItemPage from '../../../components/cart/CartItemPage';
 import { useNavigate } from 'react-router-dom';

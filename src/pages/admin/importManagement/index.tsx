@@ -12,7 +12,7 @@ import {
 } from '@ant-design/icons';
 import FilterBar from '@/components/filter/FilterBar';
 import dayjs from 'dayjs';
-import { selectFilter, selectHistory } from '@/store/selector/admin/history/history.selector';
+import { selectFilter, selectHistory, selectLoadingPage } from '@/store/selector/admin/history/history.selector';
 import { fetchFirst } from '@/store/action/admin/history/history.action';
 import { HistoryImportAdmin } from '@/type/store/admin/history/history.style';
 import { filterHistoryIngredient } from '@/defaultValue/admin/ingredients/ingredients';
@@ -24,6 +24,7 @@ const ImportManagement = () => {
     //selector
     const historyList = useSelector(selectHistory);
     const filter = useSelector(selectFilter);
+    const loadingPage = useSelector(selectLoadingPage);
 
     //useEffect
     useEffect(() => {
@@ -219,6 +220,17 @@ const ImportManagement = () => {
         dispatch(fetchFirst());
     };
 
+    const handleChagePage = (e) => {
+        dispatch(
+            history_import.actions.setFilter({
+                ...historyList?.filter,
+                pageNo : e
+            })
+        )
+        dispatch(fetchFirst());
+    }
+
+
     return (
         <div>
             <h1 className="text-2xl font-bold mb-3">Ingredients Import Management</h1>
@@ -239,6 +251,7 @@ const ImportManagement = () => {
                 </Button>
 
                 <Table
+                    loading={loadingPage}
                     columns={columns}
                     dataSource={historyList?.data || []}
                     rowKey="key"
@@ -246,9 +259,10 @@ const ImportManagement = () => {
                     pagination={false}
                 />
                 <Pagination
-                    current={historyList?.filter?.pageNo}
+                    onChange={(e) => handleChagePage(e-1)}
+                    current={historyList?.filter?.pageNo + 1}
                     pageSize={10}
-                    total={historyList.totalPage}
+                    total={historyList.totalPage * 10}
                 />
             </div>
         </div>
