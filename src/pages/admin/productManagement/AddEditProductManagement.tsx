@@ -133,16 +133,23 @@ const AddEditProductManagement = () => {
                     data: {
                         ...data,
                         image: image,
+                        category: {
+                            id: data?.category_id,
+                        },
                     },
                 })
             );
         } else {
+            console.log(data);
             dispatch(
                 addFood({
                     data: {
                         ...data,
                         image: image,
                         id: 0,
+                        category: {
+                            id: data?.category_id,
+                        },
                     },
                     navigate: () => navigate('/admin/product-management'),
                 })

@@ -11,6 +11,7 @@ import {
     setDefaultAddress,
     updateAccount,
     updateAddressInProfile,
+    updatePasswordForget,
 } from '@/store/action/client/account/account.action';
 import { account, common } from '@/store/reducer';
 import { selectFilterAddress, selectInfo } from '@/store/selector/client/account/account.selector';
@@ -218,12 +219,33 @@ function* handleChangePassword({ payload }) {
 }
 
 function* handleForgetPassword({ payload }) {
+    yield put(account.actions.setLoading(true));
     try {
         yield call(authApi.forget, payload?.email);
-        payload?.action();
+        payload?.action(1);
     } catch (e) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
+        payload?.action(2);
+    } finally {
+        yield put(account.actions.setLoading(false));
+    }
+}
+
+function* handleUpdatePasswordForget({ payload }) {
+    yield put(account.actions.setLoading(true));
+    try {
+        const data = {
+            passwordNew: payload?.password,
+            passwordOld: payload?.password,
+        };
+        yield call(authApi.updateForget, payload?.email, payload?.token, data);
+        yield payload?.action();
+    } catch (e) {
+        console.error(e);
+        yield put(common.actions.setErrorMessage(e?.message));
+    } finally {
+        yield put(account.actions.setLoading(false));
     }
 }
 
@@ -267,8 +289,14 @@ function* watchForgetPassword() {
     yield takeEvery(forgetPassword, handleForgetPassword);
 }
 
+function* watchUpdatePasswordForget() {
+    yield takeEvery(updatePasswordForget, handleUpdatePasswordForget);
+}
+
 export function* watchAccount() {
     yield all([
+        fork(watchUpdatePasswordForget),
+        fork(watchForgetPassword),
         fork(watchChangePassword),
         fork(watchFetchFirst),
         fork(watchLogout),

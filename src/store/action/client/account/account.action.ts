@@ -45,3 +45,8 @@ export const changePassword = createAction(`${name}/CHANGE_PASSWORD`, (state) =>
 export const forgetPassword = createAction(`${name}/FORGET_PASSWORD`, (state) => ({
     payload: state,
 }));
+
+// update password forget
+export const updatePasswordForget = createAction(`${name}/UPDATE_PASSWORD_FORGET`, (state) => ({
+    payload: state,
+}));

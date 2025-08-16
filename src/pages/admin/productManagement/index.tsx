@@ -318,12 +318,14 @@ const ProductManagement = () => {
                     scroll={{ x: 'max-content' }}
                     pagination={false}
                 />
-                <Pagination
-                    current={filter?.pageNo + 1 || 0}
-                    pageSize={10}
-                    onChange={handleChangePage}
-                    total={totalPage}
-                />
+                <div className="flex justify-center mt-[20px]">
+                    <Pagination
+                        current={filter?.pageNo + 1 || 0}
+                        pageSize={10}
+                        onChange={handleChangePage}
+                        total={totalPage}
+                    />
+                </div>
             </div>
         </Spin>
     );

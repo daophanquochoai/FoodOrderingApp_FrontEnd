@@ -5,12 +5,15 @@ import { Link } from 'react-router-dom';
 import { validateEmail } from '../../../utils/helper';
 import imageCheck from '../../../assets/check.png';
 import imageError from '../../../assets/close.png';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { forgetPassword } from '@/store/action/client/account/account.action';
+import { selectLoading } from '@/store/selector/client/account/account.selector';
+import { Spin } from 'antd';
 
 const ForgotPassword = () => {
     // hook
     const dispatch = useDispatch();
+    const loading = useSelector(selectLoading);
 
     // state
     const [email, setEmail] = useState('');
@@ -41,7 +44,7 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div>
+        <Spin spinning={loading}>
             <ClientBreadcrumb title="Account" items={[{ label: 'Home', to: '/' }]} />
 
             <div className="my-12">
@@ -96,7 +99,7 @@ const ForgotPassword = () => {
                     </div>
                 </form>
             </div>
-        </div>
+        </Spin>
     );
 };
 

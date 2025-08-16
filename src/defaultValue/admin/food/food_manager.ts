@@ -5,7 +5,7 @@ export const filterFoodManager: FilterFood = {
     pageNo: 0,
     pageSize: 10,
     search: '',
-    sort: 'asc',
+    sort: 'desc',
     order: 'id',
     startDate: null,
     endDate: null,
