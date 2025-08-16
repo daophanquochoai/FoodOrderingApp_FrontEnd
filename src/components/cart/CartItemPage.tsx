@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import QuantitySelector, { Type } from '../product/QuantitySelector';
 import { Col, Row } from 'antd';
 import { IoTrashOutline } from 'react-icons/io5';
@@ -8,7 +8,12 @@ import { formatMoney } from '@/utils/formatRender';
 import { useDispatch } from 'react-redux';
 import { deleteCartItem } from '@/store/action/client/cart/cart.action';
 
-const CartItemPage: React.FC<CartItem> = (cartItem) => {
+interface Props {
+    cartItem: CartItem;
+    handleOnClick: (any) => void;
+}
+
+const CartItemPage: React.FC<Props> = ({ cartItem, handleOnClick }) => {
     // hook
     const dispatch = useDispatch();
 
@@ -19,7 +24,10 @@ const CartItemPage: React.FC<CartItem> = (cartItem) => {
         <div>
             <Row className="pt-4 pb-3 border-b border-gray-200">
                 <Col span={16}>
-                    <div className="flex gap-2 items-center justify-start">
+                    <div
+                        className="flex gap-2 items-center justify-start cursor-pointer"
+                        onClick={() => handleOnClick(cartItem)}
+                    >
                         <div className="w-[80px] h-[80px]">
                             <img
                                 src={cartItem?.foodId?.foodId?.image || burger}

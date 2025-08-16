@@ -2,18 +2,24 @@ import { ClientBreadcrumb } from '../../../components/breadcrumb';
 import { Col, Row, Spin } from 'antd';
 import CartItemPage from '../../../components/cart/CartItemPage';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectCart, selectCartLoadingComponent } from '@/store/selector/client/cart/cart.selector';
 import { formatMoney } from '@/utils/formatRender';
+import { food } from '@/store/reducer';
 
 const Cart = () => {
     // hook
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     // selector
     const cart = useSelector(selectCart);
     const loading = useSelector(selectCartLoadingComponent);
 
+    const hanldeNavigateTo = (item) => {
+        dispatch(food.actions.setFoodDetail(item?.foodId?.foodId));
+        navigate(`/products/${item?.foodId?.foodId?.id}`);
+    };
     return (
         <div>
             <ClientBreadcrumb title="Your Shopping Cart" items={[{ label: 'Home', to: '/' }]} />
@@ -41,7 +47,7 @@ const Cart = () => {
                         cart?.cartItems.length > 0 &&
                         cart?.cartItems.map((item, index) => (
                             <div key={index} className="py-2">
-                                <CartItemPage {...item} />
+                                <CartItemPage cartItem={item} handleOnClick={hanldeNavigateTo} />
                             </div>
                         ))}
 
