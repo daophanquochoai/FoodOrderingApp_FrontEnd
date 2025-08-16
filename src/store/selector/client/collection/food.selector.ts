@@ -25,3 +25,8 @@ export const selectSize = createSelector(selectState, (state: FoodSlice) => stat
  * get food detail
  */
 export const selectFoodDetail = createSelector(selectState, (state: FoodSlice) => state.foodDetail);
+
+/**
+ * get total page
+ */
+export const selectTotalPage = createSelector(selectState, (state: FoodSlice) => state.totalPage);

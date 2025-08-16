@@ -72,9 +72,10 @@ function* handleFetchFood() {
         });
 
         //get food by api
-        const responseFood = yield* call(foodApi.getFoodByFilter, filterFood);
+        const { data } = yield* call(foodApi.getFoodByFilter, filterFood);
 
-        yield put(food.actions.setFood(responseFood?.data?.data?.data));
+        yield put(food.actions.setTotalPage(data?.data?.totalPage));
+        yield put(food.actions.setFood(data?.data?.data));
     } catch (e) {
         console.error(e);
     }

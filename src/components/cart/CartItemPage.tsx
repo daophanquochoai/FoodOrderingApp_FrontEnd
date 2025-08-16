@@ -24,7 +24,7 @@ const CartItemPage: React.FC<CartItem> = (cartItem) => {
                             <img
                                 src={cartItem?.foodId?.foodId?.image || burger}
                                 alt=""
-                                className="w-full h-auto object-contain"
+                                className="w-full h-full object-center"
                                 onError={(e) => {
                                     e.currentTarget.onerror = null; // tránh loop vô hạn
                                     e.currentTarget.src = burger;

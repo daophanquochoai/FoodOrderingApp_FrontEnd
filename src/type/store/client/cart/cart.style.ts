@@ -27,4 +27,5 @@ export interface CartSlice {
     filter: FilterCart;
     cart: Cart;
     loadingPage: boolean;
+    loadingComponent: boolean;
 }

@@ -3,7 +3,7 @@ import ModalBase from './ModalBase';
 import { useProvinces } from '../../hooks/address/useProvinces';
 import { useWards } from '../../hooks/address/useWards';
 import { FloatingSelect } from '../input';
-import { Button, Checkbox, Spin } from 'antd';
+import { Button, Spin } from 'antd';
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useDispatch, useSelector } from 'react-redux';
 import { common } from '@/store/reducer';
@@ -12,7 +12,10 @@ import {
     selectAddressSelected,
     selectLoadingComponent,
 } from '@/store/selector/client/account/account.selector';
-import { createAddressInProfile, updateAddressInProfile } from '@/store/action/client/account/account.action';
+import {
+    createAddressInProfile,
+    updateAddressInProfile,
+} from '@/store/action/client/account/account.action';
 
 const ModalAddress: React.FC<any> = (props) => {
     // selector
@@ -104,13 +107,6 @@ const ModalAddress: React.FC<any> = (props) => {
         }
     };
 
-    const handleCheckboxChange = (e: CheckboxChangeEvent) => {
-        setFormData((prev) => ({
-            ...prev,
-            isDefault: e.target.checked,
-        }));
-    };
-
     const validateForm = () => {
         let isValid = true;
         const newErrors = { ...errors };
@@ -160,14 +156,15 @@ const ModalAddress: React.FC<any> = (props) => {
             id: selectedAddress?.id || 0,
             address: formData.fullAddress || '',
             province: formData?.province || '',
-            commune: formData?.province || '',
+            commune: formData?.ward || '',
             isDefault: false,
             isActive: true,
             phoneNumber: formData?.phoneNumber || '',
             name: formData?.name || '',
         };
+
         if (isEditing) {
-            dispatch(updateAddressInProfile(addressData))
+            dispatch(updateAddressInProfile(addressData));
         } else {
             dispatch(createAddressInProfile(addressData));
         }

@@ -22,3 +22,11 @@ export const selectLoadingPage = createSelector(
     selectState,
     (state: CartSlice) => state.loadingPage
 );
+
+/**
+ * get cart loading compoennt
+ */
+export const selectCartLoadingComponent = createSelector(
+    selectState,
+    (state: CartSlice) => state.loadingComponent
+);

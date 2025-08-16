@@ -19,6 +19,9 @@ const FoodSlice = createSlice({
         setFoodDetail(state, { payload }: PayloadAction<any>) {
             state.foodDetail = payload;
         },
+        setTotalPage(state, { payload }: PayloadAction<any>) {
+            state.totalPage = payload;
+        },
     },
 });
 

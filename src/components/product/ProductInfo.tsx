@@ -7,7 +7,7 @@ import { selectFoodDetail } from '@/store/selector/client/collection/food.select
 import { common } from '@/store/reducer';
 import { addToCart } from '@/store/action/client/cart/cart.action';
 import { Spin } from 'antd';
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline } from 'react-icons/io5';
 import { selectAuth } from '@/store/selector/auth/auth.selector';
 import { useNavigate } from 'react-router-dom';
 import { ModalType } from '@/type/store/common';
@@ -43,7 +43,7 @@ const ProductInfo = () => {
 
     //event handling
     const handleAddToCart = () => {
-        if(!auth?.user){
+        if (!auth?.user) {
             dispatch(common.actions.setHiddenModal(ModalType.DETAIL_PRODUCT));
             navigate('/login');
             return;
@@ -58,7 +58,7 @@ const ProductInfo = () => {
                 id: selectedSize?.id,
             },
             quantity: quantity,
-            priceAtTime: (selectedSize?.discount || 1) * selectedSize?.price,
+            priceAtTime: ((100 - selectedSize?.discount) / 100 || 1) * selectedSize?.price,
             isActive: true,
         };
 
@@ -74,9 +74,7 @@ const ProductInfo = () => {
                         {foodDetail?.name}
                     </h1>
                     {foodDetail?.desc && (
-                        <p className="text-gray-600 text-sm leading-relaxed">
-                            {foodDetail?.desc}
-                        </p>
+                        <p className="text-gray-600 text-sm leading-relaxed">{foodDetail?.desc}</p>
                     )}
                 </div>
 
@@ -85,14 +83,18 @@ const ProductInfo = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
                             <span className="text-lg text-gray-500 line-through -mb-[3px]">
-                                ${selectedSize != null
-                                    ? formatMoney(
-                                          (selectedSize.price)
-                                      )
-                                    : '__'}
+                                ${selectedSize != null ? formatMoney(selectedSize.price) : '__'}
                             </span>
                             <span className="text-xl font-bold text-orange-600">
-                                ${selectedSize != null ? formatMoney(selectedSize.price - ((selectedSize?.price || 0) * (selectedSize?.discount || 0) / 100)) : '__'}
+                                $
+                                {selectedSize != null
+                                    ? formatMoney(
+                                          selectedSize.price -
+                                              ((selectedSize?.price || 0) *
+                                                  (selectedSize?.discount || 0)) /
+                                                  100
+                                      )
+                                    : '__'}
                             </span>
                         </div>
                         <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-2 py-1 rounded-full shadow-sm">
@@ -146,7 +148,7 @@ const ProductInfo = () => {
                                     className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-2.5 px-4 rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-md flex items-center justify-center gap-2"
                                 >
                                     <span className="text-xs">ADD TO CART</span>
-                                    <IoCartOutline className='size-4'/>
+                                    <IoCartOutline className="size-4" />
                                 </button>
                             </div>
                         </div>
@@ -154,18 +156,26 @@ const ProductInfo = () => {
                 )}
                 {foodDetail?.category && (
                     <div className="bg-gray-50 p-2 px-3 rounded-lg border border-gray-200">
-                        <h3 className="text-base font-bold text-gray-800 mb-2">Product Information</h3>
+                        <h3 className="text-base font-bold text-gray-800 mb-2">
+                            Product Information
+                        </h3>
                         <div className="space-y-1">
                             <div className="flex items-center gap-2">
-                                <span className="font-semibold text-gray-700 min-w-[70px] text-xs">Category:</span>
+                                <span className="font-semibold text-gray-700 min-w-[70px] text-xs">
+                                    Category:
+                                </span>
                                 <span className="text-gray-600 bg-white px-2 py-1 rounded-md border text-xs">
                                     {foodDetail?.category?.name || ''}
                                 </span>
                             </div>
                             {foodDetail?.desc && (
                                 <div className="flex items-start gap-2">
-                                    <span className="font-semibold text-gray-700 min-w-[70px] mt-0.5 text-xs">Description:</span>
-                                    <p className="text-gray-600 leading-relaxed text-xs">{foodDetail?.desc}</p>
+                                    <span className="font-semibold text-gray-700 min-w-[70px] mt-0.5 text-xs">
+                                        Description:
+                                    </span>
+                                    <p className="text-gray-600 leading-relaxed text-xs">
+                                        {foodDetail?.desc}
+                                    </p>
                                 </div>
                             )}
                         </div>

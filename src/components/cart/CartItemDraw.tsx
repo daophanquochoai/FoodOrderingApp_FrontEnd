@@ -18,14 +18,14 @@ const CartItemDraw: React.FC<CartItem> = (cartItem) => {
 
     return (
         <div>
-            <Row className="pt-4 pb-3 border-b border-gray-200">
+            <Row className="pt-2 pb-3 border-b border-gray-200">
                 <Col span={18}>
                     <div className="flex gap-2 items-center justify-start">
                         <div className="w-[80px] h-[80px]">
                             <img
                                 src={cartItem?.foodId?.foodId?.image || burger}
                                 alt=""
-                                className="w-full h-auto object-contain"
+                                className="w-full h-full object-center"
                                 onError={(e) => {
                                     e.currentTarget.onerror = null; // tránh loop vô hạn
                                     e.currentTarget.src = burger;

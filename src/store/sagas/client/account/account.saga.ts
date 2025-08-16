@@ -94,6 +94,7 @@ function* handleFetchAddress() {
         });
         const token = getCookies('access_token');
 
+        if (info?.id == null) return;
         const { data } = yield call(
             addressApi.getAddress,
             {
