@@ -1,6 +1,11 @@
 import { sourceApi } from '@/api/client/source/source.api';
 import LoadingPage from '@/pages/LoadingPage';
-import { createSource, updateSource } from '@/store/action/admin/source/source.action';
+import {
+    changePage,
+    createSource,
+    loadPage,
+    updateSource,
+} from '@/store/action/admin/source/source.action';
 import { fetchFirst } from '@/store/action/common/common.action';
 import { common, sources } from '@/store/reducer';
 import { selectFilter } from '@/store/selector/admin/source/source.selector';
@@ -62,6 +67,26 @@ function* hanldeUpdateSource({ payload }: PayloadAction<any>) {
     }
 }
 
+function* handleChangePage({ payload }) {
+    const { filter } = yield all({
+        filter: select(selectFilter),
+    });
+
+    yield put(
+        sources.actions.setFilter({
+            ...filter,
+            pageNo: payload,
+        })
+    );
+
+    yield* handleFetchFirst();
+}
+
+// watch change
+function* watchChangePage() {
+    yield* takeEvery(changePage, handleChangePage);
+}
+
 // watch update source
 function* watchUpdateSource() {
     yield takeEvery(updateSource, hanldeUpdateSource);
@@ -76,6 +101,17 @@ function* watchFetchFirst() {
 function* watchAddSource() {
     yield takeEvery(createSource, handleCreateSource);
 }
+
+function* watchLoadPage() {
+    yield takeEvery(loadPage, handleFetchFirst);
+}
+
 export function* watchSource() {
-    yield all([fork(watchFetchFirst), fork(watchAddSource), fork(watchUpdateSource)]);
+    yield all([
+        fork(watchFetchFirst),
+        fork(watchLoadPage),
+        fork(watchAddSource),
+        fork(watchUpdateSource),
+        fork(watchChangePage),
+    ]);
 }

@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@ant-design/charts": "^2.6.1",
-    "@ckeditor/ckeditor5-build-classic": "^44.3.0",
+    "@ckeditor/ckeditor5-build-classic": "^37.1.0",
     "@ckeditor/ckeditor5-react": "^11.0.0",
     "@copilotkit/react-core": "^1.9.3",
     "@copilotkit/react-ui": "^1.9.3",

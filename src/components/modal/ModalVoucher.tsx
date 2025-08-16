@@ -25,7 +25,7 @@ const ModalVoucher: React.FC<ModalState> = ({ data, type, variant }) => {
     // Form state for validation
     const [formData, setFormData] = useState({
         code: selectVoucher?.code || '',
-        description: selectVoucher?.desc || '',
+        description: selectVoucher?.desc || 'VOUCHER TEST',
         discountType: selectVoucher?.discountType?.toString() || '',
         discountValue: selectVoucher?.discountValue || '',
         maxDiscount: selectVoucher?.maxDiscount || '',

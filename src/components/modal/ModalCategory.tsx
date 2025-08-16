@@ -112,9 +112,12 @@ const ModalCategory: React.FC<any> = ({ data, type, variant }) => {
             image: image,
             desc: e.description,
             status: 'ACTIVE',
-            parentId : parentId == null || parentId == '' ? {} : {
-                id: parentId,
-            }
+            parentId:
+                parentId == null || parentId == ''
+                    ? {}
+                    : {
+                          id: parentId,
+                      },
         };
         if (variant == 'edit') {
             info = {
@@ -218,7 +221,7 @@ const ModalCategory: React.FC<any> = ({ data, type, variant }) => {
                                 loading={isSubmitting}
                                 className="bg-blue-500 hover:bg-blue-600"
                             >
-                                {variant === 'update' ? 'Update Category' : 'Add Category'}
+                                {variant === 'edit' ? 'Update Category' : 'Add Category'}
                             </Button>
                         </div>
                     </form>

@@ -21,3 +21,8 @@ export const updateCategory = createAction(categoryAction.update, (data) => ({
 export const deleteCategory = createAction(categoryAction.delete, (data) => ({
     payload: data,
 }));
+
+// change
+export const changePage = createAction(`${name}/CHANGE_PAGE`, (state) => ({
+    payload: state,
+}));

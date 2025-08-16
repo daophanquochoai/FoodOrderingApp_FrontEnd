@@ -15,16 +15,16 @@ import { FilterDropdownProps } from 'antd/es/table/interface';
 import { DeleteOutlined, EditOutlined, EyeOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { ModalType } from '@/type/store/common';
-import { common } from '@/store/reducer';
+import { common, ingredientsError } from '@/store/reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '@/store/action/admin/ingredients/ingredients_error.action';
 import * as selectors from '@/store/selector/admin/ingredients/ingredients_error.selector';
 import FilterBar from '@/components/filter/FilterBar';
+import { filterIngredientsError } from '@/defaultValue/admin/ingredients/ingredients_error';
 
 type DataIndex = keyof any;
 
 const SpoilIngredient = () => {
-
     // hook
     const dispatch = useDispatch();
 
@@ -38,7 +38,7 @@ const SpoilIngredient = () => {
     const loading = useSelector(selectors.selectLoadingPage);
     const ingredientsErrorList = useSelector(selectors.selectIngredientsError);
     const filter = useSelector(selectors.selectFilter);
-    const totalPage = useSelector(selectors.selectTotalPage); 
+    const totalPage = useSelector(selectors.selectTotalPage);
 
     // useEffect
     useEffect(() => {
@@ -153,12 +153,12 @@ const SpoilIngredient = () => {
             dataIndex: ['batchCode', 'bathCode'],
             key: 'bathCode',
             width: '200px',
-            render:(_, record) => record.batchCode?.bathCode || 'N/A',
+            render: (_, record) => record.batchCode?.bathCode || 'N/A',
             sorter: (a, b) => {
                 const aCode = a.batchCode?.bathCode || '';
                 const bCode = b.batchCode?.bathCode || '';
                 return aCode.localeCompare(bCode);
-            },    
+            },
         },
         {
             title: 'Unit',
@@ -292,16 +292,20 @@ const SpoilIngredient = () => {
     };
 
     const spoilIngredientFilterFields = [
-        { key: 'name', type: 'text', placeholder: 'Name' },
-        { key: 'create_at', type: 'dateRange', placeholder: 'Created at' },
+        { key: 'search', type: 'text', placeholder: 'Search' },
+        { key: 'startDate', type: 'date', placeholder: 'Created at' },
     ];
 
     const handleFilterChange = (key, value) => {
-        setFilters((pre) => ({ ...pre, [key]: value }));
+        dispatch(ingredientsError.actions.setFilter({ ...filter, [key]: value }));
+        console.log(filter);
+        dispatch(actions.fetchFirst());
     };
 
-    const handleResetFilter = () => {
-        setFilters({});
+    const handleApplyFilter = () => {
+        dispatch(ingredientsError.actions.setFilter(filterIngredientsError));
+        // console.log(filter);
+        dispatch(actions.fetchFirst());
     };
 
     return (
@@ -315,7 +319,7 @@ const SpoilIngredient = () => {
                         fields={spoilIngredientFilterFields}
                         values={filters}
                         onChange={handleFilterChange}
-                        onReset={handleResetFilter}
+                        onReset={handleApplyFilter}
                         type={ModalType.SPOIL_INGREDIENT}
                         onApply={() => {}}
                     />
