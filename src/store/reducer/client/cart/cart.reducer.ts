@@ -15,6 +15,9 @@ const CartSlice = createSlice({
         setLoadingPage(state, { payload }: PayloadAction<any>) {
             state.loadingPage = payload;
         },
+        setLoadingComponent(state, { payload }: PayloadAction<any>) {
+            state.loadingComponent = payload;
+        },
         setRiseCart(state, { payload }: PayloadAction<any>) {
             const { id, type } = payload;
             state.cart = {

@@ -51,6 +51,7 @@ export const initFoodFilter: FilterFood = {
 
 export const initFoodSlice: FoodSlice = {
     foods: [],
+    totalPage : 0,
     filter: initFoodFilter,
     sizes: [],
     foodDetail: null,

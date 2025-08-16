@@ -19,5 +19,5 @@ export const formatFullAddress = (address: Address): string => {
     const provinceName = getProvinceNameById(address.province);
     const commune = getWardNameById(address.commune);
 
-    return [address.address, provinceName, commune].filter(Boolean).join(', ');
+    return [address.address, commune, provinceName].filter(Boolean).join(', ');
 };

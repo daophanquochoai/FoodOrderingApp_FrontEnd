@@ -5,7 +5,11 @@ import { formatFullAddress } from '../../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { account, common } from '@/store/reducer';
 import { ModalType } from '@/type/store/common';
-import { fetchAddress, setDefaultAddress, updateAddressInProfile } from '@/store/action/client/account/account.action';
+import {
+    fetchAddress,
+    setDefaultAddress,
+    updateAddressInProfile,
+} from '@/store/action/client/account/account.action';
 import {
     selectAddress,
     selectFilterAddress,
@@ -57,7 +61,7 @@ const UserAddress = () => {
     };
 
     const handleSetDefaultAddress = (id: number) => {
-        dispatch(setDefaultAddress(id))
+        dispatch(setDefaultAddress(id));
     };
 
     return (

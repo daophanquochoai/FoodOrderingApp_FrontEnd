@@ -49,6 +49,7 @@ export interface FilterFood extends Filter {
 
 export interface FoodSlice {
     foods: Food[];
+    totalPage: number;
     filter: FilterFood;
     sizes: Size[];
     foodDetail: Food;

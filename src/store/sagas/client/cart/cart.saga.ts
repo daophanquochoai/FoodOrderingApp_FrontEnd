@@ -30,7 +30,7 @@ function* handleFetchFirst() {
 
 //handle delete cart item
 function* handleDeleteCartItem({ payload }) {
-    yield put(cart.actions.setLoadingPage(true));
+    yield put(cart.actions.setLoadingComponent(true));
     try {
         const { auth } = yield all({
             auth: select(selectAuth),
@@ -46,7 +46,7 @@ function* handleDeleteCartItem({ payload }) {
         console.error(e);
         yield put(common.actions.setErrorMessage(e?.message));
     } finally {
-        yield put(cart.actions.setLoadingPage(false));
+        yield put(cart.actions.setLoadingComponent(false));
     }
 }
 

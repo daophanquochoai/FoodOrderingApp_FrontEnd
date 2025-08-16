@@ -24,4 +24,5 @@ export const initCartSlice: CartSlice = {
     cart: initCart,
     filter: filterCart,
     loadingPage: false,
+    loadingComponent: false,
 };

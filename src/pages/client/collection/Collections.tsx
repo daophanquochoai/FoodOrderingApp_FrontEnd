@@ -1,6 +1,6 @@
 import { CategoryItem, DetailCategoryProduct } from '../../../components/category';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { FreeMode, Pagination } from 'swiper/modules';
+import { FreeMode } from 'swiper/modules';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { firstFetch, fetchFood } from '@/store/action/client/collection/collection.action';
@@ -10,11 +10,16 @@ import {
 } from '@/store/selector/client/collection/collection.selector';
 import { Category } from '@/type/store/client/collection/collection.style';
 import { collection, food } from '@/store/reducer';
-import { selectFood, selectFilter } from '@/store/selector/client/collection/food.selector';
+import {
+    selectFood,
+    selectFilter,
+    selectTotalPage,
+} from '@/store/selector/client/collection/food.selector';
 import { FaAngleLeft } from 'react-icons/fa6';
 import { FaChevronRight } from 'react-icons/fa';
 import { PiEmptyDuotone } from 'react-icons/pi';
 import { initFoodFilter } from '@/defaultValue/client/collection/food';
+import { Pagination } from 'antd';
 
 const Collections = () => {
     // hook
@@ -22,7 +27,8 @@ const Collections = () => {
     const category = useSelector(selectCategory);
     const selectedCategory = useSelector(selectSelectedCategory);
     const foods = useSelector(selectFood);
-    const currentFilter = useSelector(selectFilter);
+    const filter = useSelector(selectFilter);
+    const totalPage = useSelector(selectTotalPage);
 
     //state
     const [categoryRender, setCategoryRender] = useState<Category[]>([]);
@@ -89,6 +95,16 @@ const Collections = () => {
 
         // Reset filter to show all foods
         dispatch(food.actions.setFilter(initFoodFilter));
+        dispatch(fetchFood());
+    };
+
+    const hanldeChangePage = (e) => {
+        dispatch(
+            food.actions.setFilter({
+                ...filter,
+                pageNo: e - 1,
+            })
+        );
         dispatch(fetchFood());
     };
 
@@ -249,6 +265,14 @@ const Collections = () => {
 
             <div className="container mx-auto px-4 py-6">
                 <DetailCategoryProduct products={foods} />
+                <div className="flex justify-center mt-[20px]">
+                    <Pagination
+                        onChange={(e) => hanldeChangePage(e)}
+                        current={filter?.pageNo + 1 || 1}
+                        pageSize={10}
+                        total={totalPage}
+                    />
+                </div>
             </div>
         </div>
     );
