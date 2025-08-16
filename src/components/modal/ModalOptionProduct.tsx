@@ -38,15 +38,19 @@ const ModalOptionProduct: React.FC<any> = (props) => {
                                     e.currentTarget.src = img_hamburger_1;
                                 }}
                             />
-           
+
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
                     </Col>
                     <Col span={24} md={12} className="flex flex-col h-full">
-                        <div className={`flex-1 p-2 md:p-4 overflow-y-auto custom-scrollbar md:max-h-[calc(78vh-80px)] max-h-[calc(45vh-80px)]`}>
+                        <div
+                            className={`flex-1 p-2 md:p-4 overflow-y-auto custom-scrollbar md:max-h-[calc(78vh-80px)] max-h-[calc(45vh-80px)]`}
+                        >
                             <ProductInfo />
                         </div>
-                        <div className={`p-2 md:p-4 py-0 mt-4 md:mt-2 border-t border-gray-100 flex-shrink-0`}>
+                        <div
+                            className={`p-2 md:p-4 py-0 mt-4 md:mt-2 border-t border-gray-100 flex-shrink-0`}
+                        >
                             <button
                                 onClick={navigateToProductDetail}
                                 className="flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-md transition-all duration-300 transform hover:scale-105 hover:shadow-md"
