@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFirst } from '@/store/action/client/voucher/voucher.action';
 import { selectFilter, selectVoucher } from '@/store/selector/client/voucher/voucher.selector';
-import {
-    EVoucher,
-    Voucher as VoucherType,
-} from '@/type/store/client/voucher/voucher.style';
+import { EVoucher, Voucher as VoucherType } from '@/type/store/client/voucher/voucher.style';
 import { checkout, voucher } from '@/store/reducer';
 import { selectCart } from '@/store/selector/client/cart/cart.selector';
 import { selectInfo } from '@/store/selector/client/account/account.selector';
@@ -21,12 +18,13 @@ const Voucher: React.FC<any> = () => {
     const cart = useSelector(selectCart);
     const info = useSelector(selectInfo);
     const discountApply = useSelector(selectDiscountApply);
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState('');
 
     // Lọc voucher theo search
-    const filteredVouchers = vouchers?.data?.filter((voucher) =>
-        voucher.code.toLowerCase().includes(search.toLowerCase()) ||
-        voucher.desc?.toLowerCase().includes(search.toLowerCase())
+    const filteredVouchers = vouchers?.data?.filter(
+        (voucher) =>
+            voucher.code.toLowerCase().includes(search.toLowerCase()) ||
+            voucher.desc?.toLowerCase().includes(search.toLowerCase())
     );
     // useEffect
     useEffect(() => {
@@ -69,69 +67,74 @@ const Voucher: React.FC<any> = () => {
         return voucher.status.toString() == 'ACTIVE' && new Date(voucher.endDate) > new Date();
     };
 
+    console.log(filteredVouchers);
+
     return (
         <div className="flex flex-col gap-4">
-        <strong className="text-lg">Voucher</strong>
+            <strong className="text-lg">Voucher</strong>
 
-        {/* Ô tìm kiếm voucher */}
-        <input
-            type="text"
-            placeholder="Search voucher..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+            {/* Ô tìm kiếm voucher */}
+            <input
+                type="text"
+                placeholder="Search voucher..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
 
-        {/* Danh sách voucher cuộn nếu dài */}
-        <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
-            {filteredVouchers?.map((voucher) => (
-                <div
-                    key={voucher.id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
-                        discountApply === voucher.id
-                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                            : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-                    }`}
-                    onClick={() => handleVoucherSelect(voucher.id, voucher)}
-                >
-                    <div className="flex items-start space-x-3">
-                        <input
-                            type="radio"
-                            name="voucher"
-                            value={voucher.code}
-                            checked={discountApply === voucher.id}
-                            className="mt-1 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                        />
-                        <div className="flex-1">
-                            <div className="flex gap-2 items-center mb-1">
-                                <span className="font-semibold text-blue-600">
-                                    {voucher.code}
-                                </span>
-                                <span className="text-xs text-white bg-blue-400 rounded px-2 py-0.5">
-                                    {voucher.discountType === EVoucher.PERCENT
-                                        ? `-${voucher.discountValue}%`
-                                        : `-$${voucher.discountValue.toFixed(2)}`}
-                                </span>
+            {/* Danh sách voucher cuộn nếu dài */}
+            <div className="space-y-4 max-h-64 overflow-y-auto pr-2">
+                {filteredVouchers?.map(
+                    (voucher) =>
+                        voucher?.usedCount < voucher?.maxUse && (
+                            <div
+                                key={voucher.id}
+                                className={`p-4 border rounded-lg cursor-pointer transition-all duration-200 ${
+                                    discountApply === voucher.id
+                                        ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
+                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                }`}
+                                onClick={() => handleVoucherSelect(voucher.id, voucher)}
+                            >
+                                <div className="flex items-start space-x-3">
+                                    <input
+                                        type="radio"
+                                        name="voucher"
+                                        value={voucher.code}
+                                        checked={discountApply === voucher.id}
+                                        className="mt-1 w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                                    />
+                                    <div className="flex-1">
+                                        <div className="flex gap-2 items-center mb-1">
+                                            <span className="font-semibold text-blue-600">
+                                                {voucher.code}
+                                            </span>
+                                            <span className="text-xs text-white bg-blue-400 rounded px-2 py-0.5">
+                                                {voucher.discountType === EVoucher.PERCENT
+                                                    ? `-${voucher.discountValue}%`
+                                                    : `-$${voucher.discountValue.toFixed(2)}`}
+                                            </span>
+                                        </div>
+                                        <div className="text-gray-600 text-sm leading-relaxed">
+                                            <div
+                                                dangerouslySetInnerHTML={{
+                                                    __html: `${voucher.desc || ''}`,
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="text-xs text-gray-400">
+                                            Expiration Date:{' '}
+                                            {new Date(voucher.endDate).toLocaleDateString('vi-VN')}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="text-gray-600 text-sm leading-relaxed">
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                        __html: `${voucher.desc || ""}`,
-                                    }}
-                                />
-                            </div>
-                            <span className="text-xs text-gray-400">
-                                Expiration Date:{" "}
-                                {new Date(voucher.endDate).toLocaleDateString("vi-VN")}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            ))}
+                        )
+                )}
+            </div>
+
+            {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
         </div>
-
-        {error && <p className="text-sm text-red-500 pl-1">{error}</p>}
-    </div>
     );
 };
 

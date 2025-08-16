@@ -2,6 +2,7 @@ import {
     Button,
     Input,
     InputRef,
+    Pagination,
     Space,
     Table,
     TableColumnsType,
@@ -16,10 +17,8 @@ import Highlighter from 'react-highlight-words';
 import { ModalType } from '@/type/store/common';
 import { common, sources } from '@/store/reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { fetchFirst } from '@/store/action/admin/source/source.action';
+import { changePage, fetchFirst, loadPage } from '@/store/action/admin/source/source.action';
 import { selectSource, selectFilter } from '@/store/selector/admin/source/source.selector';
-import { Source } from '@/type/store/admin/source/source.style';
 import { initFilter } from '@/defaultValue/admin/source/source';
 import FilterBar from '@/components/filter/FilterBar';
 
@@ -36,7 +35,7 @@ const SourceManagement: React.FC = () => {
 
     // selector
     const sourcesList = useSelector(selectSource);
-    const filter = useSelector(selectFilter)
+    const filter = useSelector(selectFilter);
 
     // useEffect
     useEffect(() => {
@@ -256,38 +255,38 @@ const SourceManagement: React.FC = () => {
         );
     };
 
-    const sourceFilterFields = [
-        { key: 'search', type: 'text', placeholder: 'Search' },
-    ];
+    const sourceFilterFields = [{ key: 'search', type: 'text', placeholder: 'Search' }];
 
     const handleFilterChange = (key, value) => {
         // console.log(key, value);
         dispatch(
             sources.actions.setFilter({
                 ...filter,
-                [key]: value
+                [key]: value,
             })
         );
     };
 
     const handleApplyFilter = (filterValues) => {
         console.log(filterValues);
-        dispatch(fetchFirst());
+        dispatch(loadPage());
     };
 
     const handleResetFilter = () => {
-        dispatch(
-            sources.actions.setFilter(initFilter)
-        );
-        dispatch(fetchFirst());
+        dispatch(sources.actions.setFilter(initFilter));
+        dispatch(loadPage());
+    };
+
+    const handleChangePage = (e) => {
+        dispatch(changePage(e - 1));
     };
 
     return (
         <div>
             <h1 className="text-2xl font-bold">Source Management</h1>
 
-             {/* filter */}
-             <div className="my-3">
+            {/* filter */}
+            <div className="my-3">
                 <FilterBar
                     fields={sourceFilterFields}
                     values={filter}
@@ -309,6 +308,13 @@ const SourceManagement: React.FC = () => {
                     rowKey="key"
                     scroll={{ x: 'max-content' }}
                     pagination={false}
+                />
+
+                <Pagination
+                    current={filter?.pageNo + 1 || 0}
+                    pageSize={10}
+                    onChange={handleChangePage}
+                    total={sourcesList?.totalPage * 10 || 1}
                 />
             </div>
         </div>

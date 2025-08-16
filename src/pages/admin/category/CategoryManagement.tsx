@@ -11,7 +11,7 @@ import {
     selectFilter,
     selectLoadingTable,
 } from '@/store/selector/admin/category/category.selector';
-import { fetchCategoryFirst } from '@/store/action/admin/category/category.action';
+import { changePage, fetchCategoryFirst } from '@/store/action/admin/category/category.action';
 import { Category, EStatusCategory } from '@/type/store/client/collection/collection.style';
 import FilterBar from '@/components/filter/FilterBar';
 import { filterCategory } from '@/defaultValue/client/collection/collection';
@@ -131,9 +131,9 @@ const CategoryManagement = () => {
     const options = Object.keys(EStatusCategory)
         .filter((key) => isNaN(Number(key)))
         .map((key) => ({
-        label: key,
-        value: EStatusCategory[key as keyof typeof EStatusCategory],
-    }));
+            label: key,
+            value: EStatusCategory[key as keyof typeof EStatusCategory],
+        }));
 
     const categoryFilterFields = [
         { key: 'search', type: 'text', placeholder: 'Search' },
@@ -142,7 +142,7 @@ const CategoryManagement = () => {
             key: 'statusCategories',
             type: 'multiSelect',
             placeholder: 'Status',
-            options: options
+            options: options,
         },
     ];
 
@@ -150,7 +150,7 @@ const CategoryManagement = () => {
         dispatch(
             categoryReducer.actions.setFilter({
                 ...filter,
-                [key]: value
+                [key]: value,
             })
         );
     };
@@ -160,12 +160,13 @@ const CategoryManagement = () => {
         dispatch(fetchCategoryFirst());
     };
 
-
     const handleResetFilter = () => {
-        dispatch(
-            categoryReducer.actions.setFilter(filterCategory)
-        );
+        dispatch(categoryReducer.actions.setFilter(filterCategory));
         dispatch(fetchCategoryFirst());
+    };
+
+    const handleChangePage = (e) => {
+        dispatch(changePage(e - 1));
     };
 
     return (
@@ -205,6 +206,7 @@ const CategoryManagement = () => {
                 <Pagination
                     current={category?.page + 1 || 0}
                     pageSize={10}
+                    onChange={handleChangePage}
                     total={category?.totalPage * 10 || 1}
                 />
             </div>

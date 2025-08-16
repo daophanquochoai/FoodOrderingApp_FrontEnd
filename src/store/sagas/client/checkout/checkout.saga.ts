@@ -103,14 +103,16 @@ function* handlePaymentAction({ payload }) {
             shipperId: null,
             name: payload?.address?.address?.name,
             phoneNumber: payload?.address?.address?.phoneNumber,
-            orderItems: cart?.cartItems.map((item) => {
-                return {
-                    foodId: { id: item?.foodId?.id },
-                    quantity: item?.quantity,
-                    priceAtTime: (item?.foodId?.price * (100 - item?.foodId?.discount)) / 100,
-                    isActive: true,
-                };
-            }),
+            orderItems: cart?.cartItems
+                ?.filter((item) => item.isActive && item.quantity > 0)
+                ?.map((item) => {
+                    return {
+                        foodId: { id: item?.foodId?.id },
+                        quantity: item?.quantity,
+                        priceAtTime: (item?.foodId?.price * (100 - item?.foodId?.discount)) / 100,
+                        isActive: true,
+                    };
+                }),
             point: checkout?.point?.used || 0,
         };
         const token = getCookies('access_token');

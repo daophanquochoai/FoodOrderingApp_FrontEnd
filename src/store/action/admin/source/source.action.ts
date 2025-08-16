@@ -16,3 +16,11 @@ export const createSource = createAction(sourceAction.create, (state) => ({
 export const updateSource = createAction(sourceAction.update, (state) => ({
     payload: state,
 }));
+
+// load page
+export const loadPage = createAction(`${name}/LOAD_PAGE`);
+
+// change
+export const changePage = createAction(`${name}/CHANGE_PAGE`, (state) => ({
+    payload: state,
+}));

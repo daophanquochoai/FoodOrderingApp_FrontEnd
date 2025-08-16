@@ -3,6 +3,7 @@ import { collectionApi } from '@/api/client/collection/collection.api';
 import { filterApi } from '@/api/filter/fitler.api';
 import { filter } from '@/defaultValue/common';
 import {
+    changePage,
     createCategory,
     deleteCategory,
     fetchCategoryFirst,
@@ -37,7 +38,7 @@ function* handleFetchCategoryTable() {
         const { fitler } = yield all({
             fitler: select(selectFilter),
         });
-        
+
         const updatedFilter = {
             ...fitler,
             statusCategories:
@@ -45,9 +46,9 @@ function* handleFetchCategoryTable() {
                     ? [EStatusCategory.ACTIVE]
                     : [...fitler.statusCategories],
         };
-        
+
         const { data } = yield call(collectionApi.getCategoryByFilter, updatedFilter);
-        
+
         yield put(category.actions.setCategory(data?.data));
     } catch (e) {
         console.error(e);
@@ -123,6 +124,28 @@ function* handleFetchFilterOption() {
     }
 }
 
+/**
+ * change page
+ */
+function* handleChangePage({ payload }) {
+    const { filter } = yield all({
+        filter: select(selectFilter),
+    });
+
+    yield put(
+        category.actions.setFilter({
+            ...filter,
+            pageNo: payload,
+        })
+    );
+    yield* handleFetchFirst();
+}
+
+// watch change
+function* watchChangePage() {
+    yield* takeEvery(changePage, handleChangePage);
+}
+
 // watch delete category
 function* watchDeleteCategory() {
     yield takeEvery(deleteCategory, handleDeleteCategory);
@@ -150,5 +173,6 @@ export function* watchCategogy() {
         fork(watchCreateCategory),
         fork(watchUpdateCategory),
         fork(watchDeleteCategory),
+        fork(watchChangePage),
     ]);
 }

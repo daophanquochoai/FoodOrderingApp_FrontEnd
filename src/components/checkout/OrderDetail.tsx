@@ -110,7 +110,7 @@ const OrderDetail: React.FC<any> = () => {
             <ul className="space-y-4">
                 {cart?.cartItems &&
                     cart?.cartItems
-                        .filter((item) => item.isActive)
+                        .filter((item) => item.isActive && item.quantity > 0)
                         .map((item) => (
                             <li key={item.id} className="flex items-center justify-between">
                                 <div className="flex items-center">
@@ -118,7 +118,11 @@ const OrderDetail: React.FC<any> = () => {
                                         <img
                                             src={item?.foodId?.foodId?.image}
                                             alt={item?.foodId?.foodId?.name}
-                                            style={{ width: 60, height: 60, objectFit: 'cover' }}
+                                            style={{
+                                                width: 60,
+                                                height: 60,
+                                                objectFit: 'cover',
+                                            }}
                                             className="border border-gray-400 rounded-md"
                                         />
                                         <span
